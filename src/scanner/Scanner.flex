@@ -11,11 +11,12 @@ import java.util.HashMap;
 /* Declarations */
 %class  Scanner	        /* Names the produced java file */
 %function nextToken 	/* Renames the yylex() function */
+%public                 /* Defines the class as public */
 %type   Token			/* Defines the return type of the scanning function */
 %unicode
 
 %eofval{
-  return null;
+    return null;
 %eofval}
 
 %{
@@ -63,8 +64,6 @@ import java.util.HashMap;
     tokenTypes.put("*", Type.ASTERISK);
     tokenTypes.put("/", Type.FSLASH);
     tokenTypes.put(":=", Type.ASSIGN);
-    tokenTypes.put("read", Type.READ);
-    tokenTypes.put("write", Type.WRITE);
 %init}
 
 /* Patterns */
@@ -77,21 +76,34 @@ num						= {digits}{fraction}{exponent}
 id						= {letter}({letter} | {digit})*
 word					= {letter}+
 symbol					= [=<>+\-*/;,.\[\]():]
-whitespace				= [ \n\t]
+symbols                 = {symbol}|:=|<=|>=|<>
+commentContent          = [^\{\}]
+comment                 = \{{commentContent}*\}
+whitespace				= [\n\t]
 other					= .
 
 %%
 
 /* Lexical Rules */
-{word}
+{id}
 {
-	/** Print out the word that was found. */
-	//System.out.println("Found a word: " + yytext());
-	return( new Token( yytext()));
+    String lexeme = yytext();
+    TokenType type = tokenTypes.get(lexeme);
+
+    if (type != null)
+    {
+        return (new Token(lexeme, type));
+    }
+    else
+    {
+        return (new Token(lexeme, TokenType.ID));
+    }
+	System.out.println("ID recognized: " + yytext());
 }
 
 {num}
 {
+    System.out.println("Number recognized: " + yytext());
 	return(new Token(yytext(), TokenType.NUMBER));
 }
             
@@ -102,6 +114,7 @@ other					= .
 
 {other}
 { 
-	System.out.println("Illegal char: '" + yytext() + "' found.");
+	System.out.println("Syntax error: '" + yytext());
+	System.exit(1);
 }
            
