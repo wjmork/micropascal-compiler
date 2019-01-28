@@ -6,6 +6,9 @@ package scanner;
 
 public enum TokenType {
 
+    // Types
+    ID, NUMBER,
+
     // Keywords
     AND, ARRAY, BEGIN, DIV, DO, ELSE, END, FUNCTION, IF, INTEGER, MOD, NOT, OF, OR, PROCEDURE, PROGRAM, REAL, THEN, VAR, WHILE,
 
