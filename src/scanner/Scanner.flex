@@ -79,7 +79,7 @@ symbol					= [=<>+\-*/;,.\[\]():]
 symbols                 = {symbol}|:=|<=|>=|<>
 commentContent          = [^\{\}]
 comment                 = \{{commentContent}*\}
-whitespace				= [\n\t]
+whitespace				= [ \n\t\r\f]|{comment}
 other					= .
 
 %%
@@ -92,12 +92,10 @@ other					= .
 
     if (type != null)
     {
-        System.out.println("Keyword recognized: " + yytext());
         return (new Token(lexeme, type));
     }
     else
     {
-        System.out.println("ID recognized: " + yytext());
         return (new Token(lexeme, TokenType.ID));
     }
 
@@ -105,7 +103,6 @@ other					= .
 
 {num}
 {
-    System.out.println("Number recognized: " + yytext());
 	return(new Token(yytext(), TokenType.NUMBER));
 }
             
@@ -116,7 +113,7 @@ other					= .
 
 {other}
 { 
-	System.out.println("Syntax error: '" + yytext());
+	System.out.println("Invalid token.");
 	System.exit(1);
 }
            
