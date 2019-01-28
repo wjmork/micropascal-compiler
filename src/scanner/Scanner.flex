@@ -20,7 +20,7 @@ import java.util.HashMap;
 %eofval}
 
 %{
-    private HashMap<String, Type> tokenTypes;
+    private HashMap<String, TokenType> tokenTypes;
 %}
 
 %init{
@@ -92,13 +92,15 @@ other					= .
 
     if (type != null)
     {
+        System.out.println("Keyword recognized: " + yytext());
         return (new Token(lexeme, type));
     }
     else
     {
+        System.out.println("ID recognized: " + yytext());
         return (new Token(lexeme, TokenType.ID));
     }
-	System.out.println("ID recognized: " + yytext());
+
 }
 
 {num}

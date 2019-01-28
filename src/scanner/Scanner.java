@@ -233,7 +233,7 @@ public class Scanner {
   private int zzFinalHighSurrogate = 0;
 
   /* user code: */
-    private HashMap<String, Type> tokenTypes;
+    private HashMap<String, TokenType> tokenTypes;
 
 
   /**
@@ -603,13 +603,14 @@ public class Scanner {
 
     if (type != null)
     {
+        System.out.println("Keyword recognized: " + yytext());
         return (new Token(lexeme, type));
     }
     else
     {
+        System.out.println("ID recognized: " + yytext());
         return (new Token(lexeme, TokenType.ID));
     }
-	System.out.println("ID recognized: " + yytext());
             } 
             // fall through
           case 6: break;
