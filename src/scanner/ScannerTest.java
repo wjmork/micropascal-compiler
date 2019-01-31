@@ -3,27 +3,25 @@ package scanner;
 import org.junit.Test;
 
 import java.io.*;
+import java.nio.file.Paths;
+import java.util.List;
 
+import static java.nio.file.Files.readAllLines;
 import static junit.framework.TestCase.fail;
 
 public class ScannerTest {
     public ClassLoader classLoader = getClass().getClassLoader();
 
     @Test
-    public void testSimple() {
-        Reader simple = null;
-        try {
-            simple = new BufferedReader(new FileReader(new File(classLoader.getResource("pascal/simplest.pas").getFile())));
-            System.out.println("Successfully imported simple.pas test file.");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            fail("Error reading simple.pas test file.");
-        }
+    public void testSimple() throws IOException {
+        File simple = new File("src/pascal/simple.pas");
+        Reader simpleReader = new FileReader(simple);
+        System.out.println("Successfully imported simple.pas test file.");
 
-        Scanner testScanner = new Scanner(simple);
+        Scanner testScanner = new Scanner(simpleReader);
+
         Token currentToken = null;
 
-        // as long as badToken is null, scanner is reading valid tokens.
         do {
             try {
                 currentToken = testScanner.nextToken();
@@ -31,7 +29,7 @@ public class ScannerTest {
                     System.out.println("Token recognized: " + currentToken);
                 }
             } catch (IOException e) {
-                System.out.println("Invalid Token: " + currentToken);
+                fail("Invalid Token: " + currentToken);
                 e.printStackTrace();
             }
         } while (currentToken != null);
@@ -43,20 +41,15 @@ public class ScannerTest {
     }
 
     @Test
-    public void testSimplest() {
-        Reader simplest = null;
-        try {
-            simplest = new BufferedReader(new FileReader(new File(classLoader.getResource("pascal/simplest.pas").getFile())));
-            System.out.println("Successfully imported simplest.pas test file.");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            fail("Error reading simplest.pas test file.");
-        }
+    public void testSimplest() throws IOException {
+        File simplest = new File("src/pascal/simplest.pas");
+        Reader simpleReader = new FileReader(simplest);
+        System.out.println("Successfully imported simplest.pas test file.");
 
-        Scanner testScanner2 = new Scanner(simplest);
+        Scanner testScanner2 = new Scanner(simpleReader);
+
         Token currentToken = null;
 
-        // as long as badToken is null, scanner is reading valid tokens.
         do {
             try {
                 currentToken = testScanner2.nextToken();
@@ -64,7 +57,7 @@ public class ScannerTest {
                     System.out.println("Token recognized: " + currentToken);
                 }
             } catch (IOException e) {
-                System.out.println("Invalid Token: " + currentToken);
+                fail("Invalid Token: " + currentToken);
                 e.printStackTrace();
             }
         } while (currentToken != null);
@@ -73,5 +66,18 @@ public class ScannerTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testStrings() {
+        String testString = "Test, token, 6*10^23";
+        Token currentToken = null;
+        Scanner testScanner3 = new Scanner(testString);
+        try {
+            currentToken = testScanner3.nextToken();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Token recognized: " + currentToken);
     }
 }

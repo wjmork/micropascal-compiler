@@ -1,5 +1,5 @@
 /* William  Mork */
-/* CSC 450 */
+/* CSC 451 */
 /* Token.java */
 
 package scanner;

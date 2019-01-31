@@ -1,5 +1,5 @@
 /* William  Mork */
-/* CSC 450 */
+/* CSC 451 */
 /* Scanner.flex */
 
 package scanner;
@@ -21,6 +21,13 @@ import java.util.HashMap;
 
 %{
     private HashMap<String, TokenType> tokenTypes;
+%}
+
+%{
+    public Scanner(String input)
+    {
+
+    }
 %}
 
 %init{
@@ -101,6 +108,11 @@ other					= .
 
 }
 
+{symbol}
+{
+    return(new Token(yytext(), TokenType.ID));
+}
+
 {num}
 {
 	return(new Token(yytext(), TokenType.NUMBER));
@@ -112,8 +124,7 @@ other					= .
 }
 
 {other}
-{ 
-	System.out.println("Invalid token.");
+{
+    System.out.println("Invalid syntax.");
 	System.exit(1);
 }
-           
