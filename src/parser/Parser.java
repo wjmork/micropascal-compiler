@@ -5,131 +5,218 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-.1;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import scanner.ExpScanner;
 import scanner.ExpToken;
 import scanner.ExpTokenType;
 
+/**
+ * The parser recognizes whether an input string of tokens
+ * is an expression.
+ * To use a parser, create an instance pointing at a file,
+ * and then call the top-level function, <code>exp()</code>.
+ * If the functions returns without an error, the file
+ * contains an acceptable expression.
+ * @author Erik Steinmetz
+ */
 public class Parser {
+    
+    ///////////////////////////////
+    //    Instance Variables
+    ///////////////////////////////
+    
     private ExpToken lookahead;
+    
     private ExpScanner scanner;
-
-    public Parser(String text, boolean isFilename) {
-        if (isFilename) {
-            FileInputStream fis = null;
-
-            try {
-                fis = new FileInputStream("expressions/simplest.pas");
-            } catch (FileNotFoundException var6) {
-                this.error("No file");
-            }
-
-            InputStreamReader isr = new InputStreamReader(fis);
-            this.scanner = new ExpScanner(isr);
-        } else {
-            this.scanner = new ExpScanner(new StringReader(text));
-        }
-
+    
+    ///////////////////////////////
+    //       Constructors
+    ///////////////////////////////
+    
+    public Parser( String text, boolean isFilename) {
+        if( isFilename) {
+        FileInputStream fis = null;
         try {
-            this.lookahead = this.scanner.nextToken();
-        } catch (IOException var5) {
-            this.error("Scan error");
+            fis = new FileInputStream("expressions/simplest.pas");
+        } catch (FileNotFoundException ex) {
+            error( "No file");
         }
-
+        InputStreamReader isr = new InputStreamReader( fis);
+        scanner = new ExpScanner( isr);
+                 
+        }
+        else {
+            scanner = new ExpScanner( new StringReader( text));
+        }
+        try {
+            lookahead = scanner.nextToken();
+        } catch (IOException ex) {
+            error( "Scan error");
+        }
+        
     }
-
+    
+    ///////////////////////////////
+    //       Methods
+    ///////////////////////////////
+    
+    /**
+     * Executes the rule for the exp non-terminal symbol in
+     * the expression grammar.
+     */
     public void exp() {
-        this.term();
-        this.exp_prime();
+        term();
+        exp_prime();
     }
-
+    
+    /**
+     * Executes the rule for the exp&prime; non-terminal symbol in
+     * the expression grammar.
+     */
     public void exp_prime() {
-        if (this.lookahead.getType() == ExpTokenType.PLUS || this.lookahead.getType() == ExpTokenType.MINUS) {
-            this.addop();
-            this.term();
-            this.exp_prime();
+        if( lookahead.getType() == ExpTokenType.PLUS || 
+                lookahead.getType() == ExpTokenType.MINUS ) {
+            addop();
+            term();
+            exp_prime();
         }
-
+        else{
+            // lambda option
+        }
     }
-
+    
+    /**
+     * Executes the rule for the addop non-terminal symbol in
+     * the expression grammar.
+     */
     public void addop() {
-        if (this.lookahead.getType() == ExpTokenType.PLUS) {
-            this.match(ExpTokenType.PLUS);
-        } else if (this.lookahead.getType() == ExpTokenType.MINUS) {
-            this.match(ExpTokenType.MINUS);
-        } else {
-            this.error("Addop");
+        if( lookahead.getType() == ExpTokenType.PLUS) {
+            match( ExpTokenType.PLUS);
         }
-
+        else if( lookahead.getType() == ExpTokenType.MINUS) {
+            match( ExpTokenType.MINUS);
+        }
+        else {
+            error( "Addop");
+        }
     }
-
+    
+    /**
+     * Executes the rule for the term non-terminal symbol in
+     * the expression grammar.
+     */
     public void term() {
-        this.factor();
-        this.term_prime();
+        factor();
+        term_prime();
     }
-
+    
+    /**
+     * Executes the rule for the term&prime; non-terminal symbol in
+     * the expression grammar.
+     */
     public void term_prime() {
-        if (this.isMulop(this.lookahead)) {
-            this.mulop();
-            this.factor();
-            this.term_prime();
+        if( isMulop( lookahead) ) {
+            mulop();
+            factor();
+            term_prime();
         }
-
+        else{
+            // lambda option
+        }
     }
-
-    private boolean isMulop(ExpToken token) {
+    
+    /**
+     * Determines whether or not the given token is
+     * a mulop token.
+     * @param token The token to check.
+     * @return true if the token is a mulop, false otherwise
+     */
+    private boolean isMulop( ExpToken token) {
         boolean answer = false;
-        if (token.getType() == ExpTokenType.MULTIPLY || token.getType() == ExpTokenType.DIVIDE) {
+        if( token.getType() == ExpTokenType.MULTIPLY || 
+                token.getType() == ExpTokenType.DIVIDE ) {
             answer = true;
         }
-
         return answer;
     }
-
+    
+    /**
+     * Executes the rule for the mulop non-terminal symbol in
+     * the expression grammar.
+     */
     public void mulop() {
-        if (this.lookahead.getType() == ExpTokenType.MULTIPLY) {
-            this.match(ExpTokenType.MULTIPLY);
-        } else if (this.lookahead.getType() == ExpTokenType.DIVIDE) {
-            this.match(ExpTokenType.DIVIDE);
-        } else {
-            this.error("Mulop");
+        if( lookahead.getType() == ExpTokenType.MULTIPLY) {
+            match( ExpTokenType.MULTIPLY);
         }
-
+        else if( lookahead.getType() == ExpTokenType.DIVIDE) {
+            match( ExpTokenType.DIVIDE);
+        }
+        else {
+            error( "Mulop");
+        }
     }
-
+    
+    /**
+     * Executes the rule for the factor non-terminal symbol in
+     * the expression grammar.
+     */
     public void factor() {
-        switch(1.$SwitchMap$scanner$ExpTokenType[this.lookahead.getType().ordinal()]) {
-            case 1:
-                this.match(ExpTokenType.LEFT_PAREN);
-                this.exp();
-                this.match(ExpTokenType.RIGHT_PAREN);
+        // Executed this decision as a switch instead of an
+        // if-else chain. Either way is acceptable.
+        switch (lookahead.getType()) {
+            case LEFT_PAREN:
+                match( ExpTokenType.LEFT_PAREN);
+                exp();
+                match( ExpTokenType.RIGHT_PAREN);
                 break;
-            case 2:
-                this.match(ExpTokenType.NUMBER);
+            case NUMBER:
+                match( ExpTokenType.NUMBER);
                 break;
             default:
-                this.error("Factor");
+                error("Factor");
+                break;
         }
-
     }
-
-    public void match(ExpTokenType expected) {
+    
+    /**
+     * Matches the expected token.
+     * If the current token in the input stream from the scanner
+     * matches the token that is expected, the current token is
+     * consumed and the scanner will move on to the next token
+     * in the input.
+     * The null at the end of the file returned by the
+     * scanner is replaced with a fake token containing no
+     * type.
+     * @param expected The expected token type.
+     */
+    public void match( ExpTokenType expected) {
         System.out.println("match( " + expected + ")");
-        if (this.lookahead.getType() == expected) {
+        if( this.lookahead.getType() == expected) {
             try {
-                this.lookahead = this.scanner.nextToken();
-                if (this.lookahead == null) {
-                    this.lookahead = new ExpToken("End of File", (ExpTokenType)null);
+                this.lookahead = scanner.nextToken();
+                if( this.lookahead == null) {
+                    this.lookahead = new ExpToken( "End of File", null);
                 }
-            } catch (IOException var3) {
-                this.error("Scanner exception");
+            } catch (IOException ex) {
+                error( "Scanner exception");
             }
-        } else {
-            this.error("Match of " + expected + " found " + this.lookahead.getType() + " instead.");
         }
-
+        else {
+            error("Match of " + expected + " found " + this.lookahead.getType()
+                    + " instead.");
+        }
     }
-
-    public void error(String message) {
-        System.out.println("Error " + message + " at line " + this.scanner.getLine() + " column " + this.scanner.getColumn());
+    
+    /**
+     * Errors out of the parser.
+     * Prints an error message and then exits the program.
+     * @param message The error message to print.
+     */
+    public void error( String message) {
+        System.out.println( "Error " + message + " at line " + 
+                this.scanner.getLine() + " column " + 
+                this.scanner.getColumn());
+        //System.exit( 1);
     }
 }
