@@ -9,8 +9,13 @@ public class Token {
     public String lexeme;
     public TokenType type;
 
-    public Token(String input, TokenType type) {
-        this.lexeme = input;
+    /**
+     * Creates a token with the given lexeme and type.
+     * @param lex The lexeme for this token.
+     * @param type The type for this token.
+     */
+    public Token(String lex, TokenType type) {
+        this.lexeme = lex;
         this.type = type;
     }
 
@@ -24,8 +29,12 @@ public class Token {
         return this.type;
     }
 
+    /**
+     * Creates the String representation of this token including
+     * the lexeme and type.
+     * @return The String representation of this token.
+     */
     @Override
-    // Token toString.
     public String toString() {
         return "Token Type: " + this.type + ", Lexeme: " + this.lexeme;
     }

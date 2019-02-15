@@ -5,11 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import scanner.ExpScanner;
-import scanner.ExpToken;
-import scanner.ExpTokenType;
+import scanner.TokenType;
 
 /**
  * The parser recognizes whether an input string of tokens
@@ -66,6 +64,13 @@ public class Recognizer {
      *
      */
     public void program() {
+        match (TokenType.PROGRAM);
+        match (TokenType.ID);
+        match (TokenType.SEMICOLON);
+        declarations();
+        subprogram_declarations();
+        compound_statement();
+        match(TokenType.PERIOD);
 
     }
 
