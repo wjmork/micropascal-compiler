@@ -19,8 +19,9 @@ import scanner.ExpTokenType;
  * If the functions returns without an error, the file
  * contains an acceptable expression.
  * @author Erik Steinmetz
+ * @author William Mork
  */
-public class Parser {
+public class Recognizer {
     
     ///////////////////////////////
     //    Instance Variables
@@ -34,7 +35,7 @@ public class Parser {
     //       Constructors
     ///////////////////////////////
     
-    public Parser( String text, boolean isFilename) {
+    public Recognizer(String text, boolean isFilename) {
         if( isFilename) {
         FileInputStream fis = null;
         try {
@@ -60,7 +61,154 @@ public class Parser {
     ///////////////////////////////
     //       Methods
     ///////////////////////////////
-    
+
+    /**
+     *
+     */
+    public void program() {
+
+    }
+
+    /**
+     *
+     */
+    public void identifier_list() {
+
+    }
+
+    /**
+     *
+     */
+    public void declarations() {
+
+    }
+
+    /**
+     *
+     */
+    public void type() {
+
+    }
+
+    /**
+     *
+     */
+    public void standard_type() {
+
+    }
+
+    /**
+     *
+     */
+    public void subprogram_declarations() {
+
+    }
+
+    /**
+     *
+     */
+    public void subprogram_declaration() {
+
+    }
+
+    /**
+     *
+     */
+    public void subprogram_head() {
+
+    }
+
+    /**
+     *
+     */
+    public void arguments() {
+
+    }
+
+    /**
+     *
+     */
+    public void parameter_list() {
+
+    }
+
+    /**
+     *
+     */
+    public void compound_statement() {
+
+    }
+
+    /**
+     *
+     */
+    public void optional_statements() {
+
+    }
+
+    /**
+     *
+     */
+    public void statement_list() {
+
+    }
+
+    /**
+     *
+     */
+    public void statement() {
+
+    }
+
+    /**
+     *
+     */
+    public void variable() {
+
+    }
+
+    /*
+    procedure statement will be ignored for module 2.
+    public void procedure_statement() {
+
+    }
+    */
+
+    /**
+     *
+     */
+    public void expression_list() {
+
+    }
+
+    /**
+     *
+     */
+    public void expression() {
+
+    }
+
+    /**
+     *
+     */
+    public void simple_expression() {
+
+    }
+
+    /**
+     *
+     */
+    public void simple_part() {
+
+    }
+
+    /**
+     *
+     */
+    public void sign() {
+
+    }
+
     /**
      * Executes the rule for the exp non-terminal symbol in
      * the expression grammar.
