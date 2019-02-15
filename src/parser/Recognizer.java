@@ -1,13 +1,14 @@
 package parser;
 
+import scanner.Scanner;
+import scanner.Token;
+import scanner.TokenType;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-
-import scanner.ExpScanner;
-import scanner.TokenType;
 
 /**
  * The parser recognizes whether an input string of tokens
@@ -25,9 +26,9 @@ public class Recognizer {
     //    Instance Variables
     ///////////////////////////////
     
-    private ExpToken lookahead;
+    private Token lookahead;
     
-    private ExpScanner scanner;
+    private Scanner scanner;
     
     ///////////////////////////////
     //       Constructors
@@ -42,11 +43,11 @@ public class Recognizer {
             error( "No file");
         }
         InputStreamReader isr = new InputStreamReader( fis);
-        scanner = new ExpScanner( isr);
+        scanner = new Scanner( isr);
                  
         }
         else {
-            scanner = new ExpScanner( new StringReader( text));
+            scanner = new Scanner( new StringReader( text));
         }
         try {
             lookahead = scanner.nextToken();
@@ -66,7 +67,7 @@ public class Recognizer {
     public void program() {
         match (TokenType.PROGRAM);
         match (TokenType.ID);
-        match (TokenType.SEMICOLON);
+        match (TokenType.SEMI);
         declarations();
         subprogram_declarations();
         compound_statement();
@@ -228,8 +229,8 @@ public class Recognizer {
      * the expression grammar.
      */
     public void exp_prime() {
-        if( lookahead.getType() == ExpTokenType.PLUS || 
-                lookahead.getType() == ExpTokenType.MINUS ) {
+        if( lookahead.getType() == TokenType.PLUS ||
+                lookahead.getType() == TokenType.MINUS ) {
             addop();
             term();
             exp_prime();
@@ -244,11 +245,11 @@ public class Recognizer {
      * the expression grammar.
      */
     public void addop() {
-        if( lookahead.getType() == ExpTokenType.PLUS) {
-            match( ExpTokenType.PLUS);
+        if( lookahead.getType() == TokenType.PLUS) {
+            match( TokenType.PLUS);
         }
-        else if( lookahead.getType() == ExpTokenType.MINUS) {
-            match( ExpTokenType.MINUS);
+        else if( lookahead.getType() == TokenType.MINUS) {
+            match( TokenType.MINUS);
         }
         else {
             error( "Addop");
@@ -285,10 +286,10 @@ public class Recognizer {
      * @param token The token to check.
      * @return true if the token is a mulop, false otherwise
      */
-    private boolean isMulop( ExpToken token) {
+    private boolean isMulop(Token token) {
         boolean answer = false;
-        if( token.getType() == ExpTokenType.MULTIPLY || 
-                token.getType() == ExpTokenType.DIVIDE ) {
+        if( token.getType() == TokenType.ASTERISK ||
+                token.getType() == TokenType.FSLASH ) {
             answer = true;
         }
         return answer;
@@ -299,11 +300,11 @@ public class Recognizer {
      * the expression grammar.
      */
     public void mulop() {
-        if( lookahead.getType() == ExpTokenType.MULTIPLY) {
-            match( ExpTokenType.MULTIPLY);
+        if( lookahead.getType() == TokenType.ASTERISK) {
+            match( TokenType.ASTERISK);
         }
-        else if( lookahead.getType() == ExpTokenType.DIVIDE) {
-            match( ExpTokenType.DIVIDE);
+        else if( lookahead.getType() == TokenType.FSLASH) {
+            match( TokenType.FSLASH);
         }
         else {
             error( "Mulop");
@@ -318,13 +319,13 @@ public class Recognizer {
         // Executed this decision as a switch instead of an
         // if-else chain. Either way is acceptable.
         switch (lookahead.getType()) {
-            case LEFT_PAREN:
-                match( ExpTokenType.LEFT_PAREN);
+            case LPAREN:
+                match( TokenType.LPAREN);
                 exp();
-                match( ExpTokenType.RIGHT_PAREN);
+                match( TokenType.RPAREN);
                 break;
             case NUMBER:
-                match( ExpTokenType.NUMBER);
+                match( TokenType.NUMBER);
                 break;
             default:
                 error("Factor");
@@ -343,21 +344,20 @@ public class Recognizer {
      * type.
      * @param expected The expected token type.
      */
-    public void match( ExpTokenType expected) {
+    public void match( TokenType expected) {
         System.out.println("match( " + expected + ")");
         if( this.lookahead.getType() == expected) {
             try {
                 this.lookahead = scanner.nextToken();
                 if( this.lookahead == null) {
-                    this.lookahead = new ExpToken( "End of File", null);
+                    this.lookahead = new Token( "End of File", null);
                 }
             } catch (IOException ex) {
                 error( "Scanner exception");
             }
         }
         else {
-            error("Match of " + expected + " found " + this.lookahead.getType()
-                    + " instead.");
+            error("Match of " + expected + " found " + this.lookahead.getType() + " instead.");
         }
     }
     
@@ -367,9 +367,8 @@ public class Recognizer {
      * @param message The error message to print.
      */
     public void error( String message) {
-        System.out.println( "Error " + message + " at line " + 
-                this.scanner.getLine() + " column " + 
-                this.scanner.getColumn());
+        System.out.println("Error.");
+        // System.out.println( "Error " + message + " at line " + this.scanner.getLine() + " column " + this.scanner.getColumn());
         //System.exit( 1);
     }
 }
