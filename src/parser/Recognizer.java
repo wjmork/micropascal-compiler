@@ -21,19 +21,19 @@ import java.io.StringReader;
  * @author William Mork
  */
 public class Recognizer {
-    
+
     ///////////////////////////////
     //    Instance Variables
     ///////////////////////////////
-    
+
     private Token lookahead;
-    
+
     private Scanner scanner;
-    
+
     ///////////////////////////////
     //       Constructors
     ///////////////////////////////
-    
+
     public Recognizer(String text, boolean isFilename) {
         if( isFilename) {
         FileInputStream fis = null;
@@ -44,7 +44,7 @@ public class Recognizer {
         }
         InputStreamReader isr = new InputStreamReader( fis);
         scanner = new Scanner( isr);
-                 
+
         }
         else {
             scanner = new Scanner( new StringReader( text));
@@ -54,9 +54,9 @@ public class Recognizer {
         } catch (IOException ex) {
             error( "Scan error");
         }
-        
+
     }
-    
+
     ///////////////////////////////
     //       Methods
     ///////////////////////////////
@@ -135,7 +135,19 @@ public class Recognizer {
      *
      */
     public void type() {
-
+        if (lookahead.getType() == TokenType.ARRAY) {
+            match(TokenType.ARRAY);
+            match(TokenType.LBRACE);
+            match(TokenType.NUMBER);
+            match(TokenType.COLON);
+            match(TokenType.NUMBER);
+            match(TokenType.LBRACE);
+            match(TokenType.OF);
+        }
+        else if (lookahead.getType() == TokenType.INTEGER || lookahead.getType() == TokenType.REAL)
+            standard_type();
+        else
+            error("TYPE: TokenType INTEGER or REAL not matched.");
     }
 
     /**
@@ -165,7 +177,8 @@ public class Recognizer {
             if (this.lookahead.type == TokenType.SEMI) {
                 match(TokenType.SEMI);
                 subprogram_declarations();
-            } else if (this.lookahead.type == TokenType.REAL) {
+            }
+            else if (this.lookahead.type == TokenType.REAL) {
                 match(TokenType.REAL);
             } else {
                 error("STANDARD_TYPE: TokenType INTEGER or REAL not matched.");
@@ -177,7 +190,10 @@ public class Recognizer {
      *
      */
     public void subprogram_declaration() {
-
+        subprogram_head();
+        declarations();
+        subprogram_declarations();
+        compound_statement();
     }
 
     /**
@@ -268,14 +284,31 @@ public class Recognizer {
      *
      */
     public void simple_part() {
-
+        if (lookahead.getType() == TokenType.PLUS ||
+            lookahead.getType() == TokenType.MINUS ||
+            lookahead.getType() == TokenType.OR) {
+            match(lookahead.getType());
+            term();
+            simple_part();
+        } else {
+            // lambda case
+        }
     }
 
     /**
      *
      */
     public void sign() {
-
+        if (lookahead.getType() == TokenType.PLUS)
+        {
+            match(TokenType.PLUS);
+        }
+        else if (lookahead.getType() == TokenType.MINUS) {
+            match(TokenType.MINUS);
+        }
+        else {
+            error("SIGN: TokenType PLUS or MINUS not matched..");
+        }
     }
 
     /**
@@ -286,7 +319,7 @@ public class Recognizer {
         term();
         exp_prime();
     }
-    
+
     /**
      * Executes the rule for the exp&prime; non-terminal symbol in
      * the expression grammar.
@@ -302,7 +335,7 @@ public class Recognizer {
             // lambda option
         }
     }
-    
+
     /**
      * Executes the rule for the addop non-terminal symbol in
      * the expression grammar.
@@ -318,7 +351,7 @@ public class Recognizer {
             error( "Addop");
         }
     }
-    
+
     /**
      * Executes the rule for the term non-terminal symbol in
      * the expression grammar.
@@ -327,7 +360,7 @@ public class Recognizer {
         factor();
         term_prime();
     }
-    
+
     /**
      * Executes the rule for the term&prime; non-terminal symbol in
      * the expression grammar.
@@ -342,7 +375,7 @@ public class Recognizer {
             // lambda option
         }
     }
-    
+
     /**
      * Determines whether or not the given token is
      * a mulop token.
@@ -357,7 +390,7 @@ public class Recognizer {
         }
         return answer;
     }
-    
+
     /**
      * Executes the rule for the mulop non-terminal symbol in
      * the expression grammar.
@@ -373,7 +406,7 @@ public class Recognizer {
             error( "Mulop");
         }
     }
-    
+
     /**
      * Executes the rule for the factor non-terminal symbol in
      * the expression grammar.
@@ -391,11 +424,11 @@ public class Recognizer {
                 match( TokenType.NUMBER);
                 break;
             default:
-                error("Factor");
+                error("FACTOR: Default case.");
                 break;
         }
     }
-    
+
     /**
      * Matches the expected token.
      * If the current token in the input stream from the scanner
@@ -423,15 +456,14 @@ public class Recognizer {
             error("Match of " + expected + " found " + this.lookahead.getType() + " instead.");
         }
     }
-    
+
     /**
      * Errors out of the parser.
      * Prints an error message and then exits the program.
      * @param message The error message to print.
      */
     public void error( String message) {
-        System.out.println("Error.");
-        // System.out.println( "Error " + message + " at line " + this.scanner.getLine() + " column " + this.scanner.getColumn());
-        //System.exit( 1);
+        System.out.println("ERROR: " + message);
+        System.exit( 1);
     }
 }
