@@ -65,28 +65,70 @@ public class Recognizer {
      *
      */
     public void program() {
-        match (TokenType.PROGRAM);
-        match (TokenType.ID);
-        match (TokenType.SEMI);
+        if (this.lookahead.type == TokenType.PROGRAM) {
+            match (TokenType.PROGRAM);
+        }
+        else error("PROGRAM: TokenType PROGRAM not matched.");
+
+        if (this.lookahead.type == TokenType.ID) {
+            match (TokenType.ID);
+        }
+        else error("PROGRAM: TokenType ID not matched.");
+
+        if (this.lookahead.type == TokenType.SEMI) {
+            match (TokenType.SEMI);
+        }
+        else error("PROGRAM: TokenType SEMI not matched.");
+
         declarations();
         subprogram_declarations();
         compound_statement();
-        match(TokenType.PERIOD);
 
+        if (this.lookahead.type == TokenType.PERIOD) {
+            match (TokenType.PERIOD);
+        }
+        else error("PROGRAM: TokenType PERIOD not matched.");
     }
 
     /**
      *
      */
     public void identifier_list() {
-
+        if (this.lookahead.type == TokenType.ID) {
+            match (TokenType.ID);
+            if (this.lookahead.type == TokenType.COMMA)
+            {
+                match(TokenType.COMMA);
+                identifier_list();
+            }
+            else error("IDENTIFIER_LIST: TokenType COMMA not matched.");
+        }
+        else error("IDENTIFIER_LIST: TokenType ID not matched.");
     }
 
     /**
      *
      */
     public void declarations() {
-
+        if (this.lookahead.type == TokenType.VAR)
+        {
+            match(TokenType.VAR);
+            identifier_list();
+            if (this.lookahead.type == TokenType.COLON) {
+                match(TokenType.COLON);
+                type();
+                if (this.lookahead.type == TokenType.SEMI) {
+                    match(TokenType.SEMI);
+                    declarations();
+                }
+                else error("DECLARATIONS: TokenType SEMI not matched.");
+            }
+            else error("DECLARATIONS: TokenType VAR not matched.");
+        }
+        else
+        {
+            // lambda option
+        }
     }
 
     /**
@@ -100,14 +142,35 @@ public class Recognizer {
      *
      */
     public void standard_type() {
-
+        if (this.lookahead.type == TokenType.INTEGER)
+        {
+            match(TokenType.INTEGER);
+        }
+        else if (this.lookahead.type == TokenType.REAL)
+        {
+            match(TokenType.REAL);
+        }
+        else
+        {
+            error("STANDARD_TYPE: TokenType INTEGER or REAL not matched.");
+        }
     }
 
     /**
      *
      */
     public void subprogram_declarations() {
-
+        if (this.lookahead.type == TokenType.FUNCTION || this.lookahead.type == TokenType.PROCEDURE) {
+            subprogram_declaration();
+            if (this.lookahead.type == TokenType.SEMI) {
+                match(TokenType.SEMI);
+                subprogram_declarations();
+            } else if (this.lookahead.type == TokenType.REAL) {
+                match(TokenType.REAL);
+            } else {
+                error("STANDARD_TYPE: TokenType INTEGER or REAL not matched.");
+            }
+        }
     }
 
     /**
