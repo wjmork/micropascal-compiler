@@ -207,28 +207,70 @@ public class Recognizer {
      *
      */
     public void arguments() {
-
+        if (this.lookahead.type == TokenType.LPAREN) {
+            match(TokenType.LPAREN);
+            parameter_list();
+            if (this.lookahead.type == TokenType.RPAREN) {
+                match(TokenType.RPAREN);
+            } else {
+                error("ARGUMENTS: TokenType RBRACE not matched.");
+            }
+        } else {
+            // lambda option
+        }
     }
 
     /**
      *
      */
     public void parameter_list() {
-
+        if (this.lookahead.type == TokenType.ID) {
+            identifier_list();
+            if (this.lookahead.type == TokenType.COLON) {
+                match(TokenType.COLON);
+                type();
+                if (this.lookahead.type == TokenType.SEMI) {
+                    match(TokenType.SEMI);
+                    parameter_list();
+                } else {
+                    error("PARAMETER_LIST: TokenType SEMI not matched.");
+                }
+            } else {
+                error("PARAMETER_LIST: TokenType COLON not matched.");
+            }
+        } else {
+        error("PARAMETER_LIST: TokenType ID not matched.");
+        }
     }
 
     /**
      *
      */
     public void compound_statement() {
-
+        if (this.lookahead.type == TokenType.BEGIN) {
+            match(TokenType.BEGIN);
+            optional_statements();
+            if (this.lookahead.type == TokenType.END) {
+                match(TokenType.END);
+            } else {
+                error("COMPOUND_STATEMENT: TokenType END not matched.");
+            }
+        } else
+            error("COMPOUND_STATEMENT: TokenType BEGIN not matched.");
     }
 
     /**
      *
      */
     public void optional_statements() {
-
+        if (this.lookahead.type == TokenType.ID ||
+            lookahead.getType() == TokenType.BEGIN ||
+            lookahead.getType() == TokenType.IF ||
+            lookahead.getType() == TokenType.WHILE) {
+            statement_list();
+        } else {
+            // lambda option
+        }
     }
 
     /**
@@ -249,7 +291,20 @@ public class Recognizer {
      *
      */
     public void variable() {
-
+        if (lookahead.getType() == TokenType.ID) {
+            match(TokenType.ID);
+            if (lookahead.getType() == TokenType.LBRACE) {
+                match(TokenType.LBRACE);
+                expression();
+                if (lookahead.getType() == TokenType.RBRACE) {
+                    match(TokenType.RBRACE);
+                }
+                else {
+                    error("VARIABLE: TokenType RBRACE not matched.");
+                }
+            }
+        } else
+            error("VARIABLE: TokenType ID not matched.");
     }
 
     /*
@@ -291,7 +346,7 @@ public class Recognizer {
             term();
             simple_part();
         } else {
-            // lambda case
+            // lambda option
         }
     }
 
@@ -307,7 +362,7 @@ public class Recognizer {
             match(TokenType.MINUS);
         }
         else {
-            error("SIGN: TokenType PLUS or MINUS not matched..");
+            error("SIGN: TokenType PLUS or MINUS not matched.");
         }
     }
 
