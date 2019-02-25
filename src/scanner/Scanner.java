@@ -267,6 +267,9 @@ public class Scanner {
     tokenTypes.put("then", TokenType.THEN);
     tokenTypes.put("var", TokenType.VAR);
     tokenTypes.put("while", TokenType.WHILE);
+    tokenTypes.put("read", TokenType.READ);
+    tokenTypes.put("write", TokenType.WRITE);
+    tokenTypes.put("return", TokenType.RETURN);
     tokenTypes.put(";", TokenType.SEMI);
     tokenTypes.put(",", TokenType.COMMA);
     tokenTypes.put(".", TokenType.PERIOD);

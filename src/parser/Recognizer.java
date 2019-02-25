@@ -131,7 +131,7 @@ public class Recognizer {
             standard_type();
         }
         else {
-            error("TYPE: TokenType INTEGER or REAL not matched.");
+            error("TYPE: TokenType ARRAY not matched or STANDARD_TYPE not matched.");
         }
     }
 
@@ -248,7 +248,9 @@ public class Recognizer {
         if (this.lookahead.type == TokenType.ID ||
             this.lookahead.type == TokenType.BEGIN ||
             this.lookahead.type == TokenType.IF ||
-            this.lookahead.type == TokenType.WHILE) {
+            this.lookahead.type == TokenType.READ ||
+            this.lookahead.type == TokenType.WRITE ||
+            this.lookahead.type == TokenType.RETURN) {
             statement_list();
         } else {
             // lambda option
@@ -277,6 +279,8 @@ public class Recognizer {
             match(TokenType.ASSIGN);
             expression();
         } else if (this.lookahead.type == TokenType.BEGIN) {
+            // procedure_statement();
+        } else if (this.lookahead.type == TokenType.BEGIN) {
             compound_statement();
         } else if (this.lookahead.type == TokenType.IF) {
             match(TokenType.IF);
@@ -290,8 +294,22 @@ public class Recognizer {
             expression();
             match(TokenType.DO);
             statement();
+        } else if (this.lookahead.type == TokenType.READ) {
+            match(TokenType.READ);
+            match(TokenType.LPAREN);
+            match(TokenType.ID);
+            match(TokenType.RPAREN);
+        } else if (this.lookahead.type == TokenType.WRITE) {
+            match(TokenType.WRITE);
+            match(TokenType.LPAREN);
+            expression();
+            match(TokenType.RPAREN);
+        } else if (this.lookahead.type == TokenType.RETURN) {
+            match(TokenType.RETURN);
+            expression();
+
         } else {
-            error("STATEMENT: TokenType ID, IF, or WHILE not matched.");
+            error("STATEMENT: Error recognizing statement.");
         }
     }
 
