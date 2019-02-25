@@ -17,40 +17,58 @@ public class RecognizerTest {
     }
 
     @Test
-    public void testExp() {
-        System.out.println("exp");
-        Recognizer instance = new Recognizer("pascal/simplest.pas", true);
-        instance.exp();
-        System.out.println("It Parsed!");
+    public void programTest() {
+        System.out.println("Testing program...");
+        String testProgram1 = "pascal/simplest.pas";
+        String testProgram2 = "pascal/simplest.pas";
+        Recognizer testRecognizer = new Recognizer(testProgram1, true);
+        Recognizer testRecognizer2 = new Recognizer(testProgram1, true);
+        testRecognizer.program();
+        testRecognizer2.program();
+        System.out.println("Success!");
     }
 
     @Test
-    public void testExp2() {
-        System.out.println("exp");
-        Recognizer instance = new Recognizer("pascal/simple.pas", true);
-        instance.exp();
-        System.out.println("It Parsed!");
+    public void declarationsTest() {
+        System.out.println("Testing declarations...");
+        String input = "var foo: integer;";
+        Recognizer testRecognizer3 = new Recognizer(input, false);
+        testRecognizer3.declarations();
+        System.out.println("Success!");
     }
 
     @Test
-    public void testExp_prime() {
-        System.out.println("test exp_prime");
-        Recognizer instance = new Recognizer("+ 34", false);
-        instance.exp_prime();
+    public void subProgramTest() {
+        System.out.println("Testing subprogram_declaration...");
+        String input = "function func(foo: integer): integer;";
+        Recognizer testRecognizer4 = new Recognizer(input, false);
+        testRecognizer4.subprogram_declaration();
+        System.out.println("Success!");
     }
 
     @Test
-    public void testTerm() {
-        System.out.println("test term");
-        Recognizer instance = new Recognizer("23 / 17", false);
-        instance.term();
-        System.out.println("Parsed a term");
+    public void statementTest() {
+        System.out.println("Testing term...");
+        String input = "foo := 1";
+        Recognizer testRecognizer5 = new Recognizer(input, false);
+        testRecognizer5.statement();
+        System.out.println("Success!");
     }
 
     @Test
-    public void testFactor() {
-        System.out.println("factor");
-        Recognizer instance = new Recognizer("54321", false);
-        instance.factor();
+    public void expressionTest() {
+        String input = "foo + fi";
+        System.out.println("Testing expression...");
+        Recognizer testRecognizer6 = new Recognizer(input, false);
+        testRecognizer6.expression();
+        System.out.println("Success!");
+    }
+
+    @Test
+    public void factorTest() {
+        String input = "foo < fee";
+        System.out.println("Testing factor...");
+        Recognizer testRecognizer7 = new Recognizer(input, false);
+        testRecognizer7.factor();
     }
 }

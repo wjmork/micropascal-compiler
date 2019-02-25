@@ -13,6 +13,7 @@ import java.io.StringReader;
 /**
  * The parser recognizes whether an input string of tokens
  * is an expression.
+ *
  * To use a parser, create an instance pointing at a file,
  * and then call the top-level function, <code>exp()</code>.
  * If the functions returns without an error, the file
@@ -25,35 +26,36 @@ public class Recognizer {
     //    Instance Variables
 
     private Token lookahead;
-    private Scanner scanner;
+    private Scanner inputStreamScanner;
 
     //       Constructors
 
     /**
      * Creates a Recognizer.
      */
-    public Recognizer(String text, boolean isFilename) {
-        if (isFilename) {
-            FileInputStream fis = null;
+    public Recognizer(String input, boolean importFile) {
+
+        Scanner inputStreamScanner;
+        if (importFile) {
+            FileInputStream inputStream = null;
             try {
-                fis = new FileInputStream("expressions/simplest.pas");
+                inputStream = new FileInputStream(input);
             } catch (FileNotFoundException ex) {
-                error( "No file");
+                error("ERROR: File " + input + " failed to import. Please confirm file name and directory.");
             }
-            InputStreamReader isr = new InputStreamReader( fis);
-            scanner = new Scanner( isr);
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            inputStreamScanner = new Scanner(inputStreamReader);
         } else {
-                scanner = new Scanner( new StringReader( text));
+            inputStreamScanner = new Scanner(new StringReader(input));
         }
         try {
-            lookahead = scanner.nextToken();
+            lookahead = inputStreamScanner.nextToken();
         } catch (IOException ex) {
-            error( "Scan error");
+            error("ERROR: Start token not recognized in input stream.");
         }
     }
 
     //       Methods
-
     public void program() {
         if (this.lookahead.type == TokenType.PROGRAM) {
             match(TokenType.PROGRAM);
@@ -525,7 +527,7 @@ public class Recognizer {
                 match(TokenType.NUMBER);
                 break;
             default:
-                error("FACTOR: Default case.");
+                System.out.println("FACTOR: Default case.");
                 break;
         }
     }
@@ -545,7 +547,7 @@ public class Recognizer {
         System.out.println("match (" + expected + ")");
         if (this.lookahead.getType() == expected) {
             try {
-                this.lookahead = scanner.nextToken();
+                this.lookahead = inputStreamScanner.nextToken();
                 if (this.lookahead == null) {
                     this.lookahead = new Token( "End of File", null);
                 }
@@ -562,8 +564,8 @@ public class Recognizer {
      * Prints an error message and then exits the program.
      * @param message The error message to print.
      */
-    public void error( String message) {
+    public void error (String message) {
         System.out.println("ERROR: " + message);
-        System.exit( 1);
+        System.exit(1);
     }
 }
