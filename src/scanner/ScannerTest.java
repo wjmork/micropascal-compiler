@@ -81,17 +81,4 @@ public class ScannerTest {
             e.printStackTrace();
         }
     }
-
-    @Test
-    public void testStrings() {
-        String testString = "Test, token, 6*10^23";
-        Token currentToken = null;
-        Scanner testScanner = new Scanner(testString);
-        try {
-            currentToken = testScanner.nextToken();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println("Token recognized: " + currentToken);
-    }
 }

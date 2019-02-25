@@ -23,13 +23,6 @@ import java.util.HashMap;
     private HashMap<String, TokenType> tokenTypes;
 %}
 
-%{
-    public Scanner(String input)
-    {
-
-    }
-%}
-
 %init{
     tokenTypes = new HashMap<>();
     tokenTypes.put("and", TokenType.AND);
@@ -108,9 +101,9 @@ other					= .
 
 }
 
-{symbol}
+{symbols}
 {
-    return(new Token(yytext(), TokenType.ID));
+    return(new Token(yytext(),  tokenTypes.get(yytext())));
 }
 
 {num}

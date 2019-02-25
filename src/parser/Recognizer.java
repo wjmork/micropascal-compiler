@@ -35,7 +35,7 @@ public class Recognizer {
      */
     public Recognizer(String input, boolean importFile) {
         InputStreamReader inputStreamReader;
-        Scanner inputStreamScanner;
+
         if (importFile) {
             FileInputStream inputStream = null;
             try {
@@ -92,9 +92,10 @@ public class Recognizer {
                 match(TokenType.COMMA);
                 identifier_list();
             }
-            else error("IDENTIFIER_LIST: TokenType COMMA not matched.");
         }
-        else error("IDENTIFIER_LIST: TokenType ID not matched.");
+        else {
+            // lambda option
+        }
     }
 
     /**
@@ -216,22 +217,14 @@ public class Recognizer {
      *
      */
     public void parameter_list() {
-        if (this.lookahead.type == TokenType.ID) {
-            identifier_list();
-            if (this.lookahead.type == TokenType.COLON) {
-                match(TokenType.COLON);
-                type();
-                if (this.lookahead.type == TokenType.SEMI) {
-                    match(TokenType.SEMI);
-                    parameter_list();
-                } else {
-                    error("PARAMETER_LIST: TokenType SEMI not matched.");
-                }
-            } else {
-                error("PARAMETER_LIST: TokenType COLON not matched.");
+        identifier_list();
+        if (this.lookahead.type == TokenType.COLON) {
+            match(TokenType.COLON);
+            type();
+            if (this.lookahead.type == TokenType.SEMI) {
+                match(TokenType.SEMI);
+                parameter_list();
             }
-        } else {
-        error("PARAMETER_LIST: TokenType ID not matched.");
         }
     }
 
@@ -241,14 +234,11 @@ public class Recognizer {
     public void compound_statement() {
         if (this.lookahead.type == TokenType.BEGIN) {
             match(TokenType.BEGIN);
-            optional_statements();
-            if (this.lookahead.type == TokenType.END) {
-                match(TokenType.END);
-            } else {
-                error("COMPOUND_STATEMENT: TokenType END not matched.");
-            }
-        } else
-            error("COMPOUND_STATEMENT: TokenType BEGIN not matched.");
+        }
+        optional_statements();
+        if (this.lookahead.type == TokenType.END) {
+            match(TokenType.END);
+        }
     }
 
     /**
@@ -361,14 +351,14 @@ public class Recognizer {
      *
      */
     public void simple_expression() {
-        if (lookahead.getType() == TokenType.ID ||
-            lookahead.getType() == TokenType.NUMBER ||
-            lookahead.getType() == TokenType.LPAREN ||
-            lookahead.getType() == TokenType.NOT) {
+        if (this.lookahead.getType() == TokenType.ID ||
+            this.lookahead.getType() == TokenType.NUMBER ||
+            this.lookahead.getType() == TokenType.LPAREN ||
+            this.lookahead.getType() == TokenType.NOT) {
             term();
             simple_part();
-        } else if (lookahead.getType() == TokenType.PLUS ||
-            lookahead.getType() == TokenType.MINUS) {
+        } else if (this.lookahead.getType() == TokenType.PLUS ||
+            this.lookahead.getType() == TokenType.MINUS) {
             sign();
             term();
             simple_part();
@@ -384,7 +374,7 @@ public class Recognizer {
         if (this.lookahead.type == TokenType.PLUS ||
             this.lookahead.type == TokenType.MINUS ||
             this.lookahead.type == TokenType.OR) {
-            match(this.lookahead.type);
+            sign();
             term();
             simple_part();
         } else {
@@ -424,28 +414,12 @@ public class Recognizer {
     public void exp_prime() {
         if (this.lookahead.type == TokenType.PLUS ||
             this.lookahead.type == TokenType.MINUS ) {
-            addop();
+            sign();
             term();
             exp_prime();
         }
         else {
             // lambda option
-        }
-    }
-
-    /**
-     * Executes the rule for the addop non-terminal symbol in
-     * the expression grammar.
-     */
-    public void addop() {
-        if (this.lookahead.type == TokenType.PLUS) {
-            match(TokenType.PLUS);
-        }
-        else if (this.lookahead.type == TokenType.MINUS) {
-            match(TokenType.MINUS);
-        }
-        else {
-            error("ADDOP: TokenType PLUS or MINUS not matched.");
         }
     }
 
@@ -463,7 +437,7 @@ public class Recognizer {
      * the expression grammar.
      */
     public void term_prime() {
-        if (isMulop(lookahead)) {
+        if (isMulop(this.lookahead)) {
             mulop();
             factor();
             term_prime();
@@ -505,20 +479,28 @@ public class Recognizer {
      * the expression grammar.
      */
     public void factor() {
-        // Executed this decision as a switch instead of an
-        // if-else chain. Either way is acceptable.
-        switch (lookahead.getType()) {
-            case LPAREN:
+        if (lookahead.getType() == TokenType.ID) {
+            match(TokenType.ID);
+            if (lookahead.getType() == TokenType.LBRACE) {
+                match(TokenType.LBRACE);
+                expression();
+                match(TokenType.RBRACE);
+            } else if (lookahead.getType() == TokenType.LPAREN) {
                 match(TokenType.LPAREN);
-                exp();
+                expression_list();
                 match(TokenType.RPAREN);
-                break;
-            case NUMBER:
-                match(TokenType.NUMBER);
-                break;
-            default:
-                System.out.println("FACTOR: Default case.");
-                break;
+            }
+        } else if (lookahead.getType() == TokenType.NUMBER) {
+            match(TokenType.NUMBER);
+        } else if (lookahead.getType() == TokenType.LPAREN) {
+            match(TokenType.LPAREN);
+            expression();
+            match(TokenType.RPAREN);
+        } else if (lookahead.getType() == TokenType.NOT) {
+            match(TokenType.NOT);
+            factor();
+        } else {
+            error("FACTOR: TokenType ID, NUMBER, LPAREN or NOT not matched.");
         }
     }
 
@@ -533,7 +515,7 @@ public class Recognizer {
      * type.
      * @param expected The expected token type.
      */
-    public void match (TokenType expected) {
+    private void match (TokenType expected) {
         System.out.println("MATCH| Expected: " + expected + ". Look-ahead: " + this.lookahead.getType() + ".");
         if (this.lookahead.getType() == expected) {
             try {
@@ -554,7 +536,7 @@ public class Recognizer {
      * Prints an error message and then exits the program.
      * @param message The error message to print.
      */
-    public void error (String message) {
+    private void error(String message) {
         System.out.println("ERROR: " + message);
         System.exit(1);
     }

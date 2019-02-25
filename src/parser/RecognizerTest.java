@@ -22,17 +22,10 @@ public class RecognizerTest {
     @Test
     public void programTest() {
         System.out.println("Testing program...");
-        String testProgram1 = "src/pascal/simplest.pas";
-        String testProgram2 = "src/pascal/simplest.pas";
-        Recognizer testRecognizer = new Recognizer(testProgram1, true);
-        Recognizer testRecognizer2 = new Recognizer(testProgram1, true);
+        String testProgram = "src/pascal/simple.pas";
+        Recognizer testRecognizer = new Recognizer(testProgram, true);
         try {
             testRecognizer.program();
-        } catch (Exception e){
-            fail("test failed.");
-        }
-        try {
-            testRecognizer2.program();
         } catch (Exception e){
             fail("test failed.");
         }
@@ -68,19 +61,10 @@ public class RecognizerTest {
 
     @Test
     public void expressionTest() {
-        String input = "foo + fi";
+        String input = "foo - fee";
         System.out.println("Testing expression...");
         Recognizer testRecognizer = new Recognizer(input, false);
         testRecognizer.simple_expression();
-        System.out.println("Success!");
-    }
-
-    @Test
-    public void factorTest() {
-        String input = "foo < fee";
-        System.out.println("Testing factor...");
-        Recognizer testRecognizer = new Recognizer(input, false);
-        testRecognizer.factor();
         System.out.println("Success!");
     }
 }
