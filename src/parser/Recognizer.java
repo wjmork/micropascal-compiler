@@ -34,7 +34,7 @@ public class Recognizer {
      * Creates a Recognizer.
      */
     public Recognizer(String input, boolean importFile) {
-
+        InputStreamReader inputStreamReader;
         Scanner inputStreamScanner;
         if (importFile) {
             FileInputStream inputStream = null;
@@ -43,7 +43,7 @@ public class Recognizer {
             } catch (FileNotFoundException ex) {
                 error("ERROR: File " + input + " failed to import. Please confirm file name and directory.");
             }
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            inputStreamReader = new InputStreamReader(inputStream);
             inputStreamScanner = new Scanner(inputStreamReader);
         } else {
             inputStreamScanner = new Scanner(new StringReader(input));
@@ -104,18 +104,11 @@ public class Recognizer {
         if (this.lookahead.type == TokenType.VAR) {
             match(TokenType.VAR);
             identifier_list();
-            if (this.lookahead.type == TokenType.COLON) {
-                match(TokenType.COLON);
-                type();
-                if (this.lookahead.type == TokenType.SEMI) {
-                    match(TokenType.SEMI);
-                    declarations();
-                }
-                else error("DECLARATIONS: TokenType SEMI not matched.");
-            }
-            else error("DECLARATIONS: TokenType VAR not matched.");
-        }
-        else {
+            match(TokenType.COLON);
+            type();
+            match(TokenType.SEMI);
+            declarations();
+        } else {
             // lambda option
         }
     }
@@ -165,11 +158,8 @@ public class Recognizer {
             if (this.lookahead.type == TokenType.SEMI) {
                 match(TokenType.SEMI);
                 subprogram_declarations();
-            }
-            else if (this.lookahead.type == TokenType.REAL) {
-                match(TokenType.REAL);
             } else {
-                error("STANDARD_TYPE: TokenType INTEGER or REAL not matched.");
+                // lambda option
             }
         }
     }
@@ -544,7 +534,7 @@ public class Recognizer {
      * @param expected The expected token type.
      */
     public void match (TokenType expected) {
-        System.out.println("match (" + expected + ")");
+        System.out.println("MATCH| Expected: " + expected + ". Look-ahead: " + this.lookahead.getType() + ".");
         if (this.lookahead.getType() == expected) {
             try {
                 this.lookahead = inputStreamScanner.nextToken();
@@ -555,7 +545,7 @@ public class Recognizer {
                 error("Scanner exception");
             }
         } else {
-            error("Match of " + expected + " found " + this.lookahead.getType() + " instead.");
+            error("MATCH| " + expected + " found " + this.lookahead.getType() + " instead.");
         }
     }
 

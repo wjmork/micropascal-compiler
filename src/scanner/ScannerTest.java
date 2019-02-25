@@ -1,16 +1,30 @@
 package scanner;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.*;
 import java.nio.file.Paths;
 import java.util.List;
 
 import static java.nio.file.Files.readAllLines;
-import static junit.framework.TestCase.fail;
 
 public class ScannerTest {
     public ClassLoader classLoader = getClass().getClassLoader();
+    public ScannerTest() {
+    }
+
+    @BeforeClass
+    public static void setUpClass() {
+
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+    }
 
     @Test
     public void testSimple() throws IOException {
@@ -46,13 +60,13 @@ public class ScannerTest {
         Reader simpleReader = new FileReader(simplest);
         System.out.println("Successfully imported simplest.pas test file.");
 
-        Scanner testScanner2 = new Scanner(simpleReader);
+        Scanner testScanner = new Scanner(simpleReader);
 
         Token currentToken = null;
 
         do {
             try {
-                currentToken = testScanner2.nextToken();
+                currentToken = testScanner.nextToken();
                 if (currentToken != null) {
                     System.out.println("Token recognized: " + currentToken);
                 }
@@ -62,7 +76,7 @@ public class ScannerTest {
             }
         } while (currentToken != null);
         try {
-            testScanner2.yyclose();
+            testScanner.yyclose();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,9 +86,9 @@ public class ScannerTest {
     public void testStrings() {
         String testString = "Test, token, 6*10^23";
         Token currentToken = null;
-        Scanner testScanner3 = new Scanner(testString);
+        Scanner testScanner = new Scanner(testString);
         try {
-            currentToken = testScanner3.nextToken();
+            currentToken = testScanner.nextToken();
         } catch (IOException e) {
             e.printStackTrace();
         }

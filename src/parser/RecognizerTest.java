@@ -4,12 +4,15 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 public class RecognizerTest {
     public RecognizerTest() {
     }
 
     @BeforeClass
     public static void setUpClass() {
+
     }
 
     @AfterClass
@@ -19,12 +22,20 @@ public class RecognizerTest {
     @Test
     public void programTest() {
         System.out.println("Testing program...");
-        String testProgram1 = "pascal/simplest.pas";
-        String testProgram2 = "pascal/simplest.pas";
+        String testProgram1 = "src/pascal/simplest.pas";
+        String testProgram2 = "src/pascal/simplest.pas";
         Recognizer testRecognizer = new Recognizer(testProgram1, true);
         Recognizer testRecognizer2 = new Recognizer(testProgram1, true);
-        testRecognizer.program();
-        testRecognizer2.program();
+        try {
+            testRecognizer.program();
+        } catch (Exception e){
+            fail("test failed.");
+        }
+        try {
+            testRecognizer2.program();
+        } catch (Exception e){
+            fail("test failed.");
+        }
         System.out.println("Success!");
     }
 
@@ -32,8 +43,8 @@ public class RecognizerTest {
     public void declarationsTest() {
         System.out.println("Testing declarations...");
         String input = "var foo: integer;";
-        Recognizer testRecognizer3 = new Recognizer(input, false);
-        testRecognizer3.declarations();
+        Recognizer testRecognizer = new Recognizer(input, false);
+        testRecognizer.declarations();
         System.out.println("Success!");
     }
 
@@ -41,8 +52,8 @@ public class RecognizerTest {
     public void subProgramTest() {
         System.out.println("Testing subprogram_declaration...");
         String input = "function func(foo: integer): integer;";
-        Recognizer testRecognizer4 = new Recognizer(input, false);
-        testRecognizer4.subprogram_declaration();
+        Recognizer testRecognizer = new Recognizer(input, false);
+        testRecognizer.subprogram_declaration();
         System.out.println("Success!");
     }
 
@@ -50,8 +61,8 @@ public class RecognizerTest {
     public void statementTest() {
         System.out.println("Testing term...");
         String input = "foo := 1";
-        Recognizer testRecognizer5 = new Recognizer(input, false);
-        testRecognizer5.statement();
+        Recognizer testRecognizer = new Recognizer(input, false);
+        testRecognizer.statement();
         System.out.println("Success!");
     }
 
@@ -59,8 +70,8 @@ public class RecognizerTest {
     public void expressionTest() {
         String input = "foo + fi";
         System.out.println("Testing expression...");
-        Recognizer testRecognizer6 = new Recognizer(input, false);
-        testRecognizer6.expression();
+        Recognizer testRecognizer = new Recognizer(input, false);
+        testRecognizer.simple_expression();
         System.out.println("Success!");
     }
 
@@ -68,7 +79,8 @@ public class RecognizerTest {
     public void factorTest() {
         String input = "foo < fee";
         System.out.println("Testing factor...");
-        Recognizer testRecognizer7 = new Recognizer(input, false);
-        testRecognizer7.factor();
+        Recognizer testRecognizer = new Recognizer(input, false);
+        testRecognizer.factor();
+        System.out.println("Success!");
     }
 }
