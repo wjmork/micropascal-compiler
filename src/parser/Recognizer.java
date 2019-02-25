@@ -22,61 +22,51 @@ import java.io.StringReader;
  */
 public class Recognizer {
 
-    ///////////////////////////////
     //    Instance Variables
-    ///////////////////////////////
 
     private Token lookahead;
-
     private Scanner scanner;
 
-    ///////////////////////////////
     //       Constructors
-    ///////////////////////////////
 
+    /**
+     * Creates a Recognizer.
+     */
     public Recognizer(String text, boolean isFilename) {
-        if( isFilename) {
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream("expressions/simplest.pas");
-        } catch (FileNotFoundException ex) {
-            error( "No file");
-        }
-        InputStreamReader isr = new InputStreamReader( fis);
-        scanner = new Scanner( isr);
-
-        }
-        else {
-            scanner = new Scanner( new StringReader( text));
+        if (isFilename) {
+            FileInputStream fis = null;
+            try {
+                fis = new FileInputStream("expressions/simplest.pas");
+            } catch (FileNotFoundException ex) {
+                error( "No file");
+            }
+            InputStreamReader isr = new InputStreamReader( fis);
+            scanner = new Scanner( isr);
+        } else {
+                scanner = new Scanner( new StringReader( text));
         }
         try {
             lookahead = scanner.nextToken();
         } catch (IOException ex) {
             error( "Scan error");
         }
-
     }
 
-    ///////////////////////////////
     //       Methods
-    ///////////////////////////////
 
-    /**
-     *
-     */
     public void program() {
         if (this.lookahead.type == TokenType.PROGRAM) {
-            match (TokenType.PROGRAM);
+            match(TokenType.PROGRAM);
         }
         else error("PROGRAM: TokenType PROGRAM not matched.");
 
         if (this.lookahead.type == TokenType.ID) {
-            match (TokenType.ID);
+            match(TokenType.ID);
         }
         else error("PROGRAM: TokenType ID not matched.");
 
         if (this.lookahead.type == TokenType.SEMI) {
-            match (TokenType.SEMI);
+            match(TokenType.SEMI);
         }
         else error("PROGRAM: TokenType SEMI not matched.");
 
@@ -96,8 +86,7 @@ public class Recognizer {
     public void identifier_list() {
         if (this.lookahead.type == TokenType.ID) {
             match (TokenType.ID);
-            if (this.lookahead.type == TokenType.COMMA)
-            {
+            if (this.lookahead.type == TokenType.COMMA) {
                 match(TokenType.COMMA);
                 identifier_list();
             }
@@ -110,8 +99,7 @@ public class Recognizer {
      *
      */
     public void declarations() {
-        if (this.lookahead.type == TokenType.VAR)
-        {
+        if (this.lookahead.type == TokenType.VAR) {
             match(TokenType.VAR);
             identifier_list();
             if (this.lookahead.type == TokenType.COLON) {
@@ -125,8 +113,7 @@ public class Recognizer {
             }
             else error("DECLARATIONS: TokenType VAR not matched.");
         }
-        else
-        {
+        else {
             // lambda option
         }
     }
@@ -135,7 +122,7 @@ public class Recognizer {
      *
      */
     public void type() {
-        if (lookahead.getType() == TokenType.ARRAY) {
+        if (this.lookahead.type == TokenType.ARRAY) {
             match(TokenType.ARRAY);
             match(TokenType.LBRACE);
             match(TokenType.NUMBER);
@@ -144,26 +131,25 @@ public class Recognizer {
             match(TokenType.LBRACE);
             match(TokenType.OF);
         }
-        else if (lookahead.getType() == TokenType.INTEGER || lookahead.getType() == TokenType.REAL)
+        else if (this.lookahead.type == TokenType.INTEGER || this.lookahead.type == TokenType.REAL) {
             standard_type();
-        else
+        }
+        else {
             error("TYPE: TokenType INTEGER or REAL not matched.");
+        }
     }
 
     /**
      *
      */
     public void standard_type() {
-        if (this.lookahead.type == TokenType.INTEGER)
-        {
+        if (this.lookahead.type == TokenType.INTEGER) {
             match(TokenType.INTEGER);
         }
-        else if (this.lookahead.type == TokenType.REAL)
-        {
+        else if (this.lookahead.type == TokenType.REAL) {
             match(TokenType.REAL);
         }
-        else
-        {
+        else {
             error("STANDARD_TYPE: TokenType INTEGER or REAL not matched.");
         }
     }
@@ -200,7 +186,21 @@ public class Recognizer {
      *
      */
     public void subprogram_head() {
-
+        if (this.lookahead.type == TokenType.FUNCTION) {
+            match(TokenType.FUNCTION);
+            match(TokenType.ID);
+            arguments();
+            match(TokenType.COLON);
+            standard_type();
+            match(TokenType.SEMI);
+        } else if (this.lookahead.type == TokenType.PROCEDURE) {
+            match(TokenType.PROCEDURE);
+            match(TokenType.ID);
+            arguments();
+            match(TokenType.SEMI);
+        } else {
+            error("SUBPROGRAM_HEAD: TokenType FUNCTION or PROCEDURE not matched.");
+        }
     }
 
     /**
@@ -264,9 +264,9 @@ public class Recognizer {
      */
     public void optional_statements() {
         if (this.lookahead.type == TokenType.ID ||
-            lookahead.getType() == TokenType.BEGIN ||
-            lookahead.getType() == TokenType.IF ||
-            lookahead.getType() == TokenType.WHILE) {
+            this.lookahead.type == TokenType.BEGIN ||
+            this.lookahead.type == TokenType.IF ||
+            this.lookahead.type == TokenType.WHILE) {
             statement_list();
         } else {
             // lambda option
@@ -277,72 +277,122 @@ public class Recognizer {
      *
      */
     public void statement_list() {
-
+        statement();
+        if (this.lookahead.type == TokenType.SEMI) {
+            match(TokenType.SEMI);
+            statement_list();
+        } else {
+            // lambda option
+        }
     }
 
     /**
      *
      */
     public void statement() {
-
+        if (this.lookahead.type == TokenType.ID) {
+            variable();
+            match(TokenType.ASSIGN);
+            expression();
+        } else if (this.lookahead.type == TokenType.BEGIN) {
+            compound_statement();
+        } else if (this.lookahead.type == TokenType.IF) {
+            match(TokenType.IF);
+            expression();
+            match(TokenType.THEN);
+            statement();
+            match(TokenType.ELSE);
+            statement();
+        } else if (this.lookahead.type == TokenType.WHILE) {
+            match(TokenType.WHILE);
+            expression();
+            match(TokenType.DO);
+            statement();
+        } else {
+            error("STATEMENT: TokenType ID, IF, or WHILE not matched.");
+        }
     }
 
     /**
      *
      */
     public void variable() {
-        if (lookahead.getType() == TokenType.ID) {
+        if (this.lookahead.type == TokenType.ID) {
             match(TokenType.ID);
-            if (lookahead.getType() == TokenType.LBRACE) {
+            if (this.lookahead.type == TokenType.LBRACE) {
                 match(TokenType.LBRACE);
                 expression();
-                if (lookahead.getType() == TokenType.RBRACE) {
+                if (this.lookahead.type == TokenType.RBRACE) {
                     match(TokenType.RBRACE);
                 }
                 else {
                     error("VARIABLE: TokenType RBRACE not matched.");
                 }
             }
-        } else
+        } else {
             error("VARIABLE: TokenType ID not matched.");
+        }
     }
 
-    /*
-    procedure statement will be ignored for module 2.
-    public void procedure_statement() {
+    //procedure statement will be ignored for module 2.
+    public void procedure_statement() {}
 
-    }
-    */
 
     /**
      *
      */
     public void expression_list() {
-
+        expression();
+        if (this.lookahead.type == TokenType.COMMA) {
+            match(TokenType.COMMA);
+            expression_list();
+        }
     }
 
     /**
      *
      */
     public void expression() {
-
+        simple_expression();
+        if (this.lookahead.type == TokenType.EQUAL ||
+            this.lookahead.type == TokenType.NOTEQ ||
+            this.lookahead.type == TokenType.LTHAN ||
+            this.lookahead.type == TokenType.LTHANEQ ||
+            this.lookahead.type == TokenType.GTHANEQ ||
+            this.lookahead.type == TokenType.GTHAN ) {
+            match(this.lookahead.type);
+            simple_expression();
+        }
     }
 
     /**
      *
      */
     public void simple_expression() {
-
+        if (lookahead.getType() == TokenType.ID ||
+            lookahead.getType() == TokenType.NUMBER ||
+            lookahead.getType() == TokenType.LPAREN ||
+            lookahead.getType() == TokenType.NOT) {
+            term();
+            simple_part();
+        } else if (lookahead.getType() == TokenType.PLUS ||
+            lookahead.getType() == TokenType.MINUS) {
+            sign();
+            term();
+            simple_part();
+        } else {
+            error("SIMPLE_EXPRESSION: TokenType ID, NUMBER, LPAREN, NOT, PLUS, or MINUS not matched.");
+        }
     }
 
     /**
      *
      */
     public void simple_part() {
-        if (lookahead.getType() == TokenType.PLUS ||
-            lookahead.getType() == TokenType.MINUS ||
-            lookahead.getType() == TokenType.OR) {
-            match(lookahead.getType());
+        if (this.lookahead.type == TokenType.PLUS ||
+            this.lookahead.type == TokenType.MINUS ||
+            this.lookahead.type == TokenType.OR) {
+            match(this.lookahead.type);
             term();
             simple_part();
         } else {
@@ -354,11 +404,11 @@ public class Recognizer {
      *
      */
     public void sign() {
-        if (lookahead.getType() == TokenType.PLUS)
+        if (this.lookahead.type == TokenType.PLUS)
         {
             match(TokenType.PLUS);
         }
-        else if (lookahead.getType() == TokenType.MINUS) {
+        else if (this.lookahead.type == TokenType.MINUS) {
             match(TokenType.MINUS);
         }
         else {
@@ -380,13 +430,13 @@ public class Recognizer {
      * the expression grammar.
      */
     public void exp_prime() {
-        if( lookahead.getType() == TokenType.PLUS ||
-                lookahead.getType() == TokenType.MINUS ) {
+        if (this.lookahead.type == TokenType.PLUS ||
+            this.lookahead.type == TokenType.MINUS ) {
             addop();
             term();
             exp_prime();
         }
-        else{
+        else {
             // lambda option
         }
     }
@@ -396,14 +446,14 @@ public class Recognizer {
      * the expression grammar.
      */
     public void addop() {
-        if( lookahead.getType() == TokenType.PLUS) {
-            match( TokenType.PLUS);
+        if (this.lookahead.type == TokenType.PLUS) {
+            match(TokenType.PLUS);
         }
-        else if( lookahead.getType() == TokenType.MINUS) {
-            match( TokenType.MINUS);
+        else if (this.lookahead.type == TokenType.MINUS) {
+            match(TokenType.MINUS);
         }
         else {
-            error( "Addop");
+            error("ADDOP: TokenType PLUS or MINUS not matched.");
         }
     }
 
@@ -421,12 +471,11 @@ public class Recognizer {
      * the expression grammar.
      */
     public void term_prime() {
-        if( isMulop( lookahead) ) {
+        if (isMulop(lookahead)) {
             mulop();
             factor();
             term_prime();
-        }
-        else{
+        } else {
             // lambda option
         }
     }
@@ -439,8 +488,7 @@ public class Recognizer {
      */
     private boolean isMulop(Token token) {
         boolean answer = false;
-        if( token.getType() == TokenType.ASTERISK ||
-                token.getType() == TokenType.FSLASH ) {
+        if (token.type == TokenType.ASTERISK || token.type == TokenType.FSLASH ) {
             answer = true;
         }
         return answer;
@@ -451,14 +499,12 @@ public class Recognizer {
      * the expression grammar.
      */
     public void mulop() {
-        if( lookahead.getType() == TokenType.ASTERISK) {
-            match( TokenType.ASTERISK);
-        }
-        else if( lookahead.getType() == TokenType.FSLASH) {
-            match( TokenType.FSLASH);
-        }
-        else {
-            error( "Mulop");
+        if (this.lookahead.type == TokenType.ASTERISK) {
+            match(TokenType.ASTERISK);
+        } else if (this.lookahead.type == TokenType.FSLASH) {
+            match(TokenType.FSLASH);
+        } else {
+            error("MULOP: TokenType ASTERISK or FSLASH not matched.");
         }
     }
 
@@ -471,12 +517,12 @@ public class Recognizer {
         // if-else chain. Either way is acceptable.
         switch (lookahead.getType()) {
             case LPAREN:
-                match( TokenType.LPAREN);
+                match(TokenType.LPAREN);
                 exp();
-                match( TokenType.RPAREN);
+                match(TokenType.RPAREN);
                 break;
             case NUMBER:
-                match( TokenType.NUMBER);
+                match(TokenType.NUMBER);
                 break;
             default:
                 error("FACTOR: Default case.");
@@ -495,19 +541,18 @@ public class Recognizer {
      * type.
      * @param expected The expected token type.
      */
-    public void match( TokenType expected) {
-        System.out.println("match( " + expected + ")");
-        if( this.lookahead.getType() == expected) {
+    public void match (TokenType expected) {
+        System.out.println("match (" + expected + ")");
+        if (this.lookahead.getType() == expected) {
             try {
                 this.lookahead = scanner.nextToken();
-                if( this.lookahead == null) {
+                if (this.lookahead == null) {
                     this.lookahead = new Token( "End of File", null);
                 }
             } catch (IOException ex) {
-                error( "Scanner exception");
+                error("Scanner exception");
             }
-        }
-        else {
+        } else {
             error("Match of " + expected + " found " + this.lookahead.getType() + " instead.");
         }
     }
