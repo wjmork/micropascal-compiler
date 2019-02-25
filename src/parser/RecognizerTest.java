@@ -1,22 +1,11 @@
 package parser;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class RecognizerTest {
     public RecognizerTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
     }
 
     @Test
@@ -27,18 +16,23 @@ public class RecognizerTest {
         try {
             testRecognizer.program();
         } catch (Exception e){
-            fail("test failed.");
+            fail("Test failed. A known valid program was parsed as invalid.");
         }
-        System.out.println("Success!");
+        System.out.println("Success.");
     }
 
     @Test
     public void declarationsTest() {
         System.out.println("Testing declarations...");
         String input = "var foo: integer;";
+        String input2 = "(incoherent)";
         Recognizer testRecognizer = new Recognizer(input, false);
-        testRecognizer.declarations();
-        System.out.println("Success!");
+        try {
+            testRecognizer.declarations();
+        } catch (Exception e){
+            fail("Test failed. A known valid declaration was parsed as invalid.");
+        }
+
     }
 
     @Test
@@ -46,7 +40,11 @@ public class RecognizerTest {
         System.out.println("Testing subprogram_declaration...");
         String input = "function func(foo: integer): integer;";
         Recognizer testRecognizer = new Recognizer(input, false);
-        testRecognizer.subprogram_declaration();
+        try {
+            testRecognizer.subprogram_declaration();
+        } catch (Exception e){
+            fail("test failed.");
+        }
         System.out.println("Success!");
     }
 
@@ -55,7 +53,11 @@ public class RecognizerTest {
         System.out.println("Testing term...");
         String input = "foo := 1";
         Recognizer testRecognizer = new Recognizer(input, false);
-        testRecognizer.statement();
+        try {
+            testRecognizer.statement();
+        } catch (Exception e){
+            fail("test failed.");
+        }
         System.out.println("Success!");
     }
 
@@ -64,7 +66,24 @@ public class RecognizerTest {
         String input = "foo - fee";
         System.out.println("Testing expression...");
         Recognizer testRecognizer = new Recognizer(input, false);
-        testRecognizer.simple_expression();
+        try {
+            testRecognizer.simple_expression();
+        } catch (Exception e){
+            fail("test failed.");
+        }
+        System.out.println("Success!");
+    }
+
+    @Test
+    public void factorTest() {
+        String input = "foo [2 - 2]";
+        System.out.println("Testing expression...");
+        Recognizer testRecognizer = new Recognizer(input, false);
+        try {
+            testRecognizer.factor();
+        } catch (Exception e){
+            fail("test failed.");
+        }
         System.out.println("Success!");
     }
 }
