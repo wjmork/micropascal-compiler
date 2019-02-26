@@ -1,3 +1,8 @@
+/**
+ * JUnit testing for recognization of high-level production rules.
+ * @author William Mork
+ */
+
 package parser;
 
 import org.junit.Test;
@@ -8,6 +13,10 @@ public class RecognizerTest {
     public RecognizerTest() {
     }
 
+    /**
+     * Tests parser recognization of the simple.pas file.
+     * @result The test fails if the simple.pas file is recognized as invalid.
+     */
     @Test
     public void programTest() {
         System.out.println("Testing program...");
@@ -21,11 +30,14 @@ public class RecognizerTest {
         System.out.println("Success.");
     }
 
+    /**
+     * Tests parser recognization of the declarations() production rules.
+     * @result The test fails if a known valid declaration is recognized as invalid.
+     */
     @Test
     public void declarationsTest() {
         System.out.println("Testing declarations...");
         String input = "var foo: integer;";
-        String input2 = "(incoherent)";
         Recognizer testRecognizer = new Recognizer(input, false);
         try {
             testRecognizer.declarations();
@@ -35,6 +47,10 @@ public class RecognizerTest {
 
     }
 
+    /**
+     * Tests parser recognization of the subprogram_declaration() production rules.
+     * @result The test fails if a known valid subprogram declaration is recognized as invalid.
+     */
     @Test
     public void subProgramTest() {
         System.out.println("Testing subprogram_declaration...");
@@ -48,6 +64,10 @@ public class RecognizerTest {
         System.out.println("Success!");
     }
 
+    /**
+     * Tests parser recognization of the statement() production rules.
+     * @result The test fails if a known valid statement is recognized as invalid. The "programTest()" method tests statement rules more thoroughly.
+     */
     @Test
     public void statementTest() {
         System.out.println("Testing term...");
@@ -61,6 +81,10 @@ public class RecognizerTest {
         System.out.println("Success!");
     }
 
+    /**
+     * Tests parser recognization of the simple_expression() production rules.
+     * @result The test fails if a known valid expression is recognized as invalid.
+     */
     @Test
     public void expressionTest() {
         String input = "foo - fee";
@@ -74,6 +98,10 @@ public class RecognizerTest {
         System.out.println("Success!");
     }
 
+    /**
+     * Tests parser recognization of the factor() production rules.
+     * @result The test fails if a known valid factor is recognized as invalid.
+     */
     @Test
     public void factorTest() {
         String input = "foo [2 - 2]";
