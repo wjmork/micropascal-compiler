@@ -15,6 +15,7 @@ public class RecognizerTest {
 
     /**
      * Tests parser recognization of the simple.pas file.
+     *
      * @result The test fails if the simple.pas file is recognized as invalid.
      */
     @Test
@@ -32,6 +33,7 @@ public class RecognizerTest {
 
     /**
      * Tests parser recognization of the declarations() production rules.
+     *
      * @result The test fails if a known valid declaration is recognized as invalid.
      */
     @Test
@@ -49,6 +51,7 @@ public class RecognizerTest {
 
     /**
      * Tests parser recognization of the subprogram_declaration() production rules.
+     *
      * @result The test fails if a known valid subprogram declaration is recognized as invalid.
      */
     @Test
@@ -66,6 +69,7 @@ public class RecognizerTest {
 
     /**
      * Tests parser recognization of the statement() production rules.
+     *
      * @result The test fails if a known valid statement is recognized as invalid. The "programTest()" method tests statement rules more thoroughly.
      */
     @Test
@@ -83,6 +87,7 @@ public class RecognizerTest {
 
     /**
      * Tests parser recognization of the simple_expression() production rules.
+     *
      * @result The test fails if a known valid expression is recognized as invalid.
      */
     @Test
@@ -100,6 +105,7 @@ public class RecognizerTest {
 
     /**
      * Tests parser recognization of the factor() production rules.
+     *
      * @result The test fails if a known valid factor is recognized as invalid.
      */
     @Test
