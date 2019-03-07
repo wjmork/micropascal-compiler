@@ -19,7 +19,6 @@ public class ScannerTest {
 
     @BeforeClass
     public static void setUpClass() {
-
     }
 
     @AfterClass
