@@ -1,7 +1,5 @@
 package symboltable;
 
-import scanner.TokenType;
-
 import java.util.HashMap;
 
 public class SymbolTable {
@@ -11,8 +9,13 @@ public class SymbolTable {
         symbolTable = new HashMap<>();
     }
 
-    public boolean addProgram(){
-        return false;
+    public boolean addProgram(String name){
+        if (symbolTable.containsKey(name)) {
+            return false;
+        } else {
+            symbolTable.put(name, new Symbol(name, Kind.PROGRAM));
+            return true;
+        }
     }
 
     public boolean addVariable(){
