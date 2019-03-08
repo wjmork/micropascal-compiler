@@ -18,26 +18,26 @@ public class Symbol {
     }
 
     // Variable symbol constructor
-    public Symbol(String id, TokenType t, Kind k) {
+    public Symbol(String id, Kind k, TokenType t) {
         identifier = id;
-        tokenType = t;
         kind = k;
+        tokenType = t;
     }
 
     // Array symbol constructor
-    public Symbol(String id, TokenType t, Kind k, int start, int stop) {
+    public Symbol(String id, Kind k, TokenType t, int start, int stop) {
         identifier = id;
-        tokenType = t;
         kind = k;
+        tokenType = t;
         startIndex = start;
         stopIndex = stop;
     }
 
     // Function symbol constructor
-    public Symbol(String id, TokenType t, Kind k, ArrayList args) {
+    public Symbol(String id, Kind k, TokenType t, ArrayList args) {
         identifier = id;
-        tokenType = t;
         kind = k;
+        tokenType = t;
         arguments = args;
     }
 
@@ -64,5 +64,25 @@ public class Symbol {
     // Returns the Symbol's stop index.
     public int getStopIndex() {
         return stopIndex;
+    }
+
+    // Returns the Symbol's arguments
+    public ArrayList<Symbol> getArgs() {
+        return arguments;
+    }
+
+    @Override
+    public String toString() {
+        if (this.kind == Kind.PROGRAM) {
+            return "SYMBOL [ID: " + identifier + "| KIND: " + kind + "]";
+        } else if (this.kind == Kind.VARIABLE) {
+            return "SYMBOL [ID: " + identifier + "| KIND: " + kind + "| TYPE: " + tokenType + "]";
+        } else if (this.kind == Kind.ARRAY) {
+            return "SYMBOL [ID: " + identifier + "| KIND: " + kind + "| TYPE: " + tokenType + "| INDEX: " + startIndex + "→" + stopIndex + "]";
+        } else if (this.kind == Kind.FUNCTION) {
+            return "SYMBOL [ID: " + identifier + "| KIND: " + kind + "| TYPE: " + tokenType + "| ARGS: " + arguments + "]";
+        } else {
+            return "Error generating Symbol toString. Symbol object was improperly constructed.";
+        }
     }
 }
