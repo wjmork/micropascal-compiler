@@ -2,6 +2,9 @@ package symboltable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import scanner.TokenType;
 
 public class SymbolTable {
@@ -99,4 +102,16 @@ public class SymbolTable {
         return false;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder tableBuilder = new StringBuilder("SYMBOL TABLE: \n");
+        Iterator tableIterator = symbolTable.entrySet().iterator();
+
+        while (tableIterator.hasNext()) {
+            Map.Entry symbol = (Map.Entry)tableIterator.next();
+            tableBuilder.append(symbol.toString());
+        }
+
+        return tableBuilder.toString();
+    }
 }
