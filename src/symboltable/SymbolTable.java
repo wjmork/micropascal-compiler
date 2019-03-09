@@ -47,19 +47,55 @@ public class SymbolTable {
         }
     }
 
-    public boolean isProgram(){
+    public boolean isProgram(String name){
+        try {
+            if (symbolTable.get(name).getKind() == Kind.PROGRAM) {
+                return true;
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println("No PROGRAM Symbol exists with the following identifier: " + name);
+        }
         return false;
     }
 
-    public boolean isVariable(){
+    public boolean isVariable(String name){
+        try {
+            if (symbolTable.get(name).getKind() == Kind.VARIABLE) {
+                return true;
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println("No VARIABLE Symbol exists with the following identifier: " + name);
+        }
         return false;
     }
 
-    public boolean isArray(){
+    public boolean isArray(String name){
+        try {
+            if (symbolTable.get(name).getKind() == Kind.ARRAY) {
+                return true;
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println("No ARRAY Symbol exists with the following identifier: " + name);
+        }
         return false;
     }
 
-    public boolean isFunction(){
+    public boolean isFunction(String name){
+        try {
+            if (symbolTable.get(name).getKind() == Kind.FUNCTION) {
+                return true;
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println("No FUNCTION Symbol exists with the following identifier: " + name);
+        }
         return false;
     }
 
