@@ -109,7 +109,8 @@ public class SymbolTable {
 
         while (tableIterator.hasNext()) {
             Map.Entry symbol = (Map.Entry)tableIterator.next();
-            tableBuilder.append(symbol.toString());
+            tableBuilder.append(symbol.getValue());
+            tableBuilder.append("\n");
         }
 
         return tableBuilder.toString();

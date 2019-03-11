@@ -56,8 +56,8 @@ public class SymbolTableTest {
 
     @Test
     public void printTable() {
-        System.out.println("Testing toString...");
-        testSymbolTable.toString();
+        System.out.println("Testing toString()...");
+        System.out.println(testSymbolTable);
         assertFalse(testSymbolTable.toString().contains("@"));
     }
 

@@ -74,13 +74,13 @@ public class Symbol {
     @Override
     public String toString() {
         if (this.kind == Kind.PROGRAM) {
-            return "SYMBOL [ID: " + identifier + "| KIND: " + kind + "]";
+            return "SYMBOL [ID: " + identifier + " | KIND: " + kind + "]";
         } else if (this.kind == Kind.VARIABLE) {
-            return "SYMBOL [ID: " + identifier + "| KIND: " + kind + "| TYPE: " + tokenType + "]";
+            return "SYMBOL [ID: " + identifier + " | KIND: " + kind + " | TYPE: " + tokenType + "]";
         } else if (this.kind == Kind.ARRAY) {
-            return "SYMBOL [ID: " + identifier + "| KIND: " + kind + "| TYPE: " + tokenType + "| INDEX: " + startIndex + "→" + stopIndex + "]";
+            return "SYMBOL [ID: " + identifier + " | KIND: " + kind + " | TYPE: " + tokenType + " | INDEX: " + startIndex + "→" + stopIndex + "]";
         } else if (this.kind == Kind.FUNCTION) {
-            return "SYMBOL [ID: " + identifier + "| KIND: " + kind + "| TYPE: " + tokenType + "| ARGS: " + arguments + "]";
+            return "SYMBOL [ID: " + identifier + " | KIND: " + kind + " | TYPE: " + tokenType + " | ARGS: " + arguments + "]";
         } else {
             return "Error generating Symbol toString. Symbol object was improperly constructed.";
         }
