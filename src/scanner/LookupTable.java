@@ -4,7 +4,8 @@ import java.util.HashMap;
 
 /**
  * A lookup table to find the token types for symbols based on the String.
- * @author Erik Steinmetz
+ *
+ * @author William Mork
  */
 public class LookupTable extends HashMap<String,TokenType> {
     

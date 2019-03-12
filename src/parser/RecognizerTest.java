@@ -1,8 +1,3 @@
-/**
- * JUnit testing for recognization of high-level production rules.
- * @author William Mork
- */
-
 package parser;
 
 import org.junit.Test;
@@ -10,6 +5,12 @@ import org.junit.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
+/**
+ * This class contains JUnit testing for the high-level production rules of
+ * the Recognizer Grammar.
+ *
+ * @author William Mork
+ */
 public class RecognizerTest {
     /**
      * Tests parser recognization of the simple.pas file.

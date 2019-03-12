@@ -1,14 +1,14 @@
-/* William  Mork */
-/* CSC 451 */
-/* Scanner.flex */
-
 package scanner;
 
 import java.util.HashMap;
 
 %%
 
-/* Declarations */
+/**
+ * The scanner class reads a Mini-Pascal text file or input stream and scans each line.
+ * Keywords and symbols which are recognized as valid by the
+ * scanner are converted into tokens.
+ */
 %class  Scanner	        /* Names the produced java file */
 %function nextToken 	/* Renames the yylex() function */
 %public                 /* Defines the class as public */

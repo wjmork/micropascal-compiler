@@ -1,9 +1,10 @@
-/* William  Mork */
-/* CSC 451 */
-/* Token.java */
-
 package scanner;
 
+/**
+ * The Token class defined a token object containing it's lexeme and type.
+ *
+ * @author William Mork
+ */
 public class Token {
 
     public String lexeme;
@@ -19,12 +20,20 @@ public class Token {
         this.type = type;
     }
 
-    // Returns the lexeme of a Token.
+    /**
+     * Returns the lexeme of a Token.
+     *
+     * @return token's lexeme
+     */
     public String getLexeme() {
         return this.lexeme;
     }
 
-    // Returns a Token's type.
+    /**
+     * Returns a Token's type.
+     *
+     * @return token's type
+     */
     public TokenType getType() {
         return this.type;
     }
@@ -32,6 +41,7 @@ public class Token {
     /**
      * Creates the String representation of this token including
      * the lexeme and type.
+     *
      * @return The String representation of this token.
      */
     @Override

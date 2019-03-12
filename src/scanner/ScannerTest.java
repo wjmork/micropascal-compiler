@@ -1,35 +1,29 @@
 package scanner;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.*;
-import java.nio.file.Paths;
-import java.util.List;
 
-import static java.nio.file.Files.readAllLines;
-
+/**
+ * This class contains JUnit testing for the scanner.
+ *
+ * @author William Mork
+ */
 public class ScannerTest {
     public ClassLoader classLoader = getClass().getClassLoader();
-    public ScannerTest() {
-    }
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
+    /**
+     * Tests scanning of the simplest.pas pascal file.
+     *
+     * @result simplest.pas will be scanned without throwing an exception.
+     */
     @Test
-    public void testSimple() throws IOException {
-        File simple = new File("src/pascal/simple.pas");
-        Reader simpleReader = new FileReader(simple);
-        System.out.println("Successfully imported simple.pas test file.");
+    public void testSimplest() throws IOException {
+        File simplest = new File("src/pascal/simplest.pas");
+        Reader simpleReader = new FileReader(simplest);
+        System.out.println("Successfully imported simplest.pas test file.");
 
         Scanner testScanner = new Scanner(simpleReader);
 
@@ -53,11 +47,16 @@ public class ScannerTest {
         }
     }
 
+    /**
+     * Tests scanning of the simple.pas pascal file.
+     *
+     * @result simple.pas will be scanned without throwing an exception.
+     */
     @Test
-    public void testSimplest() throws IOException {
-        File simplest = new File("src/pascal/simplest.pas");
-        Reader simpleReader = new FileReader(simplest);
-        System.out.println("Successfully imported simplest.pas test file.");
+    public void testSimple() throws IOException {
+        File simple = new File("src/pascal/simple.pas");
+        Reader simpleReader = new FileReader(simple);
+        System.out.println("Successfully imported simple.pas test file.");
 
         Scanner testScanner = new Scanner(simpleReader);
 

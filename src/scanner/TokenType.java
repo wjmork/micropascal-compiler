@@ -1,11 +1,9 @@
-/* William  Mork */
-/* CSC 451 */
-/* TokenType.java */
-
 package scanner;
 
 /**
  * This class enumerates the Types, Keywords, and Symbols recognized as valid tokens by the scanner.
+ *
+ * @author William Mork
  */
 public enum TokenType {
 

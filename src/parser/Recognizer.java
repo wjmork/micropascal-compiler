@@ -14,16 +14,17 @@ import java.io.*;
  * and then call the top-level function, <code>exp()</code>.
  * If the functions returns without an error, the file
  * contains an acceptable expression.
+ * </p>
  *
  * @author William Mork
  */
 public class Recognizer {
 
-    //    Instance Variables    \\
+    //  Instance Variables
     private Token lookahead;
     private Scanner inputStreamScanner;
 
-    //       Constructors       \\
+    //  Constructors
     /**
      * Creates a Recognizer.
      * @param input The input stream (String or file path) to be parsed.
@@ -51,7 +52,7 @@ public class Recognizer {
         }
     }
 
-    //       Methods        \\
+    //  Methods
     /**
      * Executes the rule for the program non-terminal symbol in
      * the expression grammar.
@@ -562,13 +563,13 @@ public class Recognizer {
 
     /**
      * Matches the expected token.
+     * <p>
      * If the current token in the input stream from the scanner
      * matches the token that is expected, the current token is
      * consumed and the scanner will move on to the next token
-     * in the input.
-     * The null at the end of the file returned by the
-     * scanner is replaced with a fake token containing no
-     * type.
+     * in the input. The null pointer at the end of the scanned
+     * file is replaced with a placeholder token containing no type.
+     * </p>
      *
      * @param expected The expected token type.
      */
