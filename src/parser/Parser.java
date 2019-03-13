@@ -3,8 +3,10 @@ package parser;
 import scanner.Scanner;
 import scanner.Token;
 import scanner.TokenType;
+import symboltable.SymbolTable;
 
 import java.io.*;
+import java.util.ArrayList;
 
 /**
  * The recognizer class recognizes whether an input string of tokens
@@ -20,18 +22,26 @@ import java.io.*;
  */
 public class Parser {
 
-    //  Instance Variables
+    /** The next token in the input stream. */
     private Token lookahead;
+
+    /** Scanner, reads input stream. */
     private Scanner inputStreamScanner;
 
-    //  Constructors
+    /** Symbol table, stores unique identifiers and related information. */
+    private SymbolTable symbolTable;
+
     /**
      * Creates a Recognizer.
      * @param input The input stream (String or file path) to be parsed.
      * @param importFile If true, input should be the path of a file. If false, a String should be provided.
      */
     public Parser(String input, boolean importFile) {
+        // Create input stream reader in the case of a String
         InputStreamReader inputStreamReader;
+
+        // Create symbol table
+        symbolTable = new SymbolTable();
 
         if (importFile) {
             FileInputStream inputStream = null;
@@ -52,23 +62,28 @@ public class Parser {
         }
     }
 
-    //  Methods
     /**
      * Executes the rule for the program non-terminal symbol in
-     * the expression grammar.
+     * the expression grammar, and adds the program identifier to the
+     * symbol table.
      *
      * Structure:   program → program ID ; | declarations | subprogram_declarations | compound_statement | .
      */
     public void program() {
-        if (this.lookahead.type == TokenType.PROGRAM) {
+        if (this.lookahead.getType() == TokenType.PROGRAM) {
             match(TokenType.PROGRAM);
+            String lexeme = lookahead.getLexeme();
+            if (symbolTable.isProgram(lexeme)) {
+                error("PROGRAM with lexeme " + lexeme + " already exists in symbol table.");
+            }
+            symbolTable.addProgram(lexeme);
         } else error("PROGRAM: TokenType PROGRAM not matched.");
 
-        if (this.lookahead.type == TokenType.ID) {
+        if (this.lookahead.getType() == TokenType.ID) {
             match(TokenType.ID);
         } else error("PROGRAM: TokenType ID not matched.");
 
-        if (this.lookahead.type == TokenType.SEMI) {
+        if (this.lookahead.getType() == TokenType.SEMI) {
             match(TokenType.SEMI);
         } else error("PROGRAM: TokenType SEMI not matched.");
 
@@ -76,41 +91,46 @@ public class Parser {
         subprogram_declarations();
         compound_statement();
 
-        if (this.lookahead.type == TokenType.PERIOD) {
+        if (this.lookahead.getType() == TokenType.PERIOD) {
             match(TokenType.PERIOD);
         } else error("PROGRAM: TokenType PERIOD not matched.");
     }
 
     /**
      * Executes the rule for the identifier_list non-terminal symbol in
-     * the expression grammar.
+     * the expression grammar. Creates an ArrayList of identifiers to
+     * be used by a parent function, then adds it to the symbol table.
      *
      * Structure:   identifier_list → ID | ID, identifier_list
      */
-    public void identifier_list() {
-        if (this.lookahead.type == TokenType.ID) {
+    public ArrayList<String> identifier_list() {
+        ArrayList<String> identifierList = new ArrayList();
+        if (this.lookahead.getType() == TokenType.ID) {
+            identifierList.add(this.lookahead.getLexeme());
             match(TokenType.ID);
-            if (this.lookahead.type == TokenType.COMMA) {
+            if (this.lookahead.getType() == TokenType.COMMA) {
                 match(TokenType.COMMA);
-                identifier_list();
+                identifierList.addAll(identifier_list());
+            } else {
+                // lambda option
             }
-        } else {
-            // lambda option
         }
+        return identifierList;
     }
 
     /**
      * Executes the rule for the declarations non-terminal symbol in
-     * the expression grammar.
+     * the expression grammar, and adds identifiers to the symbol table
+     * of its parent function.
      *
      * Structure:   declarations → VAR identifier_list : type ; declarations | λ
      */
     public void declarations() {
-        if (this.lookahead.type == TokenType.VAR) {
+        if (this.lookahead.getType() == TokenType.VAR) {
+            ArrayList<String> identifierList = identifier_list();
             match(TokenType.VAR);
-            identifier_list();
             match(TokenType.COLON);
-            type();
+            //type(identifierList);
             match(TokenType.SEMI);
             declarations();
         } else {
@@ -125,14 +145,20 @@ public class Parser {
      * Structure:   type → standard_type | ARRAY [ NUM : NUM ] of standard_type
      */
     public void type() {
-        if (this.lookahead.type == TokenType.ARRAY) {
+        int startIndex, stopIndex;
+        if (this.lookahead.getType() == TokenType.ARRAY) {
             match(TokenType.ARRAY);
             match(TokenType.LBRACE);
+            startIndex = Integer.parseInt(lookahead.getLexeme());
             match(TokenType.NUMBER);
             match(TokenType.COLON);
+            stopIndex = Integer.parseInt(lookahead.getLexeme());
             match(TokenType.NUMBER);
             match(TokenType.LBRACE);
             match(TokenType.OF);
+        // Not sure where to go from here.....
+        // Needs to call standard_type...
+        // Recheck error cases and console outs within symboltable.java methods...
         } else if (this.lookahead.type == TokenType.INTEGER || this.lookahead.type == TokenType.REAL) {
             standard_type();
         } else {
@@ -241,7 +267,7 @@ public class Parser {
         if (this.lookahead.type == TokenType.COLON) {
             match(TokenType.COLON);
             type();
-            if (this.lookahead.type == TokenType.SEMI) {
+            if (this.lookahead.getType() == TokenType.SEMI) {
                 match(TokenType.SEMI);
                 parameter_list();
             }
@@ -255,11 +281,11 @@ public class Parser {
      * Structure:   compound_statement → BEGIN optional_statements END
      */
     public void compound_statement() {
-        if (this.lookahead.type == TokenType.BEGIN) {
+        if (this.lookahead.getType() == TokenType.BEGIN) {
             match(TokenType.BEGIN);
         }
         optional_statements();
-        if (this.lookahead.type == TokenType.END) {
+        if (this.lookahead.getType() == TokenType.END) {
             match(TokenType.END);
         }
     }
@@ -587,6 +613,15 @@ public class Parser {
         } else {
             error("MATCH| " + expected + " found " + this.lookahead.getType() + " instead.");
         }
+    }
+
+    /**
+     * Returns the symbol table constructed by the parser.
+     *
+     * @return symbol table
+     */
+    public SymbolTable getSymbolTable() {
+        return symbolTable;
     }
 
     /**

@@ -29,7 +29,7 @@ public class SymbolTable {
      */
     public boolean addProgram(String lexeme) {
         if (symbolTable.containsKey(lexeme)) {
-            System.out.println("PROGRAM symbol already exists in table with lexeme: " + lexeme + ".");
+            // System.out.println("PROGRAM symbol already exists in table with lexeme: " + lexeme + ".");
             return false;
         } else {
             symbolTable.put(lexeme, new Symbol(lexeme, Kind.PROGRAM));
@@ -46,7 +46,7 @@ public class SymbolTable {
      */
     public boolean addVariable(String lexeme, TokenType tokenType) {
         if (symbolTable.containsKey(lexeme)) {
-            System.out.println("VARIABLE symbol already exists in table with lexeme: " + lexeme + ".");
+            // System.out.println("VARIABLE symbol already exists in table with lexeme: " + lexeme + ".");
             return false;
         } else {
             symbolTable.put(lexeme, new Symbol(lexeme, Kind.VARIABLE, tokenType));
@@ -65,7 +65,7 @@ public class SymbolTable {
      */
     public boolean addArray(String lexeme, TokenType tokenType, int start, int stop){
         if (symbolTable.containsKey(lexeme)) {
-            System.out.println("ARRAY symbol already exists in table with lexeme: " + lexeme + ".");
+            // System.out.println("ARRAY symbol already exists in table with lexeme: " + lexeme + ".");
             return false;
         } else {
             symbolTable.put(lexeme, new Symbol(lexeme, Kind.ARRAY, tokenType, start, stop));
@@ -83,7 +83,7 @@ public class SymbolTable {
      */
     public boolean addFunction(String lexeme, TokenType tokenType, ArrayList<Symbol> arguments){
         if (symbolTable.containsKey(lexeme)) {
-            System.out.println("FUNCTION symbol already exists in table with lexeme: " + lexeme + ".");
+            // System.out.println("FUNCTION symbol already exists in table with lexeme: " + lexeme + ".");
             return false;
         } else {
             symbolTable.put(lexeme, new Symbol(lexeme, Kind.FUNCTION, tokenType, arguments));
@@ -98,14 +98,8 @@ public class SymbolTable {
      * @return true if program symbol with given lexeme exists in the table
      */
     public boolean isProgram(String lexeme){
-        try {
-            if (symbolTable.get(lexeme).getKind() == Kind.PROGRAM) {
-                return true;
-            }
-        }
-        catch (Exception e)
-        {
-            System.out.println("No PROGRAM Symbol exists with the following lexeme: " + lexeme);
+        if (symbolTable.get(lexeme).getKind() == Kind.PROGRAM) {
+            return true;
         }
         return false;
     }
@@ -117,14 +111,8 @@ public class SymbolTable {
      * @return true if variable symbol with given lexeme exists in the table
      */
     public boolean isVariable(String lexeme){
-        try {
-            if (symbolTable.get(lexeme).getKind() == Kind.VARIABLE) {
-                return true;
-            }
-        }
-        catch (Exception e)
-        {
-            System.out.println("No VARIABLE Symbol exists with the following lexeme: " + lexeme);
+        if (symbolTable.get(lexeme).getKind() == Kind.VARIABLE) {
+            return true;
         }
         return false;
     }
@@ -136,14 +124,8 @@ public class SymbolTable {
      * @return true if array symbol with given lexeme exists in the table
      */
     public boolean isArray(String lexeme){
-        try {
-            if (symbolTable.get(lexeme).getKind() == Kind.ARRAY) {
-                return true;
-            }
-        }
-        catch (Exception e)
-        {
-            System.out.println("No ARRAY Symbol exists with the following lexeme: " + lexeme);
+        if (symbolTable.get(lexeme).getKind() == Kind.ARRAY) {
+            return true;
         }
         return false;
     }
@@ -155,14 +137,8 @@ public class SymbolTable {
      * @return true if function symbol with given lexeme exists in the table
      */
     public boolean isFunction(String lexeme){
-        try {
-            if (symbolTable.get(lexeme).getKind() == Kind.FUNCTION) {
-                return true;
-            }
-        }
-        catch (Exception e)
-        {
-            System.out.println("No FUNCTION Symbol exists with the following lexeme: " + lexeme);
+        if (symbolTable.get(lexeme).getKind() == Kind.FUNCTION) {
+            return true;
         }
         return false;
     }
