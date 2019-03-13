@@ -29,7 +29,6 @@ public class SymbolTable {
      */
     public boolean addProgram(String lexeme) {
         if (symbolTable.containsKey(lexeme)) {
-            // System.out.println("PROGRAM symbol already exists in table with lexeme: " + lexeme + ".");
             return false;
         } else {
             symbolTable.put(lexeme, new Symbol(lexeme, Kind.PROGRAM));
@@ -46,7 +45,6 @@ public class SymbolTable {
      */
     public boolean addVariable(String lexeme, TokenType tokenType) {
         if (symbolTable.containsKey(lexeme)) {
-            // System.out.println("VARIABLE symbol already exists in table with lexeme: " + lexeme + ".");
             return false;
         } else {
             symbolTable.put(lexeme, new Symbol(lexeme, Kind.VARIABLE, tokenType));
@@ -65,7 +63,6 @@ public class SymbolTable {
      */
     public boolean addArray(String lexeme, TokenType tokenType, int start, int stop){
         if (symbolTable.containsKey(lexeme)) {
-            // System.out.println("ARRAY symbol already exists in table with lexeme: " + lexeme + ".");
             return false;
         } else {
             symbolTable.put(lexeme, new Symbol(lexeme, Kind.ARRAY, tokenType, start, stop));
@@ -83,10 +80,24 @@ public class SymbolTable {
      */
     public boolean addFunction(String lexeme, TokenType tokenType, ArrayList<Symbol> arguments){
         if (symbolTable.containsKey(lexeme)) {
-            // System.out.println("FUNCTION symbol already exists in table with lexeme: " + lexeme + ".");
             return false;
         } else {
             symbolTable.put(lexeme, new Symbol(lexeme, Kind.FUNCTION, tokenType, arguments));
+            return true;
+        }
+    }
+
+    /**
+     * Adds a procedure symbol to the symbol table.
+     *
+     * @param lexeme lexeme of the procedure symbol
+     * @return true if the symbol was added to the table
+     */
+    public boolean addProcedure(String lexeme){
+        if (symbolTable.containsKey(lexeme)) {
+            return false;
+        } else {
+            symbolTable.put(lexeme, new Symbol(lexeme, Kind.PROCEDURE));
             return true;
         }
     }
@@ -98,10 +109,7 @@ public class SymbolTable {
      * @return true if program symbol with given lexeme exists in the table
      */
     public boolean isProgram(String lexeme){
-        if (symbolTable.get(lexeme).getKind() == Kind.PROGRAM) {
-            return true;
-        }
-        return false;
+        return symbolTable.get(lexeme).getKind() == Kind.PROGRAM;
     }
 
     /**
@@ -111,10 +119,7 @@ public class SymbolTable {
      * @return true if variable symbol with given lexeme exists in the table
      */
     public boolean isVariable(String lexeme){
-        if (symbolTable.get(lexeme).getKind() == Kind.VARIABLE) {
-            return true;
-        }
-        return false;
+        return symbolTable.get(lexeme).getKind() == Kind.VARIABLE;
     }
 
     /**
@@ -124,10 +129,7 @@ public class SymbolTable {
      * @return true if array symbol with given lexeme exists in the table
      */
     public boolean isArray(String lexeme){
-        if (symbolTable.get(lexeme).getKind() == Kind.ARRAY) {
-            return true;
-        }
-        return false;
+        return symbolTable.get(lexeme).getKind() == Kind.ARRAY;
     }
 
     /**
@@ -137,10 +139,17 @@ public class SymbolTable {
      * @return true if function symbol with given lexeme exists in the table
      */
     public boolean isFunction(String lexeme){
-        if (symbolTable.get(lexeme).getKind() == Kind.FUNCTION) {
-            return true;
-        }
-        return false;
+        return symbolTable.get(lexeme).getKind() == Kind.FUNCTION;
+    }
+
+    /**
+     * Checks if a procedure symbol with a given lexeme already exists in the symbol table.
+     *
+     * @param lexeme lexeme of procedure symbol
+     * @return true if procedure symbol with given lexeme exists in the table
+     */
+    public boolean isProcedure(String lexeme){
+        return symbolTable.get(lexeme).getKind() == Kind.PROCEDURE;
     }
 
     /**

@@ -72,11 +72,11 @@ public class Parser {
     public void program() {
         if (this.lookahead.getType() == TokenType.PROGRAM) {
             match(TokenType.PROGRAM);
-            String lexeme = lookahead.getLexeme();
-            if (symbolTable.isProgram(lexeme)) {
-                error("PROGRAM with lexeme " + lexeme + " already exists in symbol table.");
+            String identifier = lookahead.getLexeme();
+            if (symbolTable.isProgram(identifier)) {
+                error("PROGRAM with lexeme " + identifier + " already exists in symbol table.");
             }
-            symbolTable.addProgram(lexeme);
+            symbolTable.addProgram(identifier);
         } else error("PROGRAM: TokenType PROGRAM not matched.");
 
         if (this.lookahead.getType() == TokenType.ID) {
@@ -130,7 +130,7 @@ public class Parser {
             ArrayList<String> identifierList = identifier_list();
             match(TokenType.VAR);
             match(TokenType.COLON);
-            //type(identifierList);
+            type(identifierList);
             match(TokenType.SEMI);
             declarations();
         } else {
@@ -144,7 +144,7 @@ public class Parser {
      *
      * Structure:   type → standard_type | ARRAY [ NUM : NUM ] of standard_type
      */
-    public void type() {
+    public void type(ArrayList<String> identifierList) {
         int startIndex, stopIndex;
         if (this.lookahead.getType() == TokenType.ARRAY) {
             match(TokenType.ARRAY);
@@ -156,11 +156,22 @@ public class Parser {
             match(TokenType.NUMBER);
             match(TokenType.LBRACE);
             match(TokenType.OF);
-        // Not sure where to go from here.....
-        // Needs to call standard_type...
-        // Recheck error cases and console outs within symboltable.java methods...
+            for (String identifier : identifierList) {
+                if (symbolTable.isArray(identifier)){
+                    error("ARRAY with lexeme " + identifier + " already exists in symbol table.");
+                } else {
+                    symbolTable.addArray(identifier, standard_type(), startIndex, stopIndex);
+                }
+            }
         } else if (this.lookahead.type == TokenType.INTEGER || this.lookahead.type == TokenType.REAL) {
             standard_type();
+            for (String identifier : identifierList) {
+                if (symbolTable.isVariable(identifier)){
+                    error("VARIABLE with lexeme " + identifier + " already exists in symbol table.");
+                } else {
+                    symbolTable.addVariable(identifier, standard_type());
+                }
+            }
         } else {
             error("TYPE: TokenType ARRAY not matched or STANDARD_TYPE not matched.");
         }
@@ -172,13 +183,16 @@ public class Parser {
      *
      * Structure:   standard_type → INTEGER | REAL
      */
-    public void standard_type() {
+    public TokenType standard_type() {
         if (this.lookahead.type == TokenType.INTEGER) {
             match(TokenType.INTEGER);
+            return TokenType.INTEGER;
         } else if (this.lookahead.type == TokenType.REAL) {
             match(TokenType.REAL);
+            return TokenType.REAL;
         } else {
             error("STANDARD_TYPE: TokenType INTEGER or REAL not matched.");
+            return null;
         }
     }
 
@@ -600,18 +614,18 @@ public class Parser {
      * @param expected The expected token type.
      */
     private void match(TokenType expected) {
-        System.out.println("MATCH| Expected: " + expected + ". Look-ahead: " + this.lookahead.getType() + ".");
+        System.out.println("expected: " + expected + ". look-ahead: " + this.lookahead.getType() + ".");
         if (this.lookahead.getType() == expected) {
             try {
                 this.lookahead = inputStreamScanner.nextToken();
                 if (this.lookahead == null) {
-                    this.lookahead = new Token("End of File", null);
+                    this.lookahead = new Token("End of file.", null);
                 }
             } catch (IOException ex) {
-                error("Scanner exception");
+                error("scanner exception.");
             }
         } else {
-            error("MATCH| " + expected + " found " + this.lookahead.getType() + " instead.");
+            error("expected: " + expected + ". look-ahead: " + this.lookahead.getType() + ".");
         }
     }
 
