@@ -1,6 +1,7 @@
 package parser;
 
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -20,13 +21,16 @@ public class RecognizerTest {
     @Test
     public void programTest() {
         System.out.println("Testing program...");
+        boolean result = true;
         String testProgram = "src/pascal/simple.pas";
         Recognizer testRecognizer = new Recognizer(testProgram, true);
         try {
             testRecognizer.program();
         } catch (Exception e){
-            fail("Test failed. A known valid program was parsed as invalid.");
+            System.out.println("Test failed. A known valid program was parsed as invalid.");
+            result = false;
         }
+        Assertions.assertEquals(true, result);
         System.out.println("Success.");
     }
 
@@ -38,14 +42,17 @@ public class RecognizerTest {
     @Test
     public void declarationsTest() {
         System.out.println("Testing declarations...");
+        boolean result = true;
         String input = "var foo: integer;";
         Recognizer testRecognizer = new Recognizer(input, false);
         try {
             testRecognizer.declarations();
         } catch (Exception e){
-            fail("Test failed. A known valid declaration was parsed as invalid.");
+            System.out.println("Test failed. A known valid declaration was parsed as invalid.");
+            result = false;
         }
-
+        Assertions.assertEquals(true, result);
+        System.out.println("Success.");
     }
 
     /**
@@ -56,31 +63,38 @@ public class RecognizerTest {
     @Test
     public void subProgramTest() {
         System.out.println("Testing subprogram_declaration...");
+        boolean result = true;
         String input = "function func(foo: integer): integer;";
         Recognizer testRecognizer = new Recognizer(input, false);
         try {
             testRecognizer.subprogram_declaration();
         } catch (Exception e){
-            fail("test failed.");
+            System.out.println("test failed. A known valid subprogram_declaration was parsed as invalid.");
+            result = false;
         }
+        Assertions.assertEquals(true, result);
         System.out.println("Success!");
     }
 
     /**
      * Tests parser recognization of the statement() production rules.
      *
-     * @result The test fails if a known valid statement is recognized as invalid. The "programTest()" method tests statement rules more thoroughly.
+     * @result The test fails if a known valid statement is recognized as invalid.
+     * The "programTest()" method tests statement rules more thoroughly.
      */
     @Test
     public void statementTest() {
         System.out.println("Testing term...");
+        boolean result = true;
         String input = "foo := 1";
         Recognizer testRecognizer = new Recognizer(input, false);
         try {
             testRecognizer.statement();
         } catch (Exception e){
-            fail("test failed.");
+            System.out.println("test failed. A known valid statement was parsed as invalid.");
+            result = false;
         }
+        Assertions.assertEquals(true, result);
         System.out.println("Success!");
     }
 
@@ -91,14 +105,17 @@ public class RecognizerTest {
      */
     @Test
     public void expressionTest() {
-        String input = "foo - fee";
         System.out.println("Testing expression...");
+        boolean result = true;
+        String input = "foo - fee";
         Recognizer testRecognizer = new Recognizer(input, false);
         try {
             testRecognizer.simple_expression();
         } catch (Exception e){
-            fail("test failed.");
+            System.out.println("test failed. A known valid expression was parsed as invalid.");
+            result = false;
         }
+        Assertions.assertEquals(true, result);
         System.out.println("Success!");
     }
 
@@ -109,14 +126,17 @@ public class RecognizerTest {
      */
     @Test
     public void factorTest() {
+        System.out.println("Testing factor...");
+        boolean result = true;
         String input = "foo [2 - 2]";
-        System.out.println("Testing expression...");
         Recognizer testRecognizer = new Recognizer(input, false);
         try {
             testRecognizer.factor();
         } catch (Exception e){
-            fail("test failed.");
+            System.out.println("test failed. A known valid factor was parsed as invalid.");
+            result = false;
         }
+        Assertions.assertEquals(true, result);
         System.out.println("Success!");
     }
 }

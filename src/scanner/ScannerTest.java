@@ -1,6 +1,7 @@
 package scanner;
 
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -21,9 +22,11 @@ public class ScannerTest {
      */
     @Test
     public void testSimplest() throws IOException {
+        boolean result = true;
+        System.out.println("Testing scanning of simple.pas test file...");
         File simplest = new File("src/pascal/simplest.pas");
         Reader simpleReader = new FileReader(simplest);
-        System.out.println("Successfully imported simplest.pas test file.");
+        System.out.println("File read success.");
 
         Scanner testScanner = new Scanner(simpleReader);
 
@@ -36,7 +39,8 @@ public class ScannerTest {
                     System.out.println("Token recognized: " + currentToken);
                 }
             } catch (IOException e) {
-                fail("Invalid Token: " + currentToken);
+                System.out.println("Invalid Token: " + currentToken);
+                result = false;
                 e.printStackTrace();
             }
         } while (currentToken != null);
@@ -45,6 +49,7 @@ public class ScannerTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        Assertions.assertEquals(true, result);
     }
 
     /**
@@ -54,9 +59,11 @@ public class ScannerTest {
      */
     @Test
     public void testSimple() throws IOException {
+        boolean result = true;
+        System.out.println("Testing scanning of simple.pas test file...");
         File simple = new File("src/pascal/simple.pas");
         Reader simpleReader = new FileReader(simple);
-        System.out.println("Successfully imported simple.pas test file.");
+        System.out.println("File read success.");
 
         Scanner testScanner = new Scanner(simpleReader);
 
@@ -69,7 +76,8 @@ public class ScannerTest {
                     System.out.println("Token recognized: " + currentToken);
                 }
             } catch (IOException e) {
-                fail("Invalid Token: " + currentToken);
+                System.out.println("Invalid Token: " + currentToken);
+                result = false;
                 e.printStackTrace();
             }
         } while (currentToken != null);
@@ -78,5 +86,6 @@ public class ScannerTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        Assertions.assertEquals(true, result);
     }
 }

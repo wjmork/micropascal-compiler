@@ -29,6 +29,7 @@ public class SymbolTable {
      */
     public boolean addProgram(String lexeme) {
         if (symbolTable.containsKey(lexeme)) {
+            System.out.println("PROGRAM symbol already exists in table with lexeme: " + lexeme + ".");
             return false;
         } else {
             symbolTable.put(lexeme, new Symbol(lexeme, Kind.PROGRAM));
@@ -45,6 +46,7 @@ public class SymbolTable {
      */
     public boolean addVariable(String lexeme, TokenType tokenType) {
         if (symbolTable.containsKey(lexeme)) {
+            System.out.println("VARIABLE symbol already exists in table with lexeme: " + lexeme + ".");
             return false;
         } else {
             symbolTable.put(lexeme, new Symbol(lexeme, Kind.VARIABLE, tokenType));
@@ -63,6 +65,7 @@ public class SymbolTable {
      */
     public boolean addArray(String lexeme, TokenType tokenType, int start, int stop){
         if (symbolTable.containsKey(lexeme)) {
+            System.out.println("ARRAY symbol already exists in table with lexeme: " + lexeme + ".");
             return false;
         } else {
             symbolTable.put(lexeme, new Symbol(lexeme, Kind.ARRAY, tokenType, start, stop));
@@ -80,6 +83,7 @@ public class SymbolTable {
      */
     public boolean addFunction(String lexeme, TokenType tokenType, ArrayList<Symbol> arguments){
         if (symbolTable.containsKey(lexeme)) {
+            System.out.println("FUNCTION symbol already exists in table with lexeme: " + lexeme + ".");
             return false;
         } else {
             symbolTable.put(lexeme, new Symbol(lexeme, Kind.FUNCTION, tokenType, arguments));
@@ -101,7 +105,7 @@ public class SymbolTable {
         }
         catch (Exception e)
         {
-            System.out.println("No PROGRAM Symbol exists with the following identifier: " + lexeme);
+            System.out.println("No PROGRAM Symbol exists with the following lexeme: " + lexeme);
         }
         return false;
     }
@@ -120,7 +124,7 @@ public class SymbolTable {
         }
         catch (Exception e)
         {
-            System.out.println("No VARIABLE Symbol exists with the following identifier: " + lexeme);
+            System.out.println("No VARIABLE Symbol exists with the following lexeme: " + lexeme);
         }
         return false;
     }
@@ -139,7 +143,7 @@ public class SymbolTable {
         }
         catch (Exception e)
         {
-            System.out.println("No ARRAY Symbol exists with the following identifier: " + lexeme);
+            System.out.println("No ARRAY Symbol exists with the following lexeme: " + lexeme);
         }
         return false;
     }
@@ -158,14 +162,14 @@ public class SymbolTable {
         }
         catch (Exception e)
         {
-            System.out.println("No FUNCTION Symbol exists with the following identifier: " + lexeme);
+            System.out.println("No FUNCTION Symbol exists with the following lexeme: " + lexeme);
         }
         return false;
     }
 
     /**
      * Generates a list of the symbols contained in the symbol table hashmap and their
-     * appropriate information
+     * appropriate information using a stringbuilder.
      *
      * @return String containing the generated list
      */
