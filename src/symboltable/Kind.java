@@ -8,6 +8,6 @@ package symboltable;
 public enum Kind {
 
     // Kinds
-    PROGRAM, VARIABLE, ARRAY, FUNCTION,
+    PROGRAM, VARIABLE, ARRAY, FUNCTION, PROCEDURE
 }
 
