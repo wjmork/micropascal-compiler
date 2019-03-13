@@ -109,7 +109,7 @@ public class SymbolTable {
      * @return true if program symbol with given lexeme exists in the table
      */
     public boolean isProgram(String lexeme){
-        return symbolTable.get(lexeme).getKind() == Kind.PROGRAM;
+        return symbolTable.containsKey(lexeme) && symbolTable.get(lexeme).getKind() == Kind.PROGRAM;
     }
 
     /**
@@ -119,7 +119,7 @@ public class SymbolTable {
      * @return true if variable symbol with given lexeme exists in the table
      */
     public boolean isVariable(String lexeme){
-        return symbolTable.get(lexeme).getKind() == Kind.VARIABLE;
+        return symbolTable.containsKey(lexeme) && symbolTable.get(lexeme).getKind() == Kind.VARIABLE;
     }
 
     /**
@@ -129,7 +129,7 @@ public class SymbolTable {
      * @return true if array symbol with given lexeme exists in the table
      */
     public boolean isArray(String lexeme){
-        return symbolTable.get(lexeme).getKind() == Kind.ARRAY;
+        return symbolTable.containsKey(lexeme) && symbolTable.get(lexeme).getKind() == Kind.ARRAY;
     }
 
     /**
@@ -139,7 +139,7 @@ public class SymbolTable {
      * @return true if function symbol with given lexeme exists in the table
      */
     public boolean isFunction(String lexeme){
-        return symbolTable.get(lexeme).getKind() == Kind.FUNCTION;
+        return symbolTable.containsKey(lexeme) && symbolTable.get(lexeme).getKind() == Kind.FUNCTION;
     }
 
     /**
@@ -149,7 +149,7 @@ public class SymbolTable {
      * @return true if procedure symbol with given lexeme exists in the table
      */
     public boolean isProcedure(String lexeme){
-        return symbolTable.get(lexeme).getKind() == Kind.PROCEDURE;
+        return symbolTable.containsKey(lexeme) && symbolTable.get(lexeme).getKind() == Kind.PROCEDURE;
     }
 
     /**

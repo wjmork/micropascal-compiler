@@ -132,4 +132,90 @@ public class SymbolTableTest {
         Assertions.assertEquals(false, result);
         System.out.println("Success.");
     }
+
+    /**
+     * Tests the isProgram() method
+     */
+    @Test
+    public void isProgram() {
+        System.out.println("Testing isProgram method...");
+        boolean result;
+
+        // Test if a program known to exist in the symbol table is in the symbol table
+        result = testSymbolTable.isProgram("testProgram1");
+        Assertions.assertEquals(true, result);
+
+        // Test if a program that is not in the symbol table is in the symbol table
+        result = testSymbolTable.isProgram("testProgram3");
+        Assertions.assertEquals(false, result);
+    }
+
+    /**
+     * Tests the isVariable() method
+     */
+    @Test
+    public void isVariable() {
+        System.out.println("Testing isVariable method...");
+        boolean result;
+
+        // Test if a variable known to exist in the symbol table is in the symbol table
+        result = testSymbolTable.isVariable("testVariable1");
+        Assertions.assertEquals(true, result);
+
+        // Test if a variable that is not in the symbol table is in the symbol table
+        result = testSymbolTable.isVariable("testVariable3");
+        Assertions.assertEquals(false, result);
+    }
+
+    /**
+     * Tests the isArray() method
+     */
+    @Test
+    public void isArray() {
+        System.out.println("Testing isArray method...");
+        boolean result;
+
+        // Test if an array known to exist in the symbol table is in the symbol table
+        result = testSymbolTable.isArray("testArray1");
+        Assertions.assertEquals(true, result);
+
+        // Test if an array that is not in the symbol table is in the symbol table
+        result = testSymbolTable.isArray("testArray3");
+        Assertions.assertEquals(false, result);
+    }
+
+    /**
+     * Tests the isFunction() method
+     */
+    @Test
+    public void isFunction() {
+        System.out.println("Testing isFunction method...");
+        boolean result;
+
+        // Test if a function known to exist in the symbol table is in the symbol table
+        result = testSymbolTable.isFunction("testFunction1");
+        Assertions.assertEquals(true, result);
+
+        // Test if a function that is not in the symbol table is in the symbol table
+        result = testSymbolTable.isFunction("testFunction3");
+        Assertions.assertEquals(false, result);
+    }
+
+    /**
+     * Will be used to test the isProcedure() method
+
+    @Test
+    public void isProcedure() {
+        System.out.println("Testing isProcedure method...");
+        boolean result;
+
+        // Test if a procedure known to exist in the symbol table is in the symbol table
+        result = testSymbolTable.isProcedure("testProcedure1");
+        Assertions.assertEquals(true, result);
+
+        // Test if a procedure that is not in the symbol table is in the symbol table
+        result = testSymbolTable.isProcedure("testProcedure3");
+        Assertions.assertEquals(false, result);
+    }
+    */
 }

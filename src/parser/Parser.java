@@ -73,9 +73,11 @@ public class Parser {
         if (this.lookahead.getType() == TokenType.PROGRAM) {
             match(TokenType.PROGRAM);
             String identifier = lookahead.getLexeme();
+            System.out.println("got here." + identifier);
             if (symbolTable.isProgram(identifier)) {
                 error("PROGRAM with lexeme " + identifier + " already exists in symbol table.");
             }
+            System.out.println("got here." + identifier);
             symbolTable.addProgram(identifier);
         } else error("PROGRAM: TokenType PROGRAM not matched.");
 
@@ -277,10 +279,10 @@ public class Parser {
      * Structure:   parameter_list → identifier_list : type | identifier_list : type ; parameter_list
      */
     public void parameter_list() {
-        identifier_list();
+        ArrayList<String> identifierList = identifier_list();
         if (this.lookahead.type == TokenType.COLON) {
             match(TokenType.COLON);
-            type();
+            type(identifierList);
             if (this.lookahead.getType() == TokenType.SEMI) {
                 match(TokenType.SEMI);
                 parameter_list();
