@@ -37,13 +37,17 @@ public class SymbolTableTest {
         testSymbolTable.addArray("testArray2", TokenType.REAL, -10, 0);
 
         // creating test arguments for function identifiers
-        ArrayList<Symbol> testArguments = new ArrayList();
-        testArguments.add(new Symbol("testArg1", Kind.VARIABLE, TokenType.INTEGER));
-        testArguments.add(new Symbol("testArg2", Kind.VARIABLE, TokenType.REAL));
+        // ArrayList<Symbol> testArguments = new ArrayList();
+        // testArguments.add(new Symbol("testArg1", Kind.VARIABLE, TokenType.INTEGER));
+        // testArguments.add(new Symbol("testArg2", Kind.VARIABLE, TokenType.REAL));
 
         // adding function identifiers
-        testSymbolTable.addFunction("testFunction1", TokenType.INTEGER, testArguments);
-        testSymbolTable.addFunction("testFunction2", TokenType.REAL, testArguments);
+        testSymbolTable.addFunction("testFunction1", TokenType.INTEGER);
+        testSymbolTable.addFunction("testFunction2", TokenType.REAL);
+
+        // adding procedure identifiers
+        testSymbolTable.addProcedure("testProcedure1");
+        testSymbolTable.addProcedure("testProcedure2");
     }
 
     /**
@@ -123,11 +127,11 @@ public class SymbolTableTest {
         testArguments2.add(new Symbol("testArg3", Kind.VARIABLE, TokenType.INTEGER));
 
         // Add a new function identifier to the symbol table
-        result = testSymbolTable.addFunction("testFunction3", TokenType.REAL, testArguments2);
+        result = testSymbolTable.addFunction("testFunction3", TokenType.REAL);
         Assertions.assertEquals(true, result);
 
         // Add an existing function identifier to the symbol table
-        result = testSymbolTable.addFunction("testFunction1", TokenType.REAL, testArguments2);
+        result = testSymbolTable.addFunction("testFunction1", TokenType.REAL);
         Assertions.assertEquals(false, result);
         System.out.println("Success.");
     }
@@ -201,8 +205,8 @@ public class SymbolTableTest {
     }
 
     /**
-     * Will be used to test the isProcedure() method
-
+     * Tests the isProcedure() method
+     */
     @Test
     public void isProcedure() {
         System.out.println("Testing isProcedure method...");
@@ -216,5 +220,5 @@ public class SymbolTableTest {
         result = testSymbolTable.isProcedure("testProcedure3");
         Assertions.assertEquals(false, result);
     }
-    */
+
 }

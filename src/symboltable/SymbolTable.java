@@ -75,14 +75,13 @@ public class SymbolTable {
      *
      * @param lexeme lexeme of the function symbol
      * @param tokenType token type of the function symbol
-     * @param arguments arguments of the function symbol
      * @return true if the symbol was added to the table
      */
-    public boolean addFunction(String lexeme, TokenType tokenType, ArrayList<Symbol> arguments){
+    public boolean addFunction(String lexeme, TokenType tokenType){
         if (symbolTable.containsKey(lexeme)) {
             return false;
         } else {
-            symbolTable.put(lexeme, new Symbol(lexeme, Kind.FUNCTION, tokenType, arguments));
+            symbolTable.put(lexeme, new Symbol(lexeme, Kind.FUNCTION, tokenType));
             return true;
         }
     }

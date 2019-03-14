@@ -72,11 +72,13 @@ public class Parser {
     public void program() {
         match(TokenType.PROGRAM);
         String identifier = lookahead.getLexeme();
+        // this isProgram() check might eventually be handled by the match() function.
         if (symbolTable.isProgram(identifier)) {
             error("PROGRAM with lexeme " + identifier + " already exists in symbol table.");
         }
         symbolTable.addProgram(identifier);
         match(TokenType.ID);
+        match(TokenType.SEMI);
         declarations();
         subprogram_declarations();
         compound_statement();
@@ -110,8 +112,8 @@ public class Parser {
      */
     public void declarations() {
         if (this.lookahead.getType() == TokenType.VAR) {
-            ArrayList<String> identifierList = identifier_list();
             match(TokenType.VAR);
+            ArrayList<String> identifierList = identifier_list();
             match(TokenType.COLON);
             type(identifierList);
             match(TokenType.SEMI);
@@ -138,20 +140,21 @@ public class Parser {
             match(TokenType.NUMBER);
             match(TokenType.LBRACE);
             match(TokenType.OF);
+            TokenType tokenType = standard_type();
             for (String identifier : identifierList) {
                 if (symbolTable.isArray(identifier)){
                     error("ARRAY with lexeme " + identifier + " already exists in symbol table.");
                 } else {
-                    symbolTable.addArray(identifier, standard_type(), startIndex, stopIndex);
+                    symbolTable.addArray(identifier, tokenType, startIndex, stopIndex);
                 }
             }
         } else if (this.lookahead.getType() == TokenType.INTEGER || this.lookahead.getType() == TokenType.REAL) {
-            standard_type();
+            TokenType tokenType = standard_type();
             for (String identifier : identifierList) {
                 if (symbolTable.isVariable(identifier)){
                     error("VARIABLE with lexeme " + identifier + " already exists in symbol table.");
                 } else {
-                    symbolTable.addVariable(identifier, standard_type());
+                    symbolTable.addVariable(identifier, tokenType);
                 }
             }
         } else {
@@ -221,8 +224,8 @@ public class Parser {
             match(TokenType.ID);
             arguments();
             match(TokenType.COLON);
-            standard_type();
-            // symbolTable.addFunction(functionIdentifier, standard_type(), arguments);
+            TokenType tokenType = standard_type();
+            symbolTable.addFunction(functionIdentifier, standard_type());
             match(TokenType.SEMI);
         } else if (this.lookahead.getType() == TokenType.PROCEDURE) {
             match(TokenType.PROCEDURE);
@@ -323,7 +326,7 @@ public class Parser {
             match(TokenType.ASSIGN);
             expression();
         } else if (this.lookahead.getType() == TokenType.BEGIN) {
-            // procedure_statement();
+            procedure_statement();
         } else if (this.lookahead.getType() == TokenType.BEGIN) {
             compound_statement();
         } else if (this.lookahead.getType() == TokenType.IF) {
