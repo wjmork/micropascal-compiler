@@ -9,12 +9,14 @@ import java.io.*;
 import java.util.ArrayList;
 
 /**
- * The recognizer class recognizes whether an input string of tokens
- * is an expression.
+ * The parser class uses an instance of the scanner class to
+ * check a mini-pascal file or input stream against the
+ * known production rules of the pascal grammar. Each valid identifier
+ * is added to a symbol table.
  * <p>
- * To use a recognizer, create an instance pointing at a file,
- * and then call the top-level function, <code>exp()</code>.
- * If the functions returns without an error, the file
+ * To use a parser, create an instance pointing at a file or
+ * input stream and call the top-level function, <code>program()</code>.
+ * If the function returns without an error, the file
  * contains an acceptable expression.
  * </p>
  *
