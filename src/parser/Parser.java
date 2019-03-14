@@ -73,11 +73,9 @@ public class Parser {
         if (this.lookahead.getType() == TokenType.PROGRAM) {
             match(TokenType.PROGRAM);
             String identifier = lookahead.getLexeme();
-            System.out.println("got here." + identifier);
             if (symbolTable.isProgram(identifier)) {
                 error("PROGRAM with lexeme " + identifier + " already exists in symbol table.");
             }
-            System.out.println("got here." + identifier);
             symbolTable.addProgram(identifier);
         } else error("PROGRAM: TokenType PROGRAM not matched.");
 
@@ -225,6 +223,7 @@ public class Parser {
     public void subprogram_declaration() {
         subprogram_head();
         declarations();
+        subprogram_declarations();
         compound_statement();
     }
 
@@ -237,15 +236,19 @@ public class Parser {
     public void subprogram_head() {
         if (this.lookahead.type == TokenType.FUNCTION) {
             match(TokenType.FUNCTION);
+            String functionIdentifier = this.lookahead.getLexeme();
             match(TokenType.ID);
             arguments();
             match(TokenType.COLON);
             standard_type();
+            symbolTable.addFunction(functionIdentifier, standard_type(), arguments);
             match(TokenType.SEMI);
         } else if (this.lookahead.type == TokenType.PROCEDURE) {
             match(TokenType.PROCEDURE);
+            String procedureIdentifier = this.lookahead.getLexeme();
             match(TokenType.ID);
             arguments();
+            symbolTable.addProcedure(procedureIdentifier);
             match(TokenType.SEMI);
         } else {
             error("SUBPROGRAM_HEAD: TokenType FUNCTION or PROCEDURE not matched.");
@@ -299,10 +302,14 @@ public class Parser {
     public void compound_statement() {
         if (this.lookahead.getType() == TokenType.BEGIN) {
             match(TokenType.BEGIN);
+        } else {
+            error("COMPOUND_STATEMENT: TokenType BEGIN not matched.");
         }
         optional_statements();
         if (this.lookahead.getType() == TokenType.END) {
             match(TokenType.END);
+        } else {
+            error("COMPOUND_STATEMENT: TokenType END not matched.");
         }
     }
 
@@ -616,8 +623,8 @@ public class Parser {
      * @param expected The expected token type.
      */
     private void match(TokenType expected) {
-        System.out.println("expected: " + expected + ". look-ahead: " + this.lookahead.getType() + ".");
         if (this.lookahead.getType() == expected) {
+            System.out.println("expected: " + expected + ". look-ahead: " + this.lookahead.getType() + ".");
             try {
                 this.lookahead = inputStreamScanner.nextToken();
                 if (this.lookahead == null) {
