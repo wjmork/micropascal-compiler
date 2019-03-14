@@ -163,7 +163,7 @@ public class Parser {
                     symbolTable.addArray(identifier, standard_type(), startIndex, stopIndex);
                 }
             }
-        } else if (this.lookahead.type == TokenType.INTEGER || this.lookahead.type == TokenType.REAL) {
+        } else if (this.lookahead.getType() == TokenType.INTEGER || this.lookahead.getType() == TokenType.REAL) {
             standard_type();
             for (String identifier : identifierList) {
                 if (symbolTable.isVariable(identifier)){
@@ -184,10 +184,10 @@ public class Parser {
      * Structure:   standard_type → INTEGER | REAL
      */
     public TokenType standard_type() {
-        if (this.lookahead.type == TokenType.INTEGER) {
+        if (this.lookahead.getType() == TokenType.INTEGER) {
             match(TokenType.INTEGER);
             return TokenType.INTEGER;
-        } else if (this.lookahead.type == TokenType.REAL) {
+        } else if (this.lookahead.getType() == TokenType.REAL) {
             match(TokenType.REAL);
             return TokenType.REAL;
         } else {
@@ -203,9 +203,9 @@ public class Parser {
      * Structure:   subprogram_declarations → subprogram_declaration ; subprogram_declarations | λ
      */
     public void subprogram_declarations() {
-        if (this.lookahead.type == TokenType.FUNCTION || this.lookahead.type == TokenType.PROCEDURE) {
+        if (this.lookahead.getType() == TokenType.FUNCTION || this.lookahead.getType() == TokenType.PROCEDURE) {
             subprogram_declaration();
-            if (this.lookahead.type == TokenType.SEMI) {
+            if (this.lookahead.getType() == TokenType.SEMI) {
                 match(TokenType.SEMI);
                 subprogram_declarations();
             } else {
@@ -234,7 +234,7 @@ public class Parser {
      * Structure:   subprogram_head → function ID arguments : standard_type ; | procedure ID arguments ;
      */
     public void subprogram_head() {
-        if (this.lookahead.type == TokenType.FUNCTION) {
+        if (this.lookahead.getType() == TokenType.FUNCTION) {
             match(TokenType.FUNCTION);
             String functionIdentifier = this.lookahead.getLexeme();
             match(TokenType.ID);
@@ -243,7 +243,7 @@ public class Parser {
             standard_type();
             symbolTable.addFunction(functionIdentifier, standard_type(), arguments);
             match(TokenType.SEMI);
-        } else if (this.lookahead.type == TokenType.PROCEDURE) {
+        } else if (this.lookahead.getType() == TokenType.PROCEDURE) {
             match(TokenType.PROCEDURE);
             String procedureIdentifier = this.lookahead.getLexeme();
             match(TokenType.ID);
@@ -262,10 +262,10 @@ public class Parser {
      * Structure:   arguments → ( parameter_list ) | λ
      */
     public void arguments() {
-        if (this.lookahead.type == TokenType.LPAREN) {
+        if (this.lookahead.getType() == TokenType.LPAREN) {
             match(TokenType.LPAREN);
             parameter_list();
-            if (this.lookahead.type == TokenType.RPAREN) {
+            if (this.lookahead.getType() == TokenType.RPAREN) {
                 match(TokenType.RPAREN);
             } else {
                 error("ARGUMENTS: TokenType RBRACE not matched.");
@@ -283,7 +283,7 @@ public class Parser {
      */
     public void parameter_list() {
         ArrayList<String> identifierList = identifier_list();
-        if (this.lookahead.type == TokenType.COLON) {
+        if (this.lookahead.getType() == TokenType.COLON) {
             match(TokenType.COLON);
             type(identifierList);
             if (this.lookahead.getType() == TokenType.SEMI) {
@@ -320,12 +320,12 @@ public class Parser {
      * Structure:   optional_statements → statement_list | λ
      */
     public void optional_statements() {
-        if (this.lookahead.type == TokenType.ID ||
-                this.lookahead.type == TokenType.BEGIN ||
-                this.lookahead.type == TokenType.IF ||
-                this.lookahead.type == TokenType.READ ||
-                this.lookahead.type == TokenType.WRITE ||
-                this.lookahead.type == TokenType.RETURN) {
+        if (this.lookahead.getType() == TokenType.ID ||
+                this.lookahead.getType() == TokenType.BEGIN ||
+                this.lookahead.getType() == TokenType.IF ||
+                this.lookahead.getType() == TokenType.READ ||
+                this.lookahead.getType() == TokenType.WRITE ||
+                this.lookahead.getType() == TokenType.RETURN) {
             statement_list();
         } else {
             // lambda option
@@ -340,7 +340,7 @@ public class Parser {
      */
     public void statement_list() {
         statement();
-        if (this.lookahead.type == TokenType.SEMI) {
+        if (this.lookahead.getType() == TokenType.SEMI) {
             match(TokenType.SEMI);
             statement_list();
         } else {
@@ -355,37 +355,37 @@ public class Parser {
      * Structure:   statement → variable assignop expression | procedure_statement | compound_statement | IF expression THEN statement ELSE statement | WHILE expression DO statement | READ ( ID ) | WRITE ( expression ) | RETURN expression
      */
     public void statement() {
-        if (this.lookahead.type == TokenType.ID) {
+        if (this.lookahead.getType() == TokenType.ID) {
             variable();
             match(TokenType.ASSIGN);
             expression();
-        } else if (this.lookahead.type == TokenType.BEGIN) {
+        } else if (this.lookahead.getType() == TokenType.BEGIN) {
             // procedure_statement();
-        } else if (this.lookahead.type == TokenType.BEGIN) {
+        } else if (this.lookahead.getType() == TokenType.BEGIN) {
             compound_statement();
-        } else if (this.lookahead.type == TokenType.IF) {
+        } else if (this.lookahead.getType() == TokenType.IF) {
             match(TokenType.IF);
             expression();
             match(TokenType.THEN);
             statement();
             match(TokenType.ELSE);
             statement();
-        } else if (this.lookahead.type == TokenType.WHILE) {
+        } else if (this.lookahead.getType() == TokenType.WHILE) {
             match(TokenType.WHILE);
             expression();
             match(TokenType.DO);
             statement();
-        } else if (this.lookahead.type == TokenType.READ) {
+        } else if (this.lookahead.getType() == TokenType.READ) {
             match(TokenType.READ);
             match(TokenType.LPAREN);
             match(TokenType.ID);
             match(TokenType.RPAREN);
-        } else if (this.lookahead.type == TokenType.WRITE) {
+        } else if (this.lookahead.getType() == TokenType.WRITE) {
             match(TokenType.WRITE);
             match(TokenType.LPAREN);
             expression();
             match(TokenType.RPAREN);
-        } else if (this.lookahead.type == TokenType.RETURN) {
+        } else if (this.lookahead.getType() == TokenType.RETURN) {
             match(TokenType.RETURN);
             expression();
         } else {
@@ -400,12 +400,12 @@ public class Parser {
      * Structure:   variable → ID | ID [ expression ]
      */
     public void variable() {
-        if (this.lookahead.type == TokenType.ID) {
+        if (this.lookahead.getType() == TokenType.ID) {
             match(TokenType.ID);
-            if (this.lookahead.type == TokenType.LBRACE) {
+            if (this.lookahead.getType() == TokenType.LBRACE) {
                 match(TokenType.LBRACE);
                 expression();
-                if (this.lookahead.type == TokenType.RBRACE) {
+                if (this.lookahead.getType() == TokenType.RBRACE) {
                     match(TokenType.RBRACE);
                 } else {
                     error("VARIABLE: TokenType RBRACE not matched.");
@@ -429,7 +429,7 @@ public class Parser {
      */
     public void expression_list() {
         expression();
-        if (this.lookahead.type == TokenType.COMMA) {
+        if (this.lookahead.getType() == TokenType.COMMA) {
             match(TokenType.COMMA);
             expression_list();
         }
@@ -443,13 +443,8 @@ public class Parser {
      */
     public void expression() {
         simple_expression();
-        if (this.lookahead.type == TokenType.EQUAL ||
-                this.lookahead.type == TokenType.NOTEQ ||
-                this.lookahead.type == TokenType.LTHAN ||
-                this.lookahead.type == TokenType.LTHANEQ ||
-                this.lookahead.type == TokenType.GTHANEQ ||
-                this.lookahead.type == TokenType.GTHAN) {
-            match(this.lookahead.type);
+        if (isRelOp(this.lookahead.getType())) {
+            match(this.lookahead.getType());
             simple_expression();
         }
     }
@@ -467,13 +462,11 @@ public class Parser {
                 this.lookahead.getType() == TokenType.NOT) {
             term();
             simple_part();
-        } else if (this.lookahead.getType() == TokenType.PLUS ||
-                this.lookahead.getType() == TokenType.MINUS) {
-            sign();
+        } else if (sign()) {
             term();
             simple_part();
         } else {
-            error("SIMPLE_EXPRESSION: TokenType ID, NUMBER, LPAREN, NOT, PLUS, or MINUS not matched.");
+            error("SIMPLE_EXPRESSION: TERM or SIGN can not be called.");
         }
     }
 
@@ -484,10 +477,8 @@ public class Parser {
      * Structure:   simple_part → addop term simple_part | λ
      */
     public void simple_part() {
-        if (this.lookahead.type == TokenType.PLUS ||
-                this.lookahead.type == TokenType.MINUS ||
-                this.lookahead.type == TokenType.OR) {
-            sign();
+        if (isAddOp(this.lookahead.getType())) {
+            match(lookahead.getType());
             term();
             simple_part();
         } else {
@@ -497,17 +488,23 @@ public class Parser {
 
     /**
      * Executes the rule for the sign non-terminal symbol in
-     * the expression grammar.
+     * the expression grammar. Because sign() is only called by
+     * the parent function simple_expression, the lookahead token
+     * can both be checked and matched in the same function.
      *
-     * Structure:   sign → addop term simple_part | λ
+     * Structure:   sign → + | |
+     * @return true if lookahead token is a sign and is properly matched.
      */
-    public void sign() {
-        if (this.lookahead.type == TokenType.PLUS) {
+
+    public boolean sign() {
+        if (this.lookahead.getType() == TokenType.PLUS) {
             match(TokenType.PLUS);
-        } else if (this.lookahead.type == TokenType.MINUS) {
+            return true;
+        } else if (this.lookahead.getType() == TokenType.MINUS) {
             match(TokenType.MINUS);
+            return true;
         } else {
-            error("SIGN: TokenType PLUS or MINUS not matched.");
+            return false;
         }
     }
 
@@ -538,28 +535,7 @@ public class Parser {
      * Structure:   term_prime → mulop factor term_prime | λ
      */
     public void term_prime() {
-        if (isMulop(this.lookahead)) {
-            mulop();
-            factor();
-            term_prime();
-        } else {
-            // lambda option
-        }
-    }
-
-    /**
-     * Determines whether or not the given token is
-     * a mulop token.
-     *
-     * @param token The token to check.
-     * @return true if the token is a mulop, false otherwise
-     */
-    private boolean isMulop(Token token) {
-        boolean answer = false;
-        if (token.type == TokenType.ASTERISK || token.type == TokenType.FSLASH) {
-            answer = true;
-        }
-        return answer;
+        mulop();
     }
 
     /**
@@ -569,9 +545,9 @@ public class Parser {
      * Structure:   mulop → * | /
      */
     public void mulop() {
-        if (this.lookahead.type == TokenType.ASTERISK) {
+        if (this.lookahead.getType() == TokenType.ASTERISK) {
             match(TokenType.ASTERISK);
-        } else if (this.lookahead.type == TokenType.FSLASH) {
+        } else if (this.lookahead.getType() == TokenType.FSLASH) {
             match(TokenType.FSLASH);
         } else {
             error("MULOP: TokenType ASTERISK or FSLASH not matched.");
@@ -636,6 +612,38 @@ public class Parser {
         } else {
             error("expected: " + expected + ". look-ahead: " + this.lookahead.getType() + ".");
         }
+    }
+
+    /**
+     * Checks if a given token is a multiplication operator as defined in the grammar.
+     *
+     * @return true if token is a multiplication operator.
+     */
+    private static boolean isMulOp(TokenType tokenType) {
+        return (tokenType == TokenType.ASTERISK || tokenType == TokenType.FSLASH ||
+                tokenType == TokenType.DIV || tokenType == TokenType.MOD ||
+                tokenType == TokenType.AND);
+    }
+
+    /**
+     * Checks if a given token is an addition operator as defined in the grammar.
+     *
+     * @return true if token is a addition operator.
+     */
+    private static boolean isAddOp(TokenType tokenType) {
+        return (tokenType == TokenType.PLUS || tokenType == TokenType.MINUS ||
+                tokenType == TokenType.OR);
+    }
+
+    /**
+     * Checks if a given token is an relational operator as defined in the grammar.
+     *
+     * @return true if token is a relational operator.
+     */
+    private static boolean isRelOp(TokenType tokenType) {
+        return (tokenType == TokenType.EQUAL || tokenType == TokenType.NOTEQ ||
+                tokenType == TokenType.LTHAN || tokenType == TokenType.LTHANEQ ||
+                tokenType == TokenType.GTHANEQ || tokenType == TokenType.GTHAN);
     }
 
     /**
