@@ -3,9 +3,10 @@ package scanner;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 
 /**
  * This class contains JUnit testing for the scanner.

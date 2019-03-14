@@ -1,6 +1,7 @@
 package symboltable;
 
 import scanner.TokenType;
+
 import java.util.ArrayList;
 
 /**

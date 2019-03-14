@@ -3,9 +3,6 @@ package parser;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-
 /**
  * This class contains JUnit testing for the high-level production rules of
  * the Recognizer Grammar.

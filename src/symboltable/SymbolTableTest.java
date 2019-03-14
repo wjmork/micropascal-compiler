@@ -1,13 +1,12 @@
 package symboltable;
 
-import java.util.ArrayList;
-
 import org.junit.Assert;
-import org.junit.Test;
 import org.junit.Before;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import scanner.TokenType;
+
+import java.util.ArrayList;
 
 /**
  * This class contains JUnit testing for basic functions of the symbol table.

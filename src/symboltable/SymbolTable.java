@@ -1,11 +1,11 @@
 package symboltable;
 
+import scanner.TokenType;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import scanner.TokenType;
 
 /** Constructs a hashmap of key-value pairs for each unique identifier used in a pascal program.
  *
