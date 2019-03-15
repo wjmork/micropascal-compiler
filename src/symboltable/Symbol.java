@@ -5,7 +5,8 @@ import scanner.TokenType;
 import java.util.ArrayList;
 
 /**
- * The Token class defined a token object containing it's lexeme and type.
+ * The Symbol class defines a symbol object, and contains the symbol lexeme
+ * and other appropriate information pertaining to the symbol.
  *
  * @author William Mork
  */

@@ -18,7 +18,7 @@ public class SymbolTableTest {
     private SymbolTable testSymbolTable;
 
     /**
-     * Populates the symbol table with test identifiers
+     * Populates the symbol table with test identifiers.
      */
     @Before
     public void setUp() {
@@ -51,11 +51,12 @@ public class SymbolTableTest {
     }
 
     /**
-     * Tests the symbol table toString() function, fails if there are unexpected
-     * characters in the output string.
+     * Tests the symbol table toString() function.
+     *
+     * @result fails if there are unexpected characters in the output string.
      */
     @Test
-    public void printTable() {
+    public void printTableTest() {
         System.out.println("Testing toString() method...");
         System.out.println(testSymbolTable);
         Assert.assertFalse(testSymbolTable.toString().contains("@"));
@@ -63,10 +64,12 @@ public class SymbolTableTest {
     }
 
     /**
-     * Tests the addition of program identifiers to the symbol table
+     * Tests the addition of program identifiers to the symbol table.
+     *
+     * @result fails if program identifiers are improperly added to the symbol table.
      */
     @Test
-    public void addProgram() {
+    public void addProgramTest() {
         System.out.println("Testing addProgram method...");
         boolean result;
 
@@ -81,10 +84,12 @@ public class SymbolTableTest {
     }
 
     /**
-     * Tests the addition of variable identifiers to the symbol table
+     * Tests the addition of variable identifiers to the symbol table.
+     *
+     * @result fails if variable identifiers are improperly added to the symbol table.
      */
     @Test
-    public void addVariable() {
+    public void addVariableTest() {
         System.out.println("Testing addVariable method...");
         boolean result;
 
@@ -99,10 +104,12 @@ public class SymbolTableTest {
     }
 
     /**
-     * Tests the addition of array identifiers to the symbol table
+     * Tests the addition of array identifiers to the symbol table.
+     *
+     * @result fails if array identifiers are improperly added to the symbol table.
      */
     @Test
-    public void addArray() {
+    public void addArrayTest() {
         System.out.println("Testing addArray method...");
         boolean result;
 
@@ -117,14 +124,16 @@ public class SymbolTableTest {
     }
 
     /**
-     * Tests the addition of function identifiers to the symbol table
+     * Tests the addition of function identifiers to the symbol table.
+     *
+     * @result fails if function identifiers are improperly added to the symbol table.
      */
     @Test
-    public void addFunction() {
+    public void addFunctionTest() {
         System.out.println("Testing addFunction method...");
         boolean result;
-        ArrayList<Symbol> testArguments2 = new ArrayList();
-        testArguments2.add(new Symbol("testArg3", Kind.VARIABLE, TokenType.INTEGER));
+        // ArrayList<Symbol> testArguments2 = new ArrayList();
+        // testArguments2.add(new Symbol("testArg3", Kind.VARIABLE, TokenType.INTEGER));
 
         // Add a new function identifier to the symbol table
         result = testSymbolTable.addFunction("testFunction3", TokenType.REAL);
@@ -137,10 +146,35 @@ public class SymbolTableTest {
     }
 
     /**
-     * Tests the isProgram() method
+     * Tests the addition of procedure identifiers to the symbol table.
+     *
+     * @result fails if procedure identifiers are improperly added to the symbol table.
      */
     @Test
-    public void isProgram() {
+    public void addProcedureTest() {
+        System.out.println("Testing addProcedure method...");
+        boolean result;
+        // ArrayList<Symbol> testArguments2 = new ArrayList();
+        // testArguments2.add(new Symbol("testArg3", Kind.VARIABLE, TokenType.INTEGER));
+
+        // Add a new function identifier to the symbol table
+        result = testSymbolTable.addProcedure("testProcedure3");
+        Assertions.assertEquals(true, result);
+
+        // Add an existing function identifier to the symbol table
+        result = testSymbolTable.addProcedure("testProcedure1");
+        Assertions.assertEquals(false, result);
+        System.out.println("Success.");
+    }
+
+    /**
+     * Tests the isProgram() method.
+     *
+     * @result fails if the existence of a program symbol is unknown within
+     * the symbol table.
+     */
+    @Test
+    public void isProgramTest() {
         System.out.println("Testing isProgram method...");
         boolean result;
 
@@ -154,10 +188,13 @@ public class SymbolTableTest {
     }
 
     /**
-     * Tests the isVariable() method
+     * Tests the isVariable() method.
+     *
+     * @result fails if the existence of a variable symbol is unknown within
+     * the symbol table.
      */
     @Test
-    public void isVariable() {
+    public void isVariableTest() {
         System.out.println("Testing isVariable method...");
         boolean result;
 
@@ -171,10 +208,13 @@ public class SymbolTableTest {
     }
 
     /**
-     * Tests the isArray() method
+     * Tests the isArray() method.
+     *
+     * @result fails if the existence of an array symbol is unknown within
+     * the symbol table.
      */
     @Test
-    public void isArray() {
+    public void isArrayTest() {
         System.out.println("Testing isArray method...");
         boolean result;
 
@@ -188,10 +228,13 @@ public class SymbolTableTest {
     }
 
     /**
-     * Tests the isFunction() method
+     * Tests the isFunction() method.
+     *
+     * @result fails if the existence of a function symbol is unknown within
+     * the symbol table.
      */
     @Test
-    public void isFunction() {
+    public void isFunctionTest() {
         System.out.println("Testing isFunction method...");
         boolean result;
 
@@ -205,10 +248,13 @@ public class SymbolTableTest {
     }
 
     /**
-     * Tests the isProcedure() method
+     * Tests the isProcedure() method.
+     *
+     * @result fails if the existence of a procedure symbol is unknown within
+     * the symbol table.
      */
     @Test
-    public void isProcedure() {
+    public void isProcedureTest() {
         System.out.println("Testing isProcedure method...");
         boolean result;
 

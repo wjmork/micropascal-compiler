@@ -81,7 +81,7 @@ public class RecognizerTest {
      */
     @Test
     public void statementTest() {
-        System.out.println("Testing term...");
+        System.out.println("Testing statement...");
         boolean result = true;
         String input = "foo := 1";
         Recognizer testRecognizer = new Recognizer(input, false);

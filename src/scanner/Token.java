@@ -1,7 +1,7 @@
 package scanner;
 
 /**
- * The Token class defined a token object containing it's lexeme and type.
+ * The Token class defines a token object containing it's lexeme and type.
  *
  * @author William Mork
  */

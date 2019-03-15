@@ -47,6 +47,7 @@ public class Parser {
 
         if (importFile) {
             FileInputStream inputStream = null;
+            symbolTable.fileName = input;
             try {
                 inputStream = new FileInputStream(input);
             } catch (FileNotFoundException ex) {
@@ -65,16 +66,14 @@ public class Parser {
     }
 
     /**
-     * Executes the rule for the program non-terminal symbol in
-     * the expression grammar, and adds the program identifier to the
-     * symbol table.
+     * Executes the rule for program in the expression grammar,
+     * and adds the program identifier to the symbol table.
      *
      * Structure:   program → program ID ; | declarations | subprogram_declarations | compound_statement | .
      */
     public void program() {
         match(TokenType.PROGRAM);
         String identifier = lookahead.getLexeme();
-        // this isProgram() check might eventually be handled by the match() function.
         if (symbolTable.isProgram(identifier)) {
             error("PROGRAM with lexeme " + identifier + " already exists in symbol table.");
         }
@@ -88,9 +87,9 @@ public class Parser {
     }
 
     /**
-     * Executes the rule for the identifier_list non-terminal symbol in
-     * the expression grammar. Creates an ArrayList of identifiers to
-     * be used by a parent function, then adds it to the symbol table.
+     * Executes the rule for identifier_list in the expression grammar.
+     * Creates an ArrayList of identifiers to be used by a parent function,
+     * then adds it to the symbol table.
      *
      * Structure:   identifier_list → ID | ID, identifier_list
      */
@@ -106,9 +105,8 @@ public class Parser {
     }
 
     /**
-     * Executes the rule for the declarations non-terminal symbol in
-     * the expression grammar, and adds identifiers to the symbol table
-     * of its parent function.
+     * Executes the rule for declarations in the expression grammar,
+     * and adds identifiers to the symbol table.
      *
      * Structure:   declarations → VAR identifier_list : type ; declarations | λ
      */
@@ -125,8 +123,7 @@ public class Parser {
     }
 
     /**
-     * Executes the rule for the type non-terminal symbol in
-     * the expression grammar.
+     * Executes the rule for type in the expression grammar.
      *
      * Structure:   type → standard_type | ARRAY [ NUM : NUM ] of standard_type
      */
@@ -140,7 +137,7 @@ public class Parser {
             match(TokenType.COLON);
             stopIndex = Integer.parseInt(lookahead.getLexeme());
             match(TokenType.NUMBER);
-            match(TokenType.LBRACE);
+            match(TokenType.RBRACE);
             match(TokenType.OF);
             TokenType tokenType = standard_type();
             for (String identifier : identifierList) {
@@ -160,13 +157,12 @@ public class Parser {
                 }
             }
         } else {
-            error("TYPE: TokenType ARRAY not matched or STANDARD_TYPE not matched.");
+            error("TYPE: TokenType ARRAY not matched or STANDARD_TYPE not called.");
         }
     }
 
     /**
-     * Executes the rule for the standard_type non-terminal symbol in
-     * the expression grammar.
+     * Executes the rule for standard_type in the expression grammar.
      *
      * Structure:   standard_type → INTEGER | REAL
      */
@@ -184,8 +180,8 @@ public class Parser {
     }
 
     /**
-     * Executes the rule for the subprogram_declarations non-terminal symbol in
-     * the expression grammar.
+     * Executes the rule for subprogram_declarations in the
+     * expression grammar.
      *
      * Structure:   subprogram_declarations → subprogram_declaration ; subprogram_declarations | λ
      */
@@ -201,8 +197,8 @@ public class Parser {
     }
 
     /**
-     * Executes the rule for the subprogram_declaration non-terminal symbol in
-     * the expression grammar.
+     * Executes the rule for subprogram_declaration in the
+     * expression grammar.
      *
      * Structure:   subprogram_declaration → subprogram_head declarations compound_statement
      */
@@ -214,8 +210,8 @@ public class Parser {
     }
 
     /**
-     * Executes the rule for the subprogram_head non-terminal symbol in
-     * the expression grammar.
+     * Executes the rule for subprogram_head in the expression
+     * grammar.
      *
      * Structure:   subprogram_head → function ID arguments : standard_type ; | procedure ID arguments ;
      */
@@ -227,7 +223,7 @@ public class Parser {
             arguments();
             match(TokenType.COLON);
             TokenType tokenType = standard_type();
-            symbolTable.addFunction(functionIdentifier, standard_type());
+            symbolTable.addFunction(functionIdentifier, tokenType);
             match(TokenType.SEMI);
         } else if (this.lookahead.getType() == TokenType.PROCEDURE) {
             match(TokenType.PROCEDURE);
@@ -242,8 +238,7 @@ public class Parser {
     }
 
     /**
-     * Executes the rule for the arguments non-terminal symbol in
-     * the expression grammar.
+     * Executes the rule for arguments in the expression grammar.
      *
      * Structure:   arguments → ( parameter_list ) | λ
      */
@@ -257,8 +252,7 @@ public class Parser {
     }
 
     /**
-     * Executes the rule for the parameter_list non-terminal symbol in
-     * the expression grammar.
+     * Executes the rule for parameter_list in the expression grammar.
      *
      * Structure:   parameter_list → identifier_list : type | identifier_list : type ; parameter_list
      */
@@ -275,8 +269,8 @@ public class Parser {
     }
 
     /**
-     * Executes the rule for the compound_statement non-terminal symbol in
-     * the expression grammar.
+     * Executes the rule for compound_statement in the expression
+     * grammar.
      *
      * Structure:   compound_statement → BEGIN optional_statements END
      */
@@ -302,8 +296,7 @@ public class Parser {
     }
 
     /**
-     * Executes the rule for the statement_list non-terminal symbol in
-     * the expression grammar.
+     * Executes the rule for statement_list in the expression grammar.
      *
      * Structure:   statement_list → statement | statement ; statement_list
      */
@@ -317,18 +310,21 @@ public class Parser {
     }
 
     /**
-     * Executes the rule for the statement non-terminal symbol in
-     * the expression grammar.
+     * Executes the rule for statement in the expression grammar.
      *
      * Structure:   statement → variable assignop expression | procedure_statement | compound_statement | IF expression THEN statement ELSE statement | WHILE expression DO statement | READ ( ID ) | WRITE ( expression ) | RETURN expression
      */
     public void statement() {
         if (this.lookahead.getType() == TokenType.ID) {
-            variable();
-            match(TokenType.ASSIGN);
-            expression();
-        } else if (this.lookahead.getType() == TokenType.BEGIN) {
-            procedure_statement();
+            if (symbolTable.isVariable(this.lookahead.getLexeme())) {
+                variable();
+                match(TokenType.ASSIGN);
+                expression();
+            } else if (symbolTable.isProcedure(lookahead.getLexeme())) {
+                procedure_statement();
+            } else {
+                error("STATEMENT: Variable or Procedure identifier does not exist in symbol table.");
+            }
         } else if (this.lookahead.getType() == TokenType.BEGIN) {
             compound_statement();
         } else if (this.lookahead.getType() == TokenType.IF) {
@@ -377,8 +373,8 @@ public class Parser {
     }
 
     /**
-     * Executes the rule for the procedure_statement in the
-     * expression grammar.
+     * Executes the rule for procedure_statement in the expression
+     * grammar.
      */
     public void procedure_statement() {
         match(TokenType.ID);
@@ -390,8 +386,7 @@ public class Parser {
     }
 
     /**
-     * Executes the rule for the expression_list non-terminal symbol in
-     * the expression grammar.
+     * Executes the rule for expression_list in the expression grammar.
      *
      * Structure:   expression_list → expression | expression , expression_list
      */
@@ -404,8 +399,7 @@ public class Parser {
     }
 
     /**
-     * Executes the rule for the expression non-terminal symbol in
-     * the expression grammar.
+     * Executes the rule for expression in the expression grammar.
      *
      * Structure:   expression → expression_list | expression_list relop expression_list
      */
@@ -418,8 +412,8 @@ public class Parser {
     }
 
     /**
-     * Executes the rule for the simple_expression non-terminal symbol in
-     * the expression grammar.
+     * Executes the rule for simple_expression in the expression
+     * grammar.
      *
      * Structure:   simple_expression → term simple_part | sign term simple_part
      */
@@ -439,8 +433,7 @@ public class Parser {
     }
 
     /**
-     * Executes the rule for the simple_part non-terminal symbol in
-     * the expression grammar.
+     * Executes the rule for simple_part in the expression grammar.
      *
      * Structure:   simple_part → addop term simple_part | λ
      */
@@ -454,10 +447,10 @@ public class Parser {
     }
 
     /**
-     * Executes the rule for the sign non-terminal symbol in
-     * the expression grammar. Because sign() is only called by
-     * the parent function simple_expression, the lookahead token
-     * can both be checked and matched in the same function.
+     * Executes the rule for sign in the expression grammar.
+     * Because sign() is only called by the parent function
+     * simple_expression, the lookahead token can both be checked
+     * and matched in the same function.
      *
      * Structure:   sign → + | |
      * @return true if lookahead token is a sign and is properly matched.
@@ -476,8 +469,7 @@ public class Parser {
     }
 
     /**
-     * Executes the rule for the term non-terminal symbol in
-     * the expression grammar.
+     * Executes the rule for term in the expression grammar.
      *
      * Structure:   term → factor term_prime
      */
@@ -487,8 +479,7 @@ public class Parser {
     }
 
     /**
-     * Executes the rule for the term_prime non-terminal symbol in
-     * the expression grammar.
+     * Executes the rule for term_prime in the expression grammar.
      *
      * Structure:   term_prime → mulop factor term_prime | λ
      */
@@ -498,12 +489,11 @@ public class Parser {
             factor();
             term_prime();
         }
-        // else lambda case
+        // lambda case
     }
 
     /**
-     * Executes the rule for the factor non-terminal symbol in
-     * the expression grammar.
+     * Executes the rule for factor in the expression grammar.
      *
      * Structure:   factor → ID | ID [ expression ] | ID ( expression_list ) | num | ( expression ) | not factor
      */

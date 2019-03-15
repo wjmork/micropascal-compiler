@@ -13,6 +13,7 @@ import java.util.Map;
  */
 public class SymbolTable {
     protected HashMap<String, Symbol> symbolTable;
+    public String fileName = null;
 
     /**
      * Constructs a symbol table.
@@ -159,7 +160,12 @@ public class SymbolTable {
      */
     @Override
     public String toString() {
-        StringBuilder tableBuilder = new StringBuilder("SYMBOL TABLE: \n");
+        StringBuilder tableBuilder;
+        if (fileName == null) {
+            tableBuilder = new StringBuilder("SYMBOL TABLE: \n");
+        } else {
+            tableBuilder = new StringBuilder("SYMBOL TABLE for " + fileName + ": \n");
+        }
         Iterator tableIterator = symbolTable.entrySet().iterator();
 
         while (tableIterator.hasNext()) {
