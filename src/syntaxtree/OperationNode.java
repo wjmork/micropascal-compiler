@@ -21,26 +21,38 @@ public class OperationNode extends ExpressionNode {
      * Creates an operation node given an operation token.
      * @param op The token representing this node's math operation.
      */
-    public OperationNode ( TokenType op) {
+    public OperationNode (TokenType op) {
         this.operation = op;
     }
     
     
     // Getters
-    public ExpressionNode getLeft() { return( this.left);}
-    public ExpressionNode getRight() { return( this.right);}
-    public TokenType getOperation() { return( this.operation);}
+    public ExpressionNode getLeft() {
+        return(this.left);
+    }
+
+    public ExpressionNode getRight() {
+        return(this.right);
+    }
+
+    public TokenType getOperation() {
+        return(this.operation);
+    }
     
     // Setters
-    public void setLeft( ExpressionNode node) {
+    public void setLeft(ExpressionNode node) {
         // If we already have a left, remove it from our child list.
         this.left = node;
     }
-    public void setRight( ExpressionNode node) { 
+
+    public void setRight(ExpressionNode node) {
         // If we already have a right, remove it from our child list.
         this.right = node;
     }
-    public void setOperation( TokenType op) { this.operation = op;}
+
+    public void setOperation(TokenType op) {
+        this.operation = op;
+    }
     
     /**
      * Returns the operation token as a String.
@@ -57,22 +69,22 @@ public class OperationNode extends ExpressionNode {
      * @return A String representing this node.
      */
     @Override
-    public String indentedToString( int level) {
+    public String indentedToString(int level) {
         String answer = this.indentation(level);
         answer += "Operation: " + this.operation + "\n";
         answer += left.indentedToString(level + 1);
         answer += right.indentedToString(level + 1);
-        return( answer);
+        return(answer);
     }
 
     @Override
-    public boolean equals( Object o) {
+    public boolean equals(Object o) {
         boolean answer = false;
-        if( o instanceof OperationNode) {
+        if(o instanceof OperationNode) {
             OperationNode other = (OperationNode)o;
-            if( (this.operation == other.operation) &&
-                    this.left.equals( other.left) &&
-                    this.right.equals( other.right)) answer = true;
+            if((this.operation == other.operation) &&
+                    this.left.equals(other.left) &&
+                    this.right.equals(other.right)) answer = true;
         }
         return answer;
     }

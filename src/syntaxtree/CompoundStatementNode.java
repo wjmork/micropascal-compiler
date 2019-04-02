@@ -1,4 +1,3 @@
-
 package syntaxtree;
 
 import java.util.ArrayList;
@@ -17,8 +16,8 @@ public class CompoundStatementNode extends StatementNode {
      * Adds a statement to this compound statement.
      * @param state The statement to add to this compound statement.
      */
-    public void addStatement( StatementNode state) {
-        this.statements.add( state);
+    public void addStatement(StatementNode state) {
+        this.statements.add(state);
     }
     
     /**
@@ -28,11 +27,11 @@ public class CompoundStatementNode extends StatementNode {
      * @return A String representing this node.
      */
     @Override
-    public String indentedToString( int level) {
-        String answer = this.indentation( level);
+    public String indentedToString(int level) {
+        String answer = this.indentation(level);
         answer += "Compound Statement\n";
-        for( StatementNode state : statements) {
-            answer += state.indentedToString( level + 1);
+        for(StatementNode state : statements) {
+            answer += state.indentedToString(level + 1);
         }
         return answer;
     }

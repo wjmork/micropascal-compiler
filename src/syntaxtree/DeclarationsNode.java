@@ -1,4 +1,3 @@
-
 package syntaxtree;
 
 import java.util.ArrayList;
@@ -15,8 +14,8 @@ public class DeclarationsNode extends SyntaxTreeNode {
      * Adds a variable to this declaration.
      * @param aVariable The variable node to add to this declaration.
      */
-    public void addVariable( VariableNode aVariable) {
-        vars.add( aVariable);
+    public void addVariable(VariableNode aVariable) {
+        vars.add(aVariable);
     }
     
     /**
@@ -25,11 +24,11 @@ public class DeclarationsNode extends SyntaxTreeNode {
      * @return A String representing this node.
      */
     @Override
-    public String indentedToString( int level) {
-        String answer = this.indentation( level);
+    public String indentedToString(int level) {
+        String answer = this.indentation(level);
         answer += "Declarations\n";
-        for( VariableNode variable : vars) {
-            answer += variable.indentedToString( level + 1);
+        for(VariableNode variable : vars) {
+            answer += variable.indentedToString(level + 1);
         }
         return answer;
     }

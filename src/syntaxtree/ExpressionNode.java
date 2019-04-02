@@ -2,7 +2,7 @@ package syntaxtree;
 
 /**
  * General representation of any expression.
- * @author erik
+ * @author Erik Steinmetz
  */
 public abstract class ExpressionNode extends SyntaxTreeNode {
     

@@ -18,7 +18,7 @@ public class ValueNode extends ExpressionNode {
      * Creates a ValueNode with the given attribute.
      * @param attr The attribute for this value node.
      */
-    public ValueNode( String attr) {
+    public ValueNode(String attr) {
         this.attribute = attr;
     }
     
@@ -26,7 +26,9 @@ public class ValueNode extends ExpressionNode {
      * Returns the attribute of this node.
      * @return The attribute of this ValueNode.
      */
-    public String getAttribute() { return( this.attribute);}
+    public String getAttribute() {
+        return(this.attribute);
+    }
     
     /**
      * Returns the attribute as the description of this node.
@@ -34,7 +36,7 @@ public class ValueNode extends ExpressionNode {
      */
     @Override
     public String toString() {
-        return( attribute);
+        return(attribute);
     }
     
     /**
@@ -43,18 +45,18 @@ public class ValueNode extends ExpressionNode {
      * @return A String representing this node.
      */
     @Override
-    public String indentedToString( int level) {
+    public String indentedToString(int level) {
         String answer = this.indentation(level);
         answer += "Value: " + this.attribute + "\n";
         return answer;
     }
 
     @Override
-    public boolean equals( Object o) {
+    public boolean equals(Object o) {
         boolean answer = false;
-        if( o instanceof ValueNode) {
+        if(o instanceof ValueNode) {
             ValueNode other = (ValueNode)o;
-            if( this.attribute.equals( other.attribute)) answer = true;
+            if(this.attribute.equals(other.attribute)) answer = true;
         }
         return answer;
     }    

@@ -1,4 +1,4 @@
-
+// untouched
 package syntaxtree;
 
 /**
@@ -14,7 +14,7 @@ public class VariableNode extends ExpressionNode {
      * Creates a ValueNode with the given attribute.
      * @param attr The attribute for this value node.
      */
-    public VariableNode( String attr) {
+    public VariableNode(String attr) {
         this.name = attr;
     }
     
@@ -22,7 +22,9 @@ public class VariableNode extends ExpressionNode {
      * Returns the name of the variable of this node.
      * @return The name of this VariableNode.
      */
-    public String getName() { return( this.name);}
+    public String getName() {
+        return(this.name);
+    }
     
     /**
      * Returns the name of the variable as the description of this node.
@@ -30,7 +32,7 @@ public class VariableNode extends ExpressionNode {
      */
     @Override
     public String toString() {
-        return( name);
+        return(name);
     }
     
     /**
@@ -39,20 +41,19 @@ public class VariableNode extends ExpressionNode {
      * @return A String representing this node.
      */
     @Override
-    public String indentedToString( int level) {
+    public String indentedToString(int level) {
         String answer = this.indentation(level);
         answer += "Name: " + this.name + "\n";
         return answer;
     }
 
     @Override
-    public boolean equals( Object o) {
+    public boolean equals(Object o) {
         boolean answer = false;
-        if( o instanceof VariableNode) {
+        if(o instanceof VariableNode) {
             VariableNode other = (VariableNode)o;
-            if( this.name.equals( other.name)) answer = true;
+            if(this.name.equals(other.name)) answer = true;
         }
         return answer;
-    }    
-    
+    }
 }

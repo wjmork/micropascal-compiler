@@ -1,4 +1,3 @@
-
 package syntaxtree;
 
 /**
@@ -25,9 +24,7 @@ public class AssignmentStatementNode extends StatementNode {
     public void setExpression(ExpressionNode expression) {
         this.expression = expression;
     }
-    
 
-    
     /**
      * Creates a String representation of this assignment statement node 
      * and its children.
@@ -35,11 +32,11 @@ public class AssignmentStatementNode extends StatementNode {
      * @return A String representing this node.
      */
     @Override
-    public String indentedToString( int level) {
-        String answer = this.indentation( level);
+    public String indentedToString(int level) {
+        String answer = this.indentation(level);
         answer += "Assignment\n";
-        answer += this.lvalue.indentedToString( level + 1);
-        answer += this.expression.indentedToString( level + 1);
+        answer += this.lvalue.indentedToString(level + 1);
+        answer += this.expression.indentedToString(level + 1);
         return answer;
     }
 }
