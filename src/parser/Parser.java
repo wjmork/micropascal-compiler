@@ -4,6 +4,7 @@ import scanner.Scanner;
 import scanner.Token;
 import scanner.TokenType;
 import symboltable.SymbolTable;
+import syntaxtree.*;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -66,14 +67,15 @@ public class Parser {
     }
 
     /**
-     * Executes the rule for program in the expression grammar,
-     * and adds the program identifier to the symbol table.
+     * Executes the rule for program in the expression grammar; adds the
+     * program identifier to the symbol table and creates a ProgramNode within the syntax tree.
      *
      * Structure:   program → program ID ; | declarations | subprogram_declarations | compound_statement | .
      */
-    public void program() {
+    public ProgramNode program() {
         match(TokenType.PROGRAM);
         String identifier = lookahead.getLexeme();
+        ProgramNode program = new ProgramNode(identifier);
         if (symbolTable.isProgram(identifier)) {
             error("PROGRAM with lexeme " + identifier + " already exists in symbol table.");
         }
@@ -83,7 +85,13 @@ public class Parser {
         declarations();
         subprogram_declarations();
         compound_statement();
+
+        program.setVariables(declarations());
+        program.setFunctions(subprogram_declarations());
+        program.setMain(compound_statement());
+
         match(TokenType.PERIOD);
+        return program;
     }
 
     /**
@@ -105,21 +113,27 @@ public class Parser {
     }
 
     /**
-     * Executes the rule for declarations in the expression grammar,
-     * and adds identifiers to the symbol table.
+     * Executes the rule for declarations in the expression grammar; adds the
+     * declarations identifier to the symbol table and creates a DeclarationsNode within the syntax tree.
      *
      * Structure:   declarations → VAR identifier_list : type ; declarations | λ
      */
-    public void declarations() {
+    public DeclarationsNode declarations() {
+        DeclarationsNode declarations = new DeclarationsNode();
         if (this.lookahead.getType() == TokenType.VAR) {
             match(TokenType.VAR);
             ArrayList<String> identifierList = identifier_list();
+            for (String identifier : identifierList) {
+                declarations.addVariable(new VariableNode(identifier));
+            }
             match(TokenType.COLON);
             type(identifierList);
             match(TokenType.SEMI);
             declarations();
+            declarations.addVariable(declarations());
         }
         // lambda case
+        return declarations;
     }
 
     /**
@@ -180,12 +194,14 @@ public class Parser {
     }
 
     /**
-     * Executes the rule for subprogram_declarations in the
-     * expression grammar.
+     * Executes the rule for subprogram_declarations in the expression grammar; adds
+     * the subprogram_declarations identifier to the symbol table and creates a
+     * DeclarationsNode within the syntax tree.
      *
      * Structure:   subprogram_declarations → subprogram_declaration ; subprogram_declarations | λ
      */
-    public void subprogram_declarations() {
+    public SubProgramDeclarationsNode subprogram_declarations() {
+        SubProgramDeclarationsNode subProgramDeclarationsNode = new SubProgramDeclarationsNode();
         if (this.lookahead.getType() == TokenType.FUNCTION || this.lookahead.getType() == TokenType.PROCEDURE) {
             subprogram_declaration();
             if (this.lookahead.getType() == TokenType.SEMI) {
@@ -194,6 +210,7 @@ public class Parser {
             }
             // lambda case
         }
+        return subProgramDeclarationsNode;
     }
 
     /**
@@ -274,10 +291,11 @@ public class Parser {
      *
      * Structure:   compound_statement → BEGIN optional_statements END
      */
-    public void compound_statement() {
+    public CompoundStatementNode compound_statement() {
+        CompoundStatementNode compoundStatementNode = new CompoundStatementNode();
         match(TokenType.BEGIN);
-        optional_statements();
         match(TokenType.END);
+        return compoundStatementNode;
     }
 
     /**
