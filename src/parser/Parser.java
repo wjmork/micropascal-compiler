@@ -86,9 +86,9 @@ public class Parser {
         symbolTable.addProgram(identifier);
         match(TokenType.ID);
         match(TokenType.SEMI);
-        declarations();
-        subprogram_declarations();
-        compound_statement();
+        program.setVariables(declarations());
+        program.setFunctions(subprogram_declarations());
+        program.setMain(compound_statement());
         match(TokenType.PERIOD);
         return program;
     }
@@ -132,7 +132,6 @@ public class Parser {
             match(TokenType.COLON);
             type(identifierList);
             match(TokenType.SEMI);
-            declarations();
             declarations.addDeclarations(declarations());
         }
         // lambda case
@@ -215,7 +214,7 @@ public class Parser {
             subProgramDeclarationsNode.addSubProgramDeclaration(subprogram_declaration());
             if (this.lookahead.getType() == TokenType.SEMI) {
                 match(TokenType.SEMI);
-                subProgramDeclarationsNode.addSubProgramDeclarations(subprogram_declarations());
+                subProgramDeclarationsNode.addSubProgramDeclarations(subprogram_declarations().getProcs());
             }
             // lambda case
         }
@@ -226,9 +225,10 @@ public class Parser {
      * Executes the rule for subprogram_declaration in the
      * expression grammar.
      *
-     * Production Rules::   subprogram_declaration → subprogram_head declarations compound_statement
+     * Production Rules:
+     * RULE g.a:    subprogram_declaration → subprogram_head declarations compound_statement
      */
-    public SubProgramDeclarationsNode subprogram_declaration() {
+    public SubProgramNode subprogram_declaration() {
         SubProgramNode subProgramNode = subprogram_head();
         declarations();
         subprogram_declarations();
@@ -241,11 +241,11 @@ public class Parser {
      * grammar.
      *
      * Production Rules:
-     * RULE g.a:    subprogram_head → function ID arguments : standard_type ;
-     * RULE g.b:    subprogram_head → procedure ID arguments ;
+     * RULE h.a:    subprogram_head → function ID arguments : standard_type ;
+     * RULE h.b:    subprogram_head → procedure ID arguments ;
      */
     public SubProgramNode subprogram_head() {
-        SubProgramNode subProgramNode;
+        SubProgramNode subProgramNode = null;
         if (this.lookahead.getType() == TokenType.FUNCTION) {
             match(TokenType.FUNCTION);
             String functionIdentifier = this.lookahead.getLexeme();
@@ -274,8 +274,8 @@ public class Parser {
      * Executes the rule for arguments in the expression grammar.
      *
      * Production Rules:
-     * RULE h.a:    arguments → ( parameter_list )
-     * RULE h.b:    arguments → λ
+     * RULE i.a:    arguments → ( parameter_list )
+     * RULE i.b:    arguments → λ
      */
     public void arguments() {
         if (this.lookahead.getType() == TokenType.LPAREN) {
@@ -290,8 +290,8 @@ public class Parser {
      * Executes the rule for parameter_list in the expression grammar.
      *
      * Production Rules:
-     * RULE i.a:    parameter_list → identifier_list : type
-     * RULE i.b:    parameter_list → identifier_list : type ; parameter_list
+     * RULE j.a:    parameter_list → identifier_list : type
+     * RULE j.b:    parameter_list → identifier_list : type ; parameter_list
      */
     public void parameter_list() {
         ArrayList<String> identifierList = identifier_list();
@@ -310,11 +310,12 @@ public class Parser {
      * grammar.
      *
      * Production Rules:
-     * RULE j.a:    compound_statement → BEGIN optional_statements END
+     * RULE k.a:    compound_statement → BEGIN optional_statements END
      */
     public CompoundStatementNode compound_statement() {
         CompoundStatementNode compoundStatementNode = new CompoundStatementNode();
         match(TokenType.BEGIN);
+        compoundStatementNode = optional_statements();
         match(TokenType.END);
         return compoundStatementNode;
     }
@@ -323,8 +324,8 @@ public class Parser {
      * Executes the rule for optional_statement in the expression grammar.
      *
      * Production Rules:
-     * RULE k.a:    optional_statements → statement_list
-     * RULE k.b:    optional_statements → λ
+     * RULE l.a:    optional_statements → statement_list
+     * RULE l.b:    optional_statements → λ
      */
     public CompoundStatementNode optional_statements() {
         CompoundStatementNode compoundStatementNode = new CompoundStatementNode();
@@ -342,8 +343,8 @@ public class Parser {
      * Executes the rule for statement_list in the expression grammar.
      *
      * Production Rules:
-     * RULE l.a:    statement_list → statement
-     * RULE l.b:    statement_list → statement ; statement_list
+     * RULE m.a:    statement_list → statement
+     * RULE m.b:    statement_list → statement ; statement_list
      */
     public ArrayList<StatementNode> statement_list() {
         ArrayList<StatementNode> statementNodeList = new ArrayList();
@@ -360,17 +361,17 @@ public class Parser {
      * Executes the rule for statement in the expression grammar.
      *
      * Production Rules:
-     * RULE m.a:    statement → variable assignop expression
-     * RULE m.b:    statement → procedure_statement
-     * RULE m.c:    statement → compound_statement
-     * RULE m.d:    statement → IF expression THEN statement ELSE statement
-     * RULE m.e:    statement → WHILE expression DO statement
-     * RULE m.f:    statement → READ ( ID )
-     * RULE m.g:    statement → WRITE ( expression )
-     * RULE m.h:    statement → RETURN expression
+     * RULE n.a:    statement → variable assignop expression
+     * RULE n.b:    statement → procedure_statement
+     * RULE n.c:    statement → compound_statement
+     * RULE n.d:    statement → IF expression THEN statement ELSE statement
+     * RULE n.e:    statement → WHILE expression DO statement
+     * RULE n.f:    statement → READ ( ID )
+     * RULE n.g:    statement → WRITE ( expression )
+     * RULE n.h:    statement → RETURN expression
      */
     public StatementNode statement() {
-        StatementNode statementNode;
+        StatementNode statementNode = null;
         if (this.lookahead.getType() == TokenType.ID) {
             if (symbolTable.isVariable(this.lookahead.getLexeme())) {
                 variable();
@@ -419,18 +420,18 @@ public class Parser {
      * the expression grammar.
      *
      * Production Rules:
-     * RULE n.a:    variable → ID
-     * RULE n.b:    variable → ID [ expression ]
+     * RULE o.a:    variable → ID
+     * RULE o.b:    variable → ID [ expression ]
      */
     public VariableNode variable() {
-        VariableNode variableNode;
+        VariableNode variableNode = null;
         match(TokenType.ID);
         if (this.lookahead.getType() == TokenType.LBRACE) {
             match(TokenType.LBRACE);
             expression();
             match(TokenType.RBRACE);
         }
-        return variableNode();
+        return variableNode;
     }
 
     /**
@@ -438,11 +439,11 @@ public class Parser {
      * grammar.
      *
      * Production Rules:
-     * RULE o.a:    procedure_statement → ID
-     * RULE o.b:    procedure_statement → ID ( expression_list )
+     * RULE p.a:    procedure_statement → ID
+     * RULE p.b:    procedure_statement → ID ( expression_list )
      */
     public ProcedureStatementNode procedure_statement() {
-        ProcedureStatementNode procedureStatementNode;
+        ProcedureStatementNode procedureStatementNode = null;
         match(TokenType.ID);
         if (this.lookahead.getType() == TokenType.LPAREN) {
             match(TokenType.LPAREN);
@@ -456,11 +457,11 @@ public class Parser {
      * Executes the rule for expression_list in the expression grammar.
      *
      * Production Rules:
-     * RULE p.a:    expression_list → expression
-     * RULE p.b:    expression_list → expression , expression_list
+     * RULE q.a:    expression_list → expression
+     * RULE q.b:    expression_list → expression , expression_list
      */
     public ExpressionNode expression_list() {
-        ExpressionNode expressionNode;
+        ExpressionNode expressionNode = null;
         expression();
         if (this.lookahead.getType() == TokenType.COMMA) {
             match(TokenType.COMMA);
@@ -473,11 +474,11 @@ public class Parser {
      * Executes the rule for expression in the expression grammar.
      *
      * Production Rules:
-     * RULE q.a:    expression → simple_expression
-     * RULE q.b:    expression → simple_expression relop simple_expression
+     * RULE r.a:    expression → simple_expression
+     * RULE r.b:    expression → simple_expression relop simple_expression
      */
     public ExpressionNode expression() {
-        ExpressionNode expressionNode;
+        ExpressionNode expressionNode = null;
         simple_expression();
         if (isRelOp(this.lookahead.getType())) {
             match(this.lookahead.getType());
@@ -491,11 +492,11 @@ public class Parser {
      * grammar.
      *
      * Production Rules:
-     * RULE r.a:    simple_expression → term simple_part
-     * RULE r.b:    simple_expression → sign term simple_part
+     * RULE s.a:    simple_expression → term simple_part
+     * RULE s.b:    simple_expression → sign term simple_part
      */
     public ExpressionNode simple_expression() {
-        ExpressionNode expressionNode;
+        ExpressionNode expressionNode = null;
         if (this.lookahead.getType() == TokenType.ID ||
                 this.lookahead.getType() == TokenType.NUMBER ||
                 this.lookahead.getType() == TokenType.LPAREN ||
@@ -515,11 +516,11 @@ public class Parser {
      * Executes the rule for simple_part in the expression grammar.
      *
      * Production Rules:
-     * RULE s.a:    simple_part → addop term simple_part
-     * RULE s.b:    simple_part → λ
+     * RULE t.a:    simple_part → addop term simple_part
+     * RULE t.b:    simple_part → λ
      */
     public ExpressionNode simple_part() {
-        ExpressionNode expressionNode;
+        ExpressionNode expressionNode = null;
         if (isAddOp(this.lookahead.getType())) {
             match(lookahead.getType());
             term();
@@ -536,8 +537,8 @@ public class Parser {
      * and matched in the same function.
      *
      * Production Rules:
-     * RULE t.a:    sign → +
-     * RULE t.b:    sign → -
+     * RULE u.a:    sign → +
+     * RULE u.b:    sign → -
      * @return true if lookahead token is a sign and is properly matched.
      */
 
@@ -558,10 +559,10 @@ public class Parser {
      * Executes the rule for term in the expression grammar.
      *
      * Production Rules:
-     * RULE u.a:    term → factor term_prime
+     * RULE v.a:    term → factor term_prime
      */
     public ExpressionNode term() {
-        ExpressionNode expressionNode;
+        ExpressionNode expressionNode = null;
         factor();
         term_prime();
         return expressionNode;
@@ -571,11 +572,11 @@ public class Parser {
      * Executes the rule for term_prime in the expression grammar.
      *
      * Production Rules:
-     * RULE v.a:    term_prime → mulop factor term_prime
-     * RULE v.b:    term_prime → λ
+     * RULE w.a:    term_prime → mulop factor term_prime
+     * RULE w.b:    term_prime → λ
      */
     public ExpressionNode term_prime() {
-        ExpressionNode expressionNode;
+        ExpressionNode expressionNode = null;
         if (isMulOp(this.lookahead.getType())) {
             match(this.lookahead.getType());
             factor();
@@ -589,15 +590,15 @@ public class Parser {
      * Executes the rule for factor in the expression grammar.
      *
      * Production Rules:
-     * RULE w.a:    factor → ID
-     * RULE w.b:    factor → ID [ expression ]
-     * RULE w.c:    factor → ID ( expression_list )
-     * RULE w.d:    factor → num
-     * RULE w.e:    factor → ( expression )
-     * RULE w.f:    factor → not factor
+     * RULE x.a:    factor → ID
+     * RULE x.b:    factor → ID [ expression ]
+     * RULE x.c:    factor → ID ( expression_list )
+     * RULE x.d:    factor → num
+     * RULE x.e:    factor → ( expression )
+     * RULE x.f:    factor → not factor
      */
     public ExpressionNode factor() {
-        ExpressionNode expressionNode;
+        ExpressionNode expressionNode = null;
         if (lookahead.getType() == TokenType.ID) {
             match(TokenType.ID);
             if (lookahead.getType() == TokenType.LBRACE) {

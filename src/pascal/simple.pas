@@ -10,6 +10,6 @@ begin
     else
       fo := 26
   ;
-  write( fo)
+  write(fo)
 end
 .

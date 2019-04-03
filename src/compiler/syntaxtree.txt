@@ -1,0 +1,8 @@
+Program: foo
+|-- Declarations
+|-- --- Name: fee
+|-- --- Name: fi
+|-- --- Name: fo
+|-- --- Name: fum
+|-- SubProgramDeclarations
+|-- Compound Statement

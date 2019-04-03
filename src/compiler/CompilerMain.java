@@ -1,6 +1,7 @@
 package compiler;
 
 import parser.Parser;
+import syntaxtree.ProgramNode;
 
 import java.io.*;
 
@@ -20,6 +21,10 @@ public class CompilerMain {
 
         parser.program();
         exportSymbolTable(parser.getSymbolTable().toString());
+
+        // This parser is a separate instance for now and is used to test the syntax tree output.
+        Parser parser2 = new Parser("src/pascal/simple.pas", true);
+        exportSyntaxTree(parser2);
     }
 
     /**
@@ -29,6 +34,17 @@ public class CompilerMain {
     public static void exportSymbolTable(String symbolTable) {
         try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("src/compiler/symboltable.txt")))) {
             writer.write(symbolTable);
+        }
+        catch (Exception e) { }
+    }
+
+    /**
+     * Writes the indented syntax tree to a file.
+     * @param parser the parser instance for which the syntax tree will be generated.
+     */
+    public static void exportSyntaxTree(Parser parser) {
+        try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("src/compiler/syntaxtree.txt")))) {
+            writer.write(parser.program().indentedToString(0));
         }
         catch (Exception e) { }
     }
