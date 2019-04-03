@@ -70,7 +70,11 @@ public class Parser {
      * Executes the rule for program in the expression grammar; adds the
      * program identifier to the symbol table and creates a ProgramNode within the syntax tree.
      *
-     * Structure:   program → program ID ; | declarations | subprogram_declarations | compound_statement | .
+     * Production Rules:
+     * RULE a.a:    program → program ID
+     * RULE a.b:    program → declarations
+     * RULE a.c:    program → subprogram_declarations
+     * RULE a.d:    program → compound_statement
      */
     public ProgramNode program() {
         match(TokenType.PROGRAM);
@@ -85,11 +89,6 @@ public class Parser {
         declarations();
         subprogram_declarations();
         compound_statement();
-
-        program.setVariables(declarations());
-        program.setFunctions(subprogram_declarations());
-        program.setMain(compound_statement());
-
         match(TokenType.PERIOD);
         return program;
     }
@@ -99,7 +98,9 @@ public class Parser {
      * Creates an ArrayList of identifiers to be used by a parent function,
      * then adds it to the symbol table.
      *
-     * Structure:   identifier_list → ID | ID, identifier_list
+     * Production Rules:
+     * RULE b.a:    identifier_list → ID
+     * RULE b.b:    identifier_list → ID , identifier_list
      */
     public ArrayList<String> identifier_list() {
         ArrayList<String> identifierList = new ArrayList();
@@ -116,7 +117,9 @@ public class Parser {
      * Executes the rule for declarations in the expression grammar; adds the
      * declarations identifier to the symbol table and creates a DeclarationsNode within the syntax tree.
      *
-     * Structure:   declarations → VAR identifier_list : type ; declarations | λ
+     * Production Rules:
+     * RULE c.a:    declarations → VAR identifier_list : type ; declarations
+     * RULE c.b:    declarations → λ
      */
     public DeclarationsNode declarations() {
         DeclarationsNode declarations = new DeclarationsNode();
@@ -130,7 +133,7 @@ public class Parser {
             type(identifierList);
             match(TokenType.SEMI);
             declarations();
-            declarations.addVariable(declarations());
+            declarations.addDeclarations(declarations());
         }
         // lambda case
         return declarations;
@@ -139,7 +142,9 @@ public class Parser {
     /**
      * Executes the rule for type in the expression grammar.
      *
-     * Structure:   type → standard_type | ARRAY [ NUM : NUM ] of standard_type
+     * Production Rules:
+     * RULE d.a:    type → standard_type
+     * RULE d.b:    type → ARRAY [ NUM : NUM ] of standard_type
      */
     public void type(ArrayList<String> identifierList) {
         int startIndex, stopIndex;
@@ -178,7 +183,9 @@ public class Parser {
     /**
      * Executes the rule for standard_type in the expression grammar.
      *
-     * Structure:   standard_type → INTEGER | REAL
+     * Production Rules:
+     * RULE e.a:    standard_type → INTEGER
+     * RULE e.b:    standard_type → REAL
      */
     public TokenType standard_type() {
         if (this.lookahead.getType() == TokenType.INTEGER) {
@@ -198,7 +205,9 @@ public class Parser {
      * the subprogram_declarations identifier to the symbol table and creates a
      * DeclarationsNode within the syntax tree.
      *
-     * Structure:   subprogram_declarations → subprogram_declaration ; subprogram_declarations | λ
+     * Production Rules:
+     * RULE f.a:    subprogram_declarations → subprogram_declaration ; subprogram_declarations
+     * RULE f.b:    subprogram_declarations → λ
      */
     public SubProgramDeclarationsNode subprogram_declarations() {
         SubProgramDeclarationsNode subProgramDeclarationsNode = new SubProgramDeclarationsNode();
@@ -217,7 +226,7 @@ public class Parser {
      * Executes the rule for subprogram_declaration in the
      * expression grammar.
      *
-     * Structure:   subprogram_declaration → subprogram_head declarations compound_statement
+     * Production Rules::   subprogram_declaration → subprogram_head declarations compound_statement
      */
     public void subprogram_declaration() {
         subprogram_head();
@@ -230,7 +239,9 @@ public class Parser {
      * Executes the rule for subprogram_head in the expression
      * grammar.
      *
-     * Structure:   subprogram_head → function ID arguments : standard_type ; | procedure ID arguments ;
+     * Production Rules:
+     * RULE g.a:    subprogram_head → function ID arguments : standard_type ;
+     * RULE g.b:    subprogram_head → procedure ID arguments ;
      */
     public void subprogram_head() {
         if (this.lookahead.getType() == TokenType.FUNCTION) {
@@ -257,7 +268,9 @@ public class Parser {
     /**
      * Executes the rule for arguments in the expression grammar.
      *
-     * Structure:   arguments → ( parameter_list ) | λ
+     * Production Rules:
+     * RULE h.a:    arguments → ( parameter_list )
+     * RULE h.b:    arguments → λ
      */
     public void arguments() {
         if (this.lookahead.getType() == TokenType.LPAREN) {
@@ -271,7 +284,9 @@ public class Parser {
     /**
      * Executes the rule for parameter_list in the expression grammar.
      *
-     * Structure:   parameter_list → identifier_list : type | identifier_list : type ; parameter_list
+     * Production Rules:
+     * RULE i.a:    parameter_list → identifier_list : type
+     * RULE i.b:    parameter_list → identifier_list : type ; parameter_list
      */
     public void parameter_list() {
         ArrayList<String> identifierList = identifier_list();
@@ -289,7 +304,8 @@ public class Parser {
      * Executes the rule for compound_statement in the expression
      * grammar.
      *
-     * Structure:   compound_statement → BEGIN optional_statements END
+     * Production Rules:
+     * RULE j.a:    compound_statement → BEGIN optional_statements END
      */
     public CompoundStatementNode compound_statement() {
         CompoundStatementNode compoundStatementNode = new CompoundStatementNode();
@@ -301,7 +317,9 @@ public class Parser {
     /**
      * Executes the rule for optional_statement in the expression grammar.
      *
-     * Structure:   optional_statements → statement_list | λ
+     * Production Rules:
+     * RULE k.a:    optional_statements → statement_list
+     * RULE k.b:    optional_statements → λ
      */
     public void optional_statements() {
         if (this.lookahead.getType() == TokenType.ID ||
@@ -316,7 +334,9 @@ public class Parser {
     /**
      * Executes the rule for statement_list in the expression grammar.
      *
-     * Structure:   statement_list → statement | statement ; statement_list
+     * Production Rules:
+     * RULE l.a:    statement_list → statement
+     * RULE l.b:    statement_list → statement ; statement_list
      */
     public void statement_list() {
         statement();
@@ -330,7 +350,15 @@ public class Parser {
     /**
      * Executes the rule for statement in the expression grammar.
      *
-     * Structure:   statement → variable assignop expression | procedure_statement | compound_statement | IF expression THEN statement ELSE statement | WHILE expression DO statement | READ ( ID ) | WRITE ( expression ) | RETURN expression
+     * Production Rules:
+     * RULE m.a:    statement → variable assignop expression
+     * RULE m.b:    statement → procedure_statement
+     * RULE m.c:    statement → compound_statement
+     * RULE m.d:    statement → IF expression THEN statement ELSE statement
+     * RULE m.e:    statement → WHILE expression DO statement
+     * RULE m.f:    statement → READ ( ID )
+     * RULE m.g:    statement → WRITE ( expression )
+     * RULE m.h:    statement → RETURN expression
      */
     public void statement() {
         if (this.lookahead.getType() == TokenType.ID) {
@@ -379,7 +407,9 @@ public class Parser {
      * Executes the rule for the variable non-terminal symbol in
      * the expression grammar.
      *
-     * Structure:   variable → ID | ID [ expression ]
+     * Production Rules:
+     * RULE n.a:    variable → ID
+     * RULE n.b:    variable → ID [ expression ]
      */
     public void variable() {
         match(TokenType.ID);
@@ -393,6 +423,10 @@ public class Parser {
     /**
      * Executes the rule for procedure_statement in the expression
      * grammar.
+     *
+     * Production Rules:
+     * RULE o.a:    procedure_statement → ID
+     * RULE o.b:    procedure_statement → ID ( expression_list )
      */
     public void procedure_statement() {
         match(TokenType.ID);
@@ -406,7 +440,9 @@ public class Parser {
     /**
      * Executes the rule for expression_list in the expression grammar.
      *
-     * Structure:   expression_list → expression | expression , expression_list
+     * Production Rules:
+     * RULE p.a:    expression_list → expression
+     * RULE p.b:    expression_list → expression , expression_list
      */
     public void expression_list() {
         expression();
@@ -419,7 +455,9 @@ public class Parser {
     /**
      * Executes the rule for expression in the expression grammar.
      *
-     * Structure:   expression → expression_list | expression_list relop expression_list
+     * Production Rules:
+     * RULE q.a:    expression → simple_expression
+     * RULE q.b:    expression → simple_expression relop simple_expression
      */
     public void expression() {
         simple_expression();
@@ -433,7 +471,9 @@ public class Parser {
      * Executes the rule for simple_expression in the expression
      * grammar.
      *
-     * Structure:   simple_expression → term simple_part | sign term simple_part
+     * Production Rules:
+     * RULE r.a:    simple_expression → term simple_part
+     * RULE r.b:    simple_expression → sign term simple_part
      */
     public void simple_expression() {
         if (this.lookahead.getType() == TokenType.ID ||
@@ -453,7 +493,9 @@ public class Parser {
     /**
      * Executes the rule for simple_part in the expression grammar.
      *
-     * Structure:   simple_part → addop term simple_part | λ
+     * Production Rules:
+     * RULE s.a:    simple_part → addop term simple_part
+     * RULE s.b:    simple_part → λ
      */
     public void simple_part() {
         if (isAddOp(this.lookahead.getType())) {
@@ -470,10 +512,11 @@ public class Parser {
      * simple_expression, the lookahead token can both be checked
      * and matched in the same function.
      *
-     * Structure:   sign → + | |
+     * Production Rules:
+     * RULE t.a:    sign → +
+     * RULE t.b:    sign → -
      * @return true if lookahead token is a sign and is properly matched.
      */
-
     public boolean sign() {
         if (this.lookahead.getType() == TokenType.PLUS) {
             match(TokenType.PLUS);
@@ -489,7 +532,8 @@ public class Parser {
     /**
      * Executes the rule for term in the expression grammar.
      *
-     * Structure:   term → factor term_prime
+     * Production Rules:
+     * RULE u.a:    term → factor term_prime
      */
     public void term() {
         factor();
@@ -499,7 +543,9 @@ public class Parser {
     /**
      * Executes the rule for term_prime in the expression grammar.
      *
-     * Structure:   term_prime → mulop factor term_prime | λ
+     * Production Rules:
+     * RULE v.a:    term_prime → mulop factor term_prime
+     * RULE v.b:    term_prime → λ
      */
     public void term_prime() {
         if (isMulOp(this.lookahead.getType())) {
@@ -513,7 +559,13 @@ public class Parser {
     /**
      * Executes the rule for factor in the expression grammar.
      *
-     * Structure:   factor → ID | ID [ expression ] | ID ( expression_list ) | num | ( expression ) | not factor
+     * Production Rules:
+     * RULE w.a:    factor → ID
+     * RULE w.b:    factor → ID [ expression ]
+     * RULE w.c:    factor → ID ( expression_list )
+     * RULE w.d:    factor → num
+     * RULE w.e:    factor → ( expression )
+     * RULE w.f:    factor → not factor
      */
     public void factor() {
         if (lookahead.getType() == TokenType.ID) {

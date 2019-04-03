@@ -8,14 +8,22 @@ import java.util.ArrayList;
  */
 public class DeclarationsNode extends SyntaxTreeNode {
     
-    private ArrayList<VariableNode> vars = new ArrayList<VariableNode>();
+    private ArrayList<VariableNode> variables = new ArrayList<VariableNode>();
     
     /**
      * Adds a variable to this declaration.
-     * @param aVariable The variable node to add to this declaration.
+     * @param variable The variable node to add to this declaration.
      */
-    public void addVariable(VariableNode aVariable) {
-        vars.add(aVariable);
+    public void addVariable(VariableNode variable) {
+        variables.add(variable);
+    }
+
+    /**
+     * Adds declarations to this declaration.
+     * @param declarations The declarations to add to this declaration.
+     */
+    public void addDeclarations(DeclarationsNode declarations) {
+        variables.addAll(declarations.variables);
     }
     
     /**
@@ -27,7 +35,7 @@ public class DeclarationsNode extends SyntaxTreeNode {
     public String indentedToString(int level) {
         String answer = this.indentation(level);
         answer += "Declarations\n";
-        for(VariableNode variable : vars) {
+        for(VariableNode variable : variables) {
             answer += variable.indentedToString(level + 1);
         }
         return answer;
