@@ -11,8 +11,12 @@ public class SubProgramDeclarationsNode extends SyntaxTreeNode {
     
     private ArrayList<SubProgramNode> procs = new ArrayList<SubProgramNode>();
     
-    public void addSubProgramDeclaration(SubProgramNode aSubProgram) {
-        procs.add(aSubProgram);
+    public void addSubProgramDeclaration(SubProgramNode subProgram) {
+        procs.add(subProgram);
+    }
+
+    public void addSubProgramDeclarations(ArrayList<SubProgramNode> subProgram) {
+        procs.addAll(subProgram);
     }
     
     /**

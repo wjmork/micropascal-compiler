@@ -212,10 +212,10 @@ public class Parser {
     public SubProgramDeclarationsNode subprogram_declarations() {
         SubProgramDeclarationsNode subProgramDeclarationsNode = new SubProgramDeclarationsNode();
         if (this.lookahead.getType() == TokenType.FUNCTION || this.lookahead.getType() == TokenType.PROCEDURE) {
-            subprogram_declaration();
+            subProgramDeclarationsNode.addSubProgramDeclaration(subprogram_declaration());
             if (this.lookahead.getType() == TokenType.SEMI) {
                 match(TokenType.SEMI);
-                subprogram_declarations();
+                subProgramDeclarationsNode.addSubProgramDeclarations(subprogram_declarations());
             }
             // lambda case
         }
@@ -228,11 +228,12 @@ public class Parser {
      *
      * Production Rules::   subprogram_declaration → subprogram_head declarations compound_statement
      */
-    public void subprogram_declaration() {
-        subprogram_head();
+    public SubProgramDeclarationsNode subprogram_declaration() {
+        SubProgramNode subProgramNode = subprogram_head();
         declarations();
         subprogram_declarations();
         compound_statement();
+        return subProgramNode;
     }
 
     /**
@@ -243,10 +244,12 @@ public class Parser {
      * RULE g.a:    subprogram_head → function ID arguments : standard_type ;
      * RULE g.b:    subprogram_head → procedure ID arguments ;
      */
-    public void subprogram_head() {
+    public SubProgramNode subprogram_head() {
+        SubProgramNode subProgramNode;
         if (this.lookahead.getType() == TokenType.FUNCTION) {
             match(TokenType.FUNCTION);
             String functionIdentifier = this.lookahead.getLexeme();
+            subProgramNode = new SubProgramNode(functionIdentifier);
             match(TokenType.ID);
             arguments();
             match(TokenType.COLON);
@@ -256,6 +259,7 @@ public class Parser {
         } else if (this.lookahead.getType() == TokenType.PROCEDURE) {
             match(TokenType.PROCEDURE);
             String procedureIdentifier = this.lookahead.getLexeme();
+            subProgramNode = new SubProgramNode(procedureIdentifier);
             match(TokenType.ID);
             arguments();
             symbolTable.addProcedure(procedureIdentifier);
@@ -263,6 +267,7 @@ public class Parser {
         } else {
             error("SUBPROGRAM_HEAD: TokenType FUNCTION or PROCEDURE not matched.");
         }
+        return subProgramNode;
     }
 
     /**
@@ -321,7 +326,8 @@ public class Parser {
      * RULE k.a:    optional_statements → statement_list
      * RULE k.b:    optional_statements → λ
      */
-    public void optional_statements() {
+    public CompoundStatementNode optional_statements() {
+        CompoundStatementNode compoundStatementNode = new CompoundStatementNode();
         if (this.lookahead.getType() == TokenType.ID ||
                 this.lookahead.getType() == TokenType.BEGIN ||
                 this.lookahead.getType() == TokenType.IF ||
@@ -329,6 +335,7 @@ public class Parser {
             statement_list();
         }
         // lambda case
+        return compoundStatementNode;
     }
 
     /**
@@ -338,13 +345,15 @@ public class Parser {
      * RULE l.a:    statement_list → statement
      * RULE l.b:    statement_list → statement ; statement_list
      */
-    public void statement_list() {
-        statement();
+    public ArrayList<StatementNode> statement_list() {
+        ArrayList<StatementNode> statementNodeList = new ArrayList();
+        statementNodeList.add(statement());
         if (this.lookahead.getType() == TokenType.SEMI) {
             match(TokenType.SEMI);
-            statement_list();
+            statementNodeList.addAll(statement_list());
         }
         // lambda case
+        return statementNodeList;
     }
 
     /**
@@ -360,7 +369,8 @@ public class Parser {
      * RULE m.g:    statement → WRITE ( expression )
      * RULE m.h:    statement → RETURN expression
      */
-    public void statement() {
+    public StatementNode statement() {
+        StatementNode statementNode;
         if (this.lookahead.getType() == TokenType.ID) {
             if (symbolTable.isVariable(this.lookahead.getLexeme())) {
                 variable();
@@ -401,6 +411,7 @@ public class Parser {
         } else {
             error("STATEMENT: Error recognizing statement.");
         }
+        return statementNode;
     }
 
     /**
@@ -411,13 +422,15 @@ public class Parser {
      * RULE n.a:    variable → ID
      * RULE n.b:    variable → ID [ expression ]
      */
-    public void variable() {
+    public VariableNode variable() {
+        VariableNode variableNode;
         match(TokenType.ID);
         if (this.lookahead.getType() == TokenType.LBRACE) {
             match(TokenType.LBRACE);
             expression();
             match(TokenType.RBRACE);
         }
+        return variableNode();
     }
 
     /**
@@ -428,13 +441,15 @@ public class Parser {
      * RULE o.a:    procedure_statement → ID
      * RULE o.b:    procedure_statement → ID ( expression_list )
      */
-    public void procedure_statement() {
+    public ProcedureStatementNode procedure_statement() {
+        ProcedureStatementNode procedureStatementNode;
         match(TokenType.ID);
         if (this.lookahead.getType() == TokenType.LPAREN) {
             match(TokenType.LPAREN);
             expression_list();
             match(TokenType.RPAREN);
         }
+        return procedureStatementNode;
     }
 
     /**
@@ -444,12 +459,14 @@ public class Parser {
      * RULE p.a:    expression_list → expression
      * RULE p.b:    expression_list → expression , expression_list
      */
-    public void expression_list() {
+    public ExpressionNode expression_list() {
+        ExpressionNode expressionNode;
         expression();
         if (this.lookahead.getType() == TokenType.COMMA) {
             match(TokenType.COMMA);
             expression_list();
         }
+        return expressionNode;
     }
 
     /**
@@ -459,12 +476,14 @@ public class Parser {
      * RULE q.a:    expression → simple_expression
      * RULE q.b:    expression → simple_expression relop simple_expression
      */
-    public void expression() {
+    public ExpressionNode expression() {
+        ExpressionNode expressionNode;
         simple_expression();
         if (isRelOp(this.lookahead.getType())) {
             match(this.lookahead.getType());
             simple_expression();
         }
+        return expressionNode;
     }
 
     /**
@@ -475,7 +494,8 @@ public class Parser {
      * RULE r.a:    simple_expression → term simple_part
      * RULE r.b:    simple_expression → sign term simple_part
      */
-    public void simple_expression() {
+    public ExpressionNode simple_expression() {
+        ExpressionNode expressionNode;
         if (this.lookahead.getType() == TokenType.ID ||
                 this.lookahead.getType() == TokenType.NUMBER ||
                 this.lookahead.getType() == TokenType.LPAREN ||
@@ -488,6 +508,7 @@ public class Parser {
         } else {
             error("SIMPLE_EXPRESSION: TERM or SIGN can not be called.");
         }
+        return expressionNode;
     }
 
     /**
@@ -497,13 +518,15 @@ public class Parser {
      * RULE s.a:    simple_part → addop term simple_part
      * RULE s.b:    simple_part → λ
      */
-    public void simple_part() {
+    public ExpressionNode simple_part() {
+        ExpressionNode expressionNode;
         if (isAddOp(this.lookahead.getType())) {
             match(lookahead.getType());
             term();
             simple_part();
         }
         // lambda case
+        return expressionNode;
     }
 
     /**
@@ -517,6 +540,8 @@ public class Parser {
      * RULE t.b:    sign → -
      * @return true if lookahead token is a sign and is properly matched.
      */
+
+    // Unary operator node?
     public boolean sign() {
         if (this.lookahead.getType() == TokenType.PLUS) {
             match(TokenType.PLUS);
@@ -535,9 +560,11 @@ public class Parser {
      * Production Rules:
      * RULE u.a:    term → factor term_prime
      */
-    public void term() {
+    public ExpressionNode term() {
+        ExpressionNode expressionNode;
         factor();
         term_prime();
+        return expressionNode;
     }
 
     /**
@@ -547,13 +574,15 @@ public class Parser {
      * RULE v.a:    term_prime → mulop factor term_prime
      * RULE v.b:    term_prime → λ
      */
-    public void term_prime() {
+    public ExpressionNode term_prime() {
+        ExpressionNode expressionNode;
         if (isMulOp(this.lookahead.getType())) {
             match(this.lookahead.getType());
             factor();
             term_prime();
         }
         // lambda case
+        return expressionNode;
     }
 
     /**
@@ -567,7 +596,8 @@ public class Parser {
      * RULE w.e:    factor → ( expression )
      * RULE w.f:    factor → not factor
      */
-    public void factor() {
+    public ExpressionNode factor() {
+        ExpressionNode expressionNode;
         if (lookahead.getType() == TokenType.ID) {
             match(TokenType.ID);
             if (lookahead.getType() == TokenType.LBRACE) {
@@ -591,6 +621,7 @@ public class Parser {
         } else {
             error("FACTOR: TokenType ID, NUMBER, LPAREN or NOT not matched.");
         }
+        return expressionNode;
     }
 
     /**
