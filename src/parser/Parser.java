@@ -531,17 +531,47 @@ public class Parser {
     }
 
     /**
+     * Executes the rule for term in the expression grammar.
+     *
+     * Production Rules:
+     * RULE u.a:    term → factor term_prime
+     */
+    public ExpressionNode term() {
+        ExpressionNode expressionNode = null;
+        factor();
+        term_prime();
+        return expressionNode;
+    }
+
+    /**
+     * Executes the rule for term_prime in the expression grammar.
+     *
+     * Production Rules:
+     * RULE v.a:    term_prime → mulop factor term_prime
+     * RULE v.b:    term_prime → λ
+     */
+    public ExpressionNode term_prime() {
+        ExpressionNode expressionNode = null;
+        if (isMulOp(this.lookahead.getType())) {
+            match(this.lookahead.getType());
+            factor();
+            term_prime();
+        }
+        // lambda case
+        return expressionNode;
+    }
+
+    /**
      * Executes the rule for sign in the expression grammar.
      * Because sign() is only called by the parent function
      * simple_expression, the lookahead token can both be checked
      * and matched in the same function.
      *
      * Production Rules:
-     * RULE u.a:    sign → +
-     * RULE u.b:    sign → -
+     * RULE w.a:    sign → +
+     * RULE w.b:    sign → -
      * @return true if lookahead token is a sign and is properly matched.
      */
-
     // Unary operator node?
     public boolean sign() {
         if (this.lookahead.getType() == TokenType.PLUS) {
@@ -555,36 +585,6 @@ public class Parser {
         }
     }
 
-    /**
-     * Executes the rule for term in the expression grammar.
-     *
-     * Production Rules:
-     * RULE v.a:    term → factor term_prime
-     */
-    public ExpressionNode term() {
-        ExpressionNode expressionNode = null;
-        factor();
-        term_prime();
-        return expressionNode;
-    }
-
-    /**
-     * Executes the rule for term_prime in the expression grammar.
-     *
-     * Production Rules:
-     * RULE w.a:    term_prime → mulop factor term_prime
-     * RULE w.b:    term_prime → λ
-     */
-    public ExpressionNode term_prime() {
-        ExpressionNode expressionNode = null;
-        if (isMulOp(this.lookahead.getType())) {
-            match(this.lookahead.getType());
-            factor();
-            term_prime();
-        }
-        // lambda case
-        return expressionNode;
-    }
 
     /**
      * Executes the rule for factor in the expression grammar.

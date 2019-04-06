@@ -17,14 +17,10 @@ import java.io.*;
 public class CompilerMain {
 
     public static void main(String[] args) {
-        Parser parser = new Parser("src/pascal/simple.pas", true);
 
-        parser.program();
+        Parser parser = new Parser("src/pascal/money.pas", true);
+        exportSyntaxTree(parser);
         exportSymbolTable(parser.getSymbolTable().toString());
-
-        // This parser is a separate instance for now and is used to test the syntax tree output.
-        Parser parser2 = new Parser("src/pascal/simple.pas", true);
-        exportSyntaxTree(parser2);
     }
 
     /**

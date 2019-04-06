@@ -1,8 +1,7 @@
-Program: foo
+Program: sample
 |-- Declarations
-|-- --- Name: fee
-|-- --- Name: fi
-|-- --- Name: fo
-|-- --- Name: fum
+|-- --- Name: dollars
+|-- --- Name: yen
+|-- --- Name: bitcoins
 |-- SubProgramDeclarations
 |-- Compound Statement

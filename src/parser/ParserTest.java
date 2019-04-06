@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import scanner.TokenType;
 import symboltable.SymbolTable;
+import syntaxtree.*;
 
 /**
  * This class contains JUnit testing for the high-level production rules of
