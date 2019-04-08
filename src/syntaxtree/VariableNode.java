@@ -3,11 +3,13 @@ package syntaxtree;
 
 /**
  * Represents a variable in the syntax tree.
+ *
+ * @author William Mork
  * @author Erik Steinmetz
  */
 public class VariableNode extends ExpressionNode {
     
-    /** The name of the variable associated with this node. */
+    /** The name of the variable associated with this variable node. */
     String name;
     
     /**

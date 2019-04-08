@@ -52,7 +52,6 @@ public class SymbolTableTest {
 
     /**
      * Tests the symbol table toString() function.
-     *
      * @result fails if there are unexpected characters in the output string.
      */
     @Test
@@ -65,7 +64,6 @@ public class SymbolTableTest {
 
     /**
      * Tests the addition of program identifiers to the symbol table.
-     *
      * @result fails if program identifiers are improperly added to the symbol table.
      */
     @Test
@@ -85,7 +83,6 @@ public class SymbolTableTest {
 
     /**
      * Tests the addition of variable identifiers to the symbol table.
-     *
      * @result fails if variable identifiers are improperly added to the symbol table.
      */
     @Test
@@ -105,7 +102,6 @@ public class SymbolTableTest {
 
     /**
      * Tests the addition of array identifiers to the symbol table.
-     *
      * @result fails if array identifiers are improperly added to the symbol table.
      */
     @Test
@@ -125,7 +121,6 @@ public class SymbolTableTest {
 
     /**
      * Tests the addition of function identifiers to the symbol table.
-     *
      * @result fails if function identifiers are improperly added to the symbol table.
      */
     @Test
@@ -147,7 +142,6 @@ public class SymbolTableTest {
 
     /**
      * Tests the addition of procedure identifiers to the symbol table.
-     *
      * @result fails if procedure identifiers are improperly added to the symbol table.
      */
     @Test
@@ -169,7 +163,6 @@ public class SymbolTableTest {
 
     /**
      * Tests the isProgram() method.
-     *
      * @result fails if the existence of a program symbol is unknown within
      * the symbol table.
      */
@@ -189,7 +182,6 @@ public class SymbolTableTest {
 
     /**
      * Tests the isVariable() method.
-     *
      * @result fails if the existence of a variable symbol is unknown within
      * the symbol table.
      */
@@ -209,7 +201,6 @@ public class SymbolTableTest {
 
     /**
      * Tests the isArray() method.
-     *
      * @result fails if the existence of an array symbol is unknown within
      * the symbol table.
      */
@@ -229,7 +220,6 @@ public class SymbolTableTest {
 
     /**
      * Tests the isFunction() method.
-     *
      * @result fails if the existence of a function symbol is unknown within
      * the symbol table.
      */
@@ -249,7 +239,6 @@ public class SymbolTableTest {
 
     /**
      * Tests the isProcedure() method.
-     *
      * @result fails if the existence of a procedure symbol is unknown within
      * the symbol table.
      */

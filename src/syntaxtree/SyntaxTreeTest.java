@@ -15,7 +15,7 @@ import symboltable.SymbolTable;
 public class SyntaxTreeTest {
 
     /**
-     * Tests syntax tree generation for the program() function
+     * Tests syntax tree generation for the program() function.
      *
      * @result The test fails if the syntax tree is improperly constructed during a
      * call to program().
@@ -31,7 +31,7 @@ public class SyntaxTreeTest {
     }
 
     /**
-     * Tests the syntax tree generation for the statement() function
+     * Tests the syntax tree generation for the statement() function.
      *
      * @result The test fails if the syntax tree is improperly constructed during a
      * call to statement().
@@ -50,7 +50,7 @@ public class SyntaxTreeTest {
     }
 
     /**
-     * Tests the syntax tree generation for the subprogram_declarations() function
+     * Tests the syntax tree generation for the subprogram_declarations() function.
      *
      * @result The test fails if the syntax tree is improperly constructed during a
      * call to subprogram_declarations().
@@ -66,7 +66,7 @@ public class SyntaxTreeTest {
     }
 
     /**
-     * Tests the syntax tree generation for the declarations() function
+     * Tests the syntax tree generation for the declarations() function.
      *
      * @result The test fails if the syntax tree is improperly constructed during a
      * call to declarations().

@@ -1,21 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package syntaxtree;
 
 /**
  * Represents a value or number in an expression.
+ *
+ * @author William Mork
  * @author Erik Steinmetz
  */
 public class ValueNode extends ExpressionNode {
     
-    /** The attribute associated with this node. */
+    /** The attribute associated with this value node. */
     String attribute;
     
     /**
-     * Creates a ValueNode with the given attribute.
+     * Creates a value node. with the given attribute.
      * @param attr The attribute for this value node.
      */
     public ValueNode(String attr) {
@@ -23,16 +20,16 @@ public class ValueNode extends ExpressionNode {
     }
     
     /** 
-     * Returns the attribute of this node.
-     * @return The attribute of this ValueNode.
+     * Returns the attribute of this value node.
+     * @return The attribute of this value node.
      */
     public String getAttribute() {
         return(this.attribute);
     }
     
     /**
-     * Returns the attribute as the description of this node.
-     * @return The attribute String of this node.
+     * Returns the attribute as the description of this value node.
+     * @return The attribute String of this value node.
      */
     @Override
     public String toString() {
@@ -52,10 +49,10 @@ public class ValueNode extends ExpressionNode {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object value) {
         boolean answer = false;
-        if(o instanceof ValueNode) {
-            ValueNode other = (ValueNode)o;
+        if(value instanceof ValueNode) {
+            ValueNode other = (ValueNode)value;
             if(this.attribute.equals(other.attribute)) answer = true;
         }
         return answer;

@@ -3,55 +3,78 @@ package syntaxtree;
 import scanner.TokenType;
 
 /**
- * Represents any operation in an expression.
+ * Syntax tree node which represents an operation within an expression.
+ *
+ * @author William Mork
  * @author Erik Steinmetz
  */
 public class OperationNode extends ExpressionNode {
     
-    /** The left operator of this operation. */
+    /** The left operator of the operation. */
     private ExpressionNode left;
     
-    /** The right operator of this operation. */
+    /** The right operator of the operation. */
     private ExpressionNode right;
     
-    /** The kind of operation. */
+    /** The type of operation being handled. */
     private TokenType operation;
     
     /**
      * Creates an operation node given an operation token.
-     * @param op The token representing this node's math operation.
+     * @param operation The token representing this node's math operation.
      */
-    public OperationNode (TokenType op) {
-        this.operation = op;
+    public OperationNode (TokenType operation) {
+        this.operation = operation;
     }
-    
-    
-    // Getters
+
+    /**
+     * Returns the child left operator expression node.
+     * @return left child expression node.
+     */
     public ExpressionNode getLeft() {
         return(this.left);
     }
 
+    /**
+     * Returns the child right operator expression node.
+     * @return right child expression node.
+     */
     public ExpressionNode getRight() {
         return(this.right);
     }
 
+    /**
+     * Returns the operation type.
+     * @return The operation token type.
+     */
     public TokenType getOperation() {
         return(this.operation);
     }
-    
-    // Setters
+
+    /**
+     * Sets the left child expression node.
+     * @param node The expression node to be set.
+     */
     public void setLeft(ExpressionNode node) {
         // If we already have a left, remove it from our child list.
         this.left = node;
     }
 
+    /**
+     * Sets the right child expression node.
+     * @param node The expression node to be set.
+     */
     public void setRight(ExpressionNode node) {
         // If we already have a right, remove it from our child list.
         this.right = node;
     }
 
-    public void setOperation(TokenType op) {
-        this.operation = op;
+    /**
+     * Sets the operation type.
+     * @param operation The operation token type to be set.
+     */
+    public void setOperation(TokenType operation) {
+        this.operation = operation;
     }
     
     /**

@@ -634,7 +634,6 @@ public class Parser {
      * in the input. The null pointer at the end of the scanned
      * file is replaced with a placeholder token containing no type.
      * </p>
-     *
      * @param expected The expected token type.
      */
     private void match(TokenType expected) {
@@ -655,7 +654,6 @@ public class Parser {
 
     /**
      * Checks if a given token is a multiplication operator as defined in the grammar.
-     *
      * @return true if token is a multiplication operator.
      */
     private static boolean isMulOp(TokenType tokenType) {
@@ -668,7 +666,6 @@ public class Parser {
 
     /**
      * Checks if a given token is an addition operator as defined in the grammar.
-     *
      * @return true if token is a addition operator.
      */
     private static boolean isAddOp(TokenType tokenType) {
@@ -679,7 +676,6 @@ public class Parser {
 
     /**
      * Checks if a given token is an relational operator as defined in the grammar.
-     *
      * @return true if token is a relational operator.
      */
     private static boolean isRelOp(TokenType tokenType) {
@@ -693,7 +689,6 @@ public class Parser {
 
     /**
      * Returns the symbol table constructed by the parser.
-     *
      * @return symbol table
      */
     public SymbolTable getSymbolTable() {
@@ -703,7 +698,6 @@ public class Parser {
     /**
      * Errors out of the parser.
      * Prints an error message and then exits the program.
-     *
      * @param message The error message to print.
      */
     private void error(String message) {

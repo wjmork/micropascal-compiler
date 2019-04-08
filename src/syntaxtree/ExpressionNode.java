@@ -1,9 +1,10 @@
 package syntaxtree;
 
 /**
- * General representation of any expression.
- * @author Erik Steinmetz
+ * Syntax tree node which represents an expression.
+ *
+ * @author William Mork
  */
 public abstract class ExpressionNode extends SyntaxTreeNode {
-    
+
 }

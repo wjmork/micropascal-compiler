@@ -3,25 +3,27 @@ package syntaxtree;
 import java.util.ArrayList;
 
 /**
- * Represents a compound statement in Pascal.
+ * Syntax tree node which represents a compound statement.
  * A compound statement is a block of zero or more
  * statements to be run sequentially.
- * @author ErikSteinmetz
+ * @author William Mork
+ * @author Erik Steinmetz
  */
 public class CompoundStatementNode extends StatementNode {
-    
+
+    /** Array of child statement nodes. */
     private ArrayList<StatementNode> statements = new ArrayList<StatementNode>();
     
     /**
-     * Adds a statement to this compound statement.
-     * @param state The statement to add to this compound statement.
+     * Adds a child statement node to the array of statement nodes.
+     * @param statement The statement to add.
      */
-    public void addStatement(StatementNode state) {
-        this.statements.add(state);
+    public void addStatement(StatementNode statement) {
+        this.statements.add(statement);
     }
     
     /**
-     * Creates a String representation of this compound statement node 
+     * Creates a String representation of this compound statement node
      * and its children.
      * @param level The tree level at which this node resides.
      * @return A String representing this node.

@@ -24,9 +24,8 @@ public class SymbolTable {
 
     /**
      * Adds a program symbol to the symbol table.
-     *
-     * @param lexeme lexeme of the program symbol
-     * @return true if the symbol was added to the table
+     * @param lexeme The lexeme of the program symbol.
+     * @return True if the symbol was added to the table.
      */
     public boolean addProgram(String lexeme) {
         if (symbolTable.containsKey(lexeme)) {
@@ -39,10 +38,9 @@ public class SymbolTable {
 
     /**
      * Adds a variable symbol to the symbol table.
-     *
-     * @param lexeme lexeme of the variable symbol
-     * @param tokenType token type of the variable symbol
-     * @return true if the symbol was added to the table
+     * @param lexeme The lexeme of the variable symbol.
+     * @param tokenType The token type of the variable symbol.
+     * @return True if the symbol was added to the table.
      */
     public boolean addVariable(String lexeme, TokenType tokenType) {
         if (symbolTable.containsKey(lexeme)) {
@@ -55,12 +53,11 @@ public class SymbolTable {
 
     /**
      * Adds an array symbol to the symbol table.
-     *
-     * @param lexeme lexeme of the array symbol
-     * @param tokenType token type of the array symbol
-     * @param start start index of the array
-     * @param stop stop index of the array
-     * @return true if the symbol was added to the table
+     * @param lexeme The lexeme of the array symbol.
+     * @param tokenType The token type of the array symbol.
+     * @param start The start index of the array.
+     * @param stop The stop index of the array.
+     * @return True if the symbol was added to the table.
      */
     public boolean addArray(String lexeme, TokenType tokenType, int start, int stop){
         if (symbolTable.containsKey(lexeme)) {
@@ -73,10 +70,9 @@ public class SymbolTable {
 
     /**
      * Adds a function symbol to the symbol table.
-     *
-     * @param lexeme lexeme of the function symbol
-     * @param tokenType token type of the function symbol
-     * @return true if the symbol was added to the table
+     * @param lexeme The lexeme of the function symbol.
+     * @param tokenType The token type of the function symbol.
+     * @return True if the symbol was added to the table.
      */
     public boolean addFunction(String lexeme, TokenType tokenType){
         if (symbolTable.containsKey(lexeme)) {
@@ -89,9 +85,8 @@ public class SymbolTable {
 
     /**
      * Adds a procedure symbol to the symbol table.
-     *
-     * @param lexeme lexeme of the procedure symbol
-     * @return true if the symbol was added to the table
+     * @param lexeme The lexeme of the procedure symbol.
+     * @return True if the symbol was added to the table.
      */
     public boolean addProcedure(String lexeme){
         if (symbolTable.containsKey(lexeme)) {
@@ -104,9 +99,8 @@ public class SymbolTable {
 
     /**
      * Checks if a program symbol with a given lexeme already exists in the symbol table.
-     *
-     * @param lexeme lexeme of program symbol
-     * @return true if program symbol with given lexeme exists in the table
+     * @param lexeme The lexeme of the program symbol.
+     * @return True if a program symbol with the given lexeme already exists in the table.
      */
     public boolean isProgram(String lexeme){
         return symbolTable.containsKey(lexeme) && symbolTable.get(lexeme).getKind() == Kind.PROGRAM;
@@ -114,9 +108,8 @@ public class SymbolTable {
 
     /**
      * Checks if a variable symbol with a given lexeme already exists in the symbol table.
-     *
-     * @param lexeme lexeme of variable symbol
-     * @return true if variable symbol with given lexeme exists in the table
+     * @param lexeme The lexeme of the variable symbol.
+     * @return True if a variable symbol with the given lexeme already exists in the table.
      */
     public boolean isVariable(String lexeme){
         return symbolTable.containsKey(lexeme) && symbolTable.get(lexeme).getKind() == Kind.VARIABLE;
@@ -124,9 +117,8 @@ public class SymbolTable {
 
     /**
      * Checks if an array symbol with a given lexeme already exists in the symbol table.
-     *
-     * @param lexeme lexeme of array symbol
-     * @return true if array symbol with given lexeme exists in the table
+     * @param lexeme The lexeme of the array symbol.
+     * @return True if an array symbol with the given lexeme already exists in the table.
      */
     public boolean isArray(String lexeme){
         return symbolTable.containsKey(lexeme) && symbolTable.get(lexeme).getKind() == Kind.ARRAY;
@@ -134,9 +126,8 @@ public class SymbolTable {
 
     /**
      * Checks if a function symbol with a given lexeme already exists in the symbol table.
-     *
-     * @param lexeme lexeme of function symbol
-     * @return true if function symbol with given lexeme exists in the table
+     * @param lexeme The lexeme of the function symbol.
+     * @return True if a function symbol with the given lexeme already exists in the table.
      */
     public boolean isFunction(String lexeme){
         return symbolTable.containsKey(lexeme) && symbolTable.get(lexeme).getKind() == Kind.FUNCTION;
@@ -144,9 +135,8 @@ public class SymbolTable {
 
     /**
      * Checks if a procedure symbol with a given lexeme already exists in the symbol table.
-     *
-     * @param lexeme lexeme of procedure symbol
-     * @return true if procedure symbol with given lexeme exists in the table
+     * @param lexeme The lexeme of the procedure symbol.
+     * @return True if a procedure symbol with the given lexeme already exists in the table.
      */
     public boolean isProcedure(String lexeme){
         return symbolTable.containsKey(lexeme) && symbolTable.get(lexeme).getKind() == Kind.PROCEDURE;
@@ -155,8 +145,7 @@ public class SymbolTable {
     /**
      * Generates a list of the symbols contained in the symbol table hashmap and their
      * appropriate information using a stringbuilder.
-     *
-     * @return String containing the generated list
+     * @return A String containing the generated list.
      */
     @Override
     public String toString() {

@@ -2,13 +2,15 @@ package syntaxtree;
 
 /**
  * The base class for all nodes in a syntax tree.
+ *
+ * @author William Mork
  * @author Erik Steinmetz
  */
 public abstract class SyntaxTreeNode {
     
     /**
      * Creates a String representation of this node and its children.
-     * @param level The tree level at which this node resides.
+     * @param level The level at which this node resides within the syntax tree.
      * @return A String representing this node.
      */
     public abstract String indentedToString(int level);

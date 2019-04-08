@@ -20,9 +20,8 @@ public class Symbol {
 
     /**
      * Constructs a program symbol.
-     *
-     * @param l symbol lexeme
-     * @param k symbol kind
+     * @param l The lexeme of the symbol.
+     * @param k The kind of the symbol.
      */
     public Symbol(String l, Kind k) {
         lexeme = l;
@@ -31,10 +30,9 @@ public class Symbol {
 
     /**
      * Constructs a variable symbol.
-     *
-     * @param l symbol lexeme
-     * @param k symbol kind
-     * @param t symbol type
+     * @param l The lexeme of the symbol.
+     * @param k The kind of the symbol.
+     * @param t The type of the symbol.
      */
     public Symbol(String l, Kind k, TokenType t) {
         lexeme = l;
@@ -44,12 +42,11 @@ public class Symbol {
 
     /**
      * Constructs an array symbol.
-     *
-     * @param l symbol lexeme
-     * @param k symbol kind
-     * @param t symbol type
-     * @param start start index of array
-     * @param stop stop index of array
+     * @param l The lexeme of the symbol.
+     * @param k The kind of the symbol.
+     * @param t The type of the symbol.
+     * @param start The start index of array.
+     * @param stop The stop index of array.
      */
     public Symbol(String l, Kind k, TokenType t, int start, int stop) {
         lexeme = l;
@@ -61,11 +58,10 @@ public class Symbol {
 
     /**
      * Constructs a function symbol.
-     *
-     * @param l symbol lexeme
-     * @param k symbol kind
-     * @param t symbol type
-     * @param args symbol arguments
+     * @param l The lexeme of the symbol.
+     * @param k The type of the symbol.
+     * @param t The type of the symbol.
+     * @param args The symbol arguments.
      */
     public Symbol(String l, Kind k, TokenType t, ArrayList args) {
         lexeme = l;
@@ -75,9 +71,8 @@ public class Symbol {
     }
 
     /**
-     * Returns the Symbol's string identifier
-     *
-     * @return symbol's lexeme
+     * Returns the Symbol's string identifier.
+     * @return The lexeme of the symbol.
      */
     public String getID() {
         return lexeme;
@@ -85,8 +80,7 @@ public class Symbol {
 
     /**
      * Returns the Symbol's token type.
-     *
-     * @return symbol's type
+     * @return The type of the symbol.
      */
     public TokenType getType() {
         return tokenType;
@@ -94,8 +88,7 @@ public class Symbol {
 
     /**
      * Returns the Symbol's kind
-     *
-     * @return symbol's kind
+     * @return The type of the symbol.
      */
     public Kind getKind() {
         return kind;
@@ -103,8 +96,7 @@ public class Symbol {
 
     /**
      * Returns the Symbol's start index.
-     *
-     * @return start index of the symbol
+     * @return The start index of the symbol.
      */
     public int getStartIndex() {
         return startIndex;
@@ -112,17 +104,15 @@ public class Symbol {
 
     /**
      * Returns the Symbol's stop index.
-     *
-     * @return stop index of the symbol
+     * @return The stop index of the symbol.
      */
     public int getStopIndex() {
         return stopIndex;
     }
 
     /**
-     * Returns the Symbol's arguments
-     *
-     * @return symbol's arguments
+     * Returns the Symbol's arguments.
+     * @return The arguments of the symbol.
      */
     public ArrayList getArgs() {
         return arguments;
@@ -130,8 +120,7 @@ public class Symbol {
 
     /**
      * Generates a string containing the symbol's lexeme and other appropriate information.
-     *
-     * @return the generated string
+     * @return The generated string.
      */
     @Override
     public String toString() {

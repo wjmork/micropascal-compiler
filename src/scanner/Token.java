@@ -7,7 +7,10 @@ package scanner;
  */
 public class Token {
 
+    /** lexeme, or name reference of the token. */
     public String lexeme;
+
+    /** type of the token. */
     public TokenType type;
 
     /**
@@ -22,8 +25,7 @@ public class Token {
 
     /**
      * Returns the lexeme of a Token.
-     *
-     * @return token's lexeme
+     * @return The lexeme of the token.
      */
     public String getLexeme() {
         return this.lexeme;
@@ -31,8 +33,7 @@ public class Token {
 
     /**
      * Returns a Token's type.
-     *
-     * @return token's type
+     * @return The type of the token.
      */
     public TokenType getType() {
         return this.type;
@@ -41,7 +42,6 @@ public class Token {
     /**
      * Creates the String representation of this token including
      * the lexeme and type.
-     *
      * @return The String representation of this token.
      */
     @Override

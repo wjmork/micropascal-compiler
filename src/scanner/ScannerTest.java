@@ -18,7 +18,6 @@ public class ScannerTest {
 
     /**
      * Tests scanning of the simplest.pas pascal file.
-     *
      * @result simplest.pas will be scanned without throwing an exception.
      */
     @Test
@@ -55,7 +54,6 @@ public class ScannerTest {
 
     /**
      * Tests scanning of the simple.pas pascal file.
-     *
      * @result simple.pas will be scanned without throwing an exception.
      */
     @Test
