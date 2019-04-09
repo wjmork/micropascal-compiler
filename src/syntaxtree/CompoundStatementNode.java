@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class CompoundStatementNode extends StatementNode {
 
     /** Array of child statement nodes. */
-    private ArrayList<StatementNode> statements = new ArrayList<StatementNode>();
+    private ArrayList<StatementNode> statements = new ArrayList<>();
     
     /**
      * Adds a child statement node to the array of statement nodes.
@@ -20,6 +20,14 @@ public class CompoundStatementNode extends StatementNode {
      */
     public void addStatement(StatementNode statement) {
         this.statements.add(statement);
+    }
+
+    /**
+     * Adds an ArrayList of child statement nodes to the array of statement nodes.
+     * @param statements The statements to add.
+     */
+    public void addStatement(ArrayList<StatementNode> statements) {
+        this.statements.addAll(statements);
     }
     
     /**
@@ -32,8 +40,8 @@ public class CompoundStatementNode extends StatementNode {
     public String indentedToString(int level) {
         String answer = this.indentation(level);
         answer += "Compound Statement\n";
-        for(StatementNode state : statements) {
-            answer += state.indentedToString(level + 1);
+        for(StatementNode statement : statements) {
+            answer += statement.indentedToString(level + 1);
         }
         return answer;
     }

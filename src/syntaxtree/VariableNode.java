@@ -1,5 +1,6 @@
-// untouched
 package syntaxtree;
+
+import scanner.TokenType;
 
 /**
  * Represents a variable in the syntax tree.
@@ -11,23 +12,35 @@ public class VariableNode extends ExpressionNode {
     
     /** The name of the variable associated with this variable node. */
     String name;
+    TokenType type;
     
     /**
-     * Creates a ValueNode with the given attribute.
-     * @param attr The attribute for this value node.
+     * Creates a value node with the given name.
+     * @param name The name of this value node.
      */
-    public VariableNode(String attr) {
-        this.name = attr;
+    public VariableNode(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Creates a value node with the given name and token type.
+     * @param name The name for this value node.
+     * @param type The name for this value node.
+     */
+    public VariableNode(String name, TokenType type) {
+        this.name = name;
+        this.type = type;
     }
     
-    /** 
+    /**
      * Returns the name of the variable of this node.
      * @return The name of this VariableNode.
      */
     public String getName() {
         return(this.name);
     }
-    
+
+
     /**
      * Returns the name of the variable as the description of this node.
      * @return The attribute String of this node.

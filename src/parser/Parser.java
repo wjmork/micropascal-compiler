@@ -3,7 +3,7 @@ package parser;
 import scanner.Scanner;
 import scanner.Token;
 import scanner.TokenType;
-import symboltable.SymbolTable;
+import symboltable.*;
 import syntaxtree.*;
 
 import java.io.*;
@@ -75,6 +75,7 @@ public class Parser {
      * RULE a.b:    program → declarations
      * RULE a.c:    program → subprogram_declarations
      * RULE a.d:    program → compound_statement
+     * @return The main, top-level ProgramNode containing all other nodes.
      */
     public ProgramNode program() {
         match(TokenType.PROGRAM);
@@ -101,9 +102,10 @@ public class Parser {
      * Production Rules:
      * RULE b.a:    identifier_list → ID
      * RULE b.b:    identifier_list → ID , identifier_list
+     * @return An ArrayList containing declared identifiers.
      */
     public ArrayList<String> identifier_list() {
-        ArrayList<String> identifierList = new ArrayList();
+        ArrayList<String> identifierList = new ArrayList<>();
         identifierList.add(this.lookahead.getLexeme());
         match(TokenType.ID);
         if (this.lookahead.getType() == TokenType.COMMA) {
@@ -120,6 +122,7 @@ public class Parser {
      * Production Rules:
      * RULE c.a:    declarations → VAR identifier_list : type ; declarations
      * RULE c.b:    declarations → λ
+     * @return A DeclarationsNode containing declared variables.
      */
     public DeclarationsNode declarations() {
         DeclarationsNode declarations = new DeclarationsNode();
@@ -144,8 +147,12 @@ public class Parser {
      * Production Rules:
      * RULE d.a:    type → standard_type
      * RULE d.b:    type → ARRAY [ NUM : NUM ] of standard_type
+     * @param identifierList An ArrayList of identifiers which will be
+     * added to the symbol table.
+     * @return An instance of standard_type.
      */
-    public void type(ArrayList<String> identifierList) {
+    public TokenType type(ArrayList<String> identifierList) {
+        TokenType tokenType = null;
         int startIndex, stopIndex;
         if (this.lookahead.getType() == TokenType.ARRAY) {
             match(TokenType.ARRAY);
@@ -157,7 +164,7 @@ public class Parser {
             match(TokenType.NUMBER);
             match(TokenType.RBRACE);
             match(TokenType.OF);
-            TokenType tokenType = standard_type();
+            tokenType = standard_type();
             for (String identifier : identifierList) {
                 if (symbolTable.isArray(identifier)){
                     error("ARRAY with lexeme " + identifier + " already exists in symbol table.");
@@ -166,7 +173,7 @@ public class Parser {
                 }
             }
         } else if (this.lookahead.getType() == TokenType.INTEGER || this.lookahead.getType() == TokenType.REAL) {
-            TokenType tokenType = standard_type();
+            tokenType = standard_type();
             for (String identifier : identifierList) {
                 if (symbolTable.isVariable(identifier)){
                     error("VARIABLE with lexeme " + identifier + " already exists in symbol table.");
@@ -177,6 +184,7 @@ public class Parser {
         } else {
             error("TYPE: TokenType ARRAY not matched or STANDARD_TYPE not called.");
         }
+        return tokenType;
     }
 
     /**
@@ -185,6 +193,7 @@ public class Parser {
      * Production Rules:
      * RULE e.a:    standard_type → INTEGER
      * RULE e.b:    standard_type → REAL
+     * @return A token type, either INTEGER or REAL.
      */
     public TokenType standard_type() {
         if (this.lookahead.getType() == TokenType.INTEGER) {
@@ -207,6 +216,7 @@ public class Parser {
      * Production Rules:
      * RULE f.a:    subprogram_declarations → subprogram_declaration ; subprogram_declarations
      * RULE f.b:    subprogram_declarations → λ
+     * @return A SubProgramDeclarationsNode containing declared functions and procedures.
      */
     public SubProgramDeclarationsNode subprogram_declarations() {
         SubProgramDeclarationsNode subProgramDeclarationsNode = new SubProgramDeclarationsNode();
@@ -227,6 +237,7 @@ public class Parser {
      *
      * Production Rules:
      * RULE g.a:    subprogram_declaration → subprogram_head declarations compound_statement
+     * @return A SubProgramNode for a declared function or procedure.
      */
     public SubProgramNode subprogram_declaration() {
         SubProgramNode subProgramNode = subprogram_head();
@@ -243,6 +254,7 @@ public class Parser {
      * Production Rules:
      * RULE h.a:    subprogram_head → function ID arguments : standard_type ;
      * RULE h.b:    subprogram_head → procedure ID arguments ;
+     * @return A SubProgramNode for a declared function or procedure.
      */
     public SubProgramNode subprogram_head() {
         SubProgramNode subProgramNode = null;
@@ -276,14 +288,17 @@ public class Parser {
      * Production Rules:
      * RULE i.a:    arguments → ( parameter_list )
      * RULE i.b:    arguments → λ
+     * @return An ArrayList of arguments declared in a VariableNode.
      */
-    public void arguments() {
+    public ArrayList<VariableNode> arguments() {
+        ArrayList<VariableNode> args = new ArrayList<>();
         if (this.lookahead.getType() == TokenType.LPAREN) {
             match(TokenType.LPAREN);
             parameter_list();
             match(TokenType.RPAREN);
         }
         // lambda case
+        return args;
     }
 
     /**
@@ -292,17 +307,23 @@ public class Parser {
      * Production Rules:
      * RULE j.a:    parameter_list → identifier_list : type
      * RULE j.b:    parameter_list → identifier_list : type ; parameter_list
+     * @return The arguments declared in a parameter list.
      */
-    public void parameter_list() {
+    public ArrayList<VariableNode> parameter_list() {
         ArrayList<String> identifierList = identifier_list();
+        ArrayList<VariableNode> args = new ArrayList<>();
         if (this.lookahead.getType() == TokenType.COLON) {
             match(TokenType.COLON);
-            type(identifierList);
+            TokenType tokenType = type(identifierList);
+            for (String identifier : identifierList) {
+                args.add(new VariableNode(identifier, tokenType));
+            }
             if (this.lookahead.getType() == TokenType.SEMI) {
                 match(TokenType.SEMI);
-                parameter_list();
+                args.addAll(parameter_list());
             }
         }
+        return args;
     }
 
     /**
@@ -311,6 +332,7 @@ public class Parser {
      *
      * Production Rules:
      * RULE k.a:    compound_statement → BEGIN optional_statements END
+     * @return A CompoundStatementNode.
      */
     public CompoundStatementNode compound_statement() {
         CompoundStatementNode compoundStatementNode = new CompoundStatementNode();
@@ -326,6 +348,7 @@ public class Parser {
      * Production Rules:
      * RULE l.a:    optional_statements → statement_list
      * RULE l.b:    optional_statements → λ
+     * @return A CompoundStatementNode.
      */
     public CompoundStatementNode optional_statements() {
         CompoundStatementNode compoundStatementNode = new CompoundStatementNode();
@@ -333,7 +356,7 @@ public class Parser {
                 this.lookahead.getType() == TokenType.BEGIN ||
                 this.lookahead.getType() == TokenType.IF ||
                 this.lookahead.getType() == TokenType.WHILE) {
-            statement_list();
+            compoundStatementNode.addStatement(statement_list());
         }
         // lambda case
         return compoundStatementNode;
@@ -345,9 +368,10 @@ public class Parser {
      * Production Rules:
      * RULE m.a:    statement_list → statement
      * RULE m.b:    statement_list → statement ; statement_list
+     * @return An ArrayList of StatementNodes.
      */
     public ArrayList<StatementNode> statement_list() {
-        ArrayList<StatementNode> statementNodeList = new ArrayList();
+        ArrayList<StatementNode> statementNodeList = new ArrayList<>();
         statementNodeList.add(statement());
         if (this.lookahead.getType() == TokenType.SEMI) {
             match(TokenType.SEMI);
@@ -369,28 +393,34 @@ public class Parser {
      * RULE n.f:    statement → READ ( ID )
      * RULE n.g:    statement → WRITE ( expression )
      * RULE n.h:    statement → RETURN expression
+     * @return A StatementNode.
      */
     public StatementNode statement() {
         StatementNode statementNode = null;
         if (this.lookahead.getType() == TokenType.ID) {
             if (symbolTable.isVariable(this.lookahead.getLexeme())) {
-                variable();
+                AssignmentStatementNode assignmentStatementNode = new AssignmentStatementNode();
+                assignmentStatementNode.setLvalue(variable());
                 match(TokenType.ASSIGN);
-                expression();
-            } else if (symbolTable.isProcedure(lookahead.getLexeme())) {
+                assignmentStatementNode.setExpression(expression());
+                return assignmentStatementNode;
+            } else if (symbolTable.isProcedure(this.lookahead.getLexeme())) {
                 procedure_statement();
             } else {
                 error("STATEMENT: Variable or Procedure identifier does not exist in symbol table.");
             }
         } else if (this.lookahead.getType() == TokenType.BEGIN) {
-            compound_statement();
+            statementNode = compound_statement();
         } else if (this.lookahead.getType() == TokenType.IF) {
+            IfStatementNode ifStatementNode = new IfStatementNode();
             match(TokenType.IF);
-            expression();
+            ifStatementNode.setTest(expression());
             match(TokenType.THEN);
-            statement();
+            ifStatementNode.setThenStatement(statement());
             match(TokenType.ELSE);
-            statement();
+            ifStatementNode.setElseStatement(statement());
+            return ifStatementNode;
+        // Needs while statement node.
         } else if (this.lookahead.getType() == TokenType.WHILE) {
             match(TokenType.WHILE);
             expression();
@@ -422,16 +452,26 @@ public class Parser {
      * Production Rules:
      * RULE o.a:    variable → ID
      * RULE o.b:    variable → ID [ expression ]
+     * @return A VariableNode.
      */
     public VariableNode variable() {
-        VariableNode variableNode = null;
-        match(TokenType.ID);
-        if (this.lookahead.getType() == TokenType.LBRACE) {
-            match(TokenType.LBRACE);
-            expression();
-            match(TokenType.RBRACE);
+        String variableName = this.lookahead.getLexeme();
+        if (!symbolTable.isVariable(variableName)) {
+            error("Variable with ID " + variableName + " was not properly declared.");
         }
-        return variableNode;
+        if (!symbolTable.isArray(variableName)) {
+            VariableNode variableNode = new VariableNode(variableName);
+            match(TokenType.ID);
+            return variableNode;
+        } else {
+            VariableNode variableNode = new VariableNode(variableName);
+            if (this.lookahead.getType() == TokenType.LBRACE) {
+                match(TokenType.LBRACE);
+                expression();
+                match(TokenType.RBRACE);
+            }
+            return variableNode;
+        }
     }
 
     /**
@@ -441,6 +481,7 @@ public class Parser {
      * Production Rules:
      * RULE p.a:    procedure_statement → ID
      * RULE p.b:    procedure_statement → ID ( expression_list )
+     * @return A ProcedureStatementNode.
      */
     public ProcedureStatementNode procedure_statement() {
         ProcedureStatementNode procedureStatementNode = null;
@@ -459,15 +500,16 @@ public class Parser {
      * Production Rules:
      * RULE q.a:    expression_list → expression
      * RULE q.b:    expression_list → expression , expression_list
+     * @return An ExpressionNode.
      */
-    public ExpressionNode expression_list() {
-        ExpressionNode expressionNode = null;
-        expression();
+    public ArrayList<ExpressionNode> expression_list() {
+        ArrayList<ExpressionNode> expressionNodeList = new ArrayList<>();
+        expressionNodeList.add(expression());
         if (this.lookahead.getType() == TokenType.COMMA) {
             match(TokenType.COMMA);
-            expression_list();
+            expressionNodeList.addAll(expression_list());
         }
-        return expressionNode;
+        return expressionNodeList;
     }
 
     /**
@@ -476,15 +518,17 @@ public class Parser {
      * Production Rules:
      * RULE r.a:    expression → simple_expression
      * RULE r.b:    expression → simple_expression relop simple_expression
+     * @return An ExpressionNode.
      */
     public ExpressionNode expression() {
-        ExpressionNode expressionNode = null;
-        simple_expression();
+        ExpressionNode leftExpressionNode = simple_expression();
         if (isRelOp(this.lookahead.getType())) {
+            OperationNode operationNode = new OperationNode(this.lookahead.getType());
+            operationNode.setLeft(leftExpressionNode);
             match(this.lookahead.getType());
-            simple_expression();
+            operationNode.setLeft(simple_expression());
         }
-        return expressionNode;
+        return leftExpressionNode;
     }
 
     /**
@@ -492,8 +536,9 @@ public class Parser {
      * grammar.
      *
      * Production Rules:
-     * RULE s.a:    simple_expression → term simple_part
-     * RULE s.b:    simple_expression → sign term simple_part
+     * RULE s.a:    simple_expression → term simple_prime
+     * RULE s.b:    simple_expression → sign term simple_prime
+     * @return An ExpressionNode.
      */
     public ExpressionNode simple_expression() {
         ExpressionNode expressionNode = null;
@@ -501,11 +546,11 @@ public class Parser {
                 this.lookahead.getType() == TokenType.NUMBER ||
                 this.lookahead.getType() == TokenType.LPAREN ||
                 this.lookahead.getType() == TokenType.NOT) {
-            term();
-            simple_part();
+            expressionNode = term();
+            expressionNode = simple_prime(expressionNode);
         } else if (sign()) {
-            term();
-            simple_part();
+            expressionNode = term();
+            expressionNode = simple_prime(expressionNode);
         } else {
             error("SIMPLE_EXPRESSION: TERM or SIGN can not be called.");
         }
@@ -513,21 +558,24 @@ public class Parser {
     }
 
     /**
-     * Executes the rule for simple_part in the expression grammar.
+     * Executes the rule for simple_prime in the expression grammar.
      *
      * Production Rules:
-     * RULE t.a:    simple_part → addop term simple_part
-     * RULE t.b:    simple_part → λ
+     * RULE t.a:    simple_prime → addop term simple_prime
+     * RULE t.b:    simple_prime → λ
+     * @return An ExpressionNode.
      */
-    public ExpressionNode simple_part() {
-        ExpressionNode expressionNode = null;
+    public ExpressionNode simple_prime(ExpressionNode leftExpressionNode) {
         if (isAddOp(this.lookahead.getType())) {
+            OperationNode operationNode = new OperationNode(this.lookahead.getType());
             match(lookahead.getType());
-            term();
-            simple_part();
+            ExpressionNode rightExpressionNode = term();
+            operationNode.setLeft(leftExpressionNode);
+            operationNode.setRight(rightExpressionNode);
+            return simple_prime(operationNode);
         }
         // lambda case
-        return expressionNode;
+        return leftExpressionNode;
     }
 
     /**
@@ -535,12 +583,11 @@ public class Parser {
      *
      * Production Rules:
      * RULE u.a:    term → factor term_prime
+     * @return An ExpressionNode.
      */
     public ExpressionNode term() {
-        ExpressionNode expressionNode = null;
-        factor();
-        term_prime();
-        return expressionNode;
+        ExpressionNode leftNode = factor();
+        return term_prime(leftNode);
     }
 
     /**
@@ -550,12 +597,14 @@ public class Parser {
      * RULE v.a:    term_prime → mulop factor term_prime
      * RULE v.b:    term_prime → λ
      */
-    public ExpressionNode term_prime() {
-        ExpressionNode expressionNode = null;
+    public ExpressionNode term_prime(ExpressionNode expressionNode) {
         if (isMulOp(this.lookahead.getType())) {
+            OperationNode operationNode = new OperationNode(this.lookahead.getType());
             match(this.lookahead.getType());
-            factor();
-            term_prime();
+            ExpressionNode rightNode = factor();
+            operationNode.setLeft(expressionNode);
+            operationNode.setRight(term_prime(rightNode));
+            return operationNode;
         }
         // lambda case
         return expressionNode;
@@ -585,7 +634,6 @@ public class Parser {
         }
     }
 
-
     /**
      * Executes the rule for factor in the expression grammar.
      *
@@ -596,27 +644,30 @@ public class Parser {
      * RULE x.d:    factor → num
      * RULE x.e:    factor → ( expression )
      * RULE x.f:    factor → not factor
+     * @return An ExpressionNode.
      */
     public ExpressionNode factor() {
         ExpressionNode expressionNode = null;
-        if (lookahead.getType() == TokenType.ID) {
+        if (this.lookahead.getType() == TokenType.ID) {
+            expressionNode = new VariableNode(this.lookahead.getLexeme());
             match(TokenType.ID);
-            if (lookahead.getType() == TokenType.LBRACE) {
+            if (this.lookahead.getType() == TokenType.LBRACE) {
                 match(TokenType.LBRACE);
                 expression();
                 match(TokenType.RBRACE);
-            } else if (lookahead.getType() == TokenType.LPAREN) {
+            } else if (this.lookahead.getType() == TokenType.LPAREN) {
                 match(TokenType.LPAREN);
                 expression_list();
                 match(TokenType.RPAREN);
             }
-        } else if (lookahead.getType() == TokenType.NUMBER) {
+        } else if (this.lookahead.getType() == TokenType.NUMBER) {
+            expressionNode = new ValueNode(this.lookahead.getLexeme());
             match(TokenType.NUMBER);
-        } else if (lookahead.getType() == TokenType.LPAREN) {
+        } else if (this.lookahead.getType() == TokenType.LPAREN) {
             match(TokenType.LPAREN);
-            expression();
+            expressionNode = expression();
             match(TokenType.RPAREN);
-        } else if (lookahead.getType() == TokenType.NOT) {
+        } else if (this.lookahead.getType() == TokenType.NOT) {
             match(TokenType.NOT);
             factor();
         } else {
@@ -654,7 +705,8 @@ public class Parser {
 
     /**
      * Checks if a given token is a multiplication operator as defined in the grammar.
-     * @return true if token is a multiplication operator.
+     * @param tokenType The type of the mulop token.
+     * @return True if token is a multiplication operator.
      */
     private static boolean isMulOp(TokenType tokenType) {
         return (tokenType == TokenType.ASTERISK ||
@@ -666,7 +718,8 @@ public class Parser {
 
     /**
      * Checks if a given token is an addition operator as defined in the grammar.
-     * @return true if token is a addition operator.
+     * @param tokenType The type of the addop token.
+     * @return True if token is a addition operator.
      */
     private static boolean isAddOp(TokenType tokenType) {
         return (tokenType == TokenType.PLUS ||
@@ -676,7 +729,8 @@ public class Parser {
 
     /**
      * Checks if a given token is an relational operator as defined in the grammar.
-     * @return true if token is a relational operator.
+     * @param tokenType The type of the relop token.
+     * @return True if token is a relational operator.
      */
     private static boolean isRelOp(TokenType tokenType) {
         return (tokenType == TokenType.EQUAL ||
@@ -689,7 +743,7 @@ public class Parser {
 
     /**
      * Returns the symbol table constructed by the parser.
-     * @return symbol table
+     * @return The symbol table.
      */
     public SymbolTable getSymbolTable() {
         return symbolTable;

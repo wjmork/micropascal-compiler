@@ -5,3 +5,16 @@ Program: sample
 |-- --- Name: bitcoins
 |-- SubProgramDeclarations
 |-- Compound Statement
+|-- --- Assignment
+|-- --- --- Name: dollars
+|-- --- --- Value: 1000000
+|-- --- Assignment
+|-- --- --- Name: yen
+|-- --- --- Operation: ASTERISK
+|-- --- --- --- Name: dollars
+|-- --- --- --- Value: 110
+|-- --- Assignment
+|-- --- --- Name: bitcoins
+|-- --- --- Operation: FSLASH
+|-- --- --- --- Name: dollars
+|-- --- --- --- Value: 3900
