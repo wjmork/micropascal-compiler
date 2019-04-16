@@ -58,7 +58,6 @@ public class OperationNode extends ExpressionNode {
     public void setLeft(ExpressionNode node) {
         // If we already have a left, remove it from our child list.
         this.left = node;
-        System.out.println("operation left node set to: " + left);
     }
 
     /**
@@ -68,7 +67,6 @@ public class OperationNode extends ExpressionNode {
     public void setRight(ExpressionNode node) {
         // If we already have a right, remove it from our child list.
         this.right = node;
-        System.out.println("operation right node set to: " + right);
     }
 
     /**
@@ -77,7 +75,6 @@ public class OperationNode extends ExpressionNode {
      */
     public void setOperation(TokenType operation) {
         this.operation = operation;
-        System.out.println("operation type set to: " + operation);
     }
     
     /**

@@ -90,9 +90,6 @@ public class SyntaxTreeTest {
     public void factorTest() {
         // Testing a single value
         Parser testParser = new Parser("0", false);
-        //SymbolTable testTable = testParser.getSymbolTable();
-        //testTable.addFunction("foo", TokenType.INTEGER);
-        //testTable.addVariable("bar", TokenType.INTEGER);
         ExpressionNode testNode = testParser.factor();
         String expected = "Value: 0\n";
         String actual = testNode.indentedToString(0);
@@ -108,11 +105,77 @@ public class SyntaxTreeTest {
         Assertions.assertEquals(expected, actual);
         System.out.println("Success.");
 
-        // Testing a simple function
+        // Testing a simple function / procedure call
         testParser = new Parser("foo(1, 2*3)", false);
         testParser.getSymbolTable().addFunction("foo", TokenType.INTEGER);
         testNode = testParser.factor();
-        expected = "Name: foo \n";
+        expected = "Name: Arguments: \n|-- Value: 1\n|-- Operation: MULTIPLY\n|-- --- Value: 2\n|-- --- Value: 3\n";
+        actual = testNode.indentedToString(0);
+        Assertions.assertEquals(expected, actual);
+        System.out.println("Success.");
+
+        // Testing a function / procedure call with second argument
+        testParser = new Parser("foo(1, 2*bar)", false);
+        testParser.getSymbolTable().addProcedure("foo");
+        testNode = testParser.factor();
+        actual = testNode.indentedToString(0);
+        expected = "Name: Arguments: \n|-- Value: 1\n|-- Operation: MULTIPLY\n|-- --- Value: 2\n|-- --- Name: bar\n";
+        Assertions.assertEquals(expected, actual);
+        System.out.println("Success.");
+    }
+
+    /**
+     * Tests the syntax tree generation for the simple_expression() function.
+     *
+     * @result The test fails if the syntax tree is improperly constructed during a
+     * call to simple_expression().
+     */
+    @Test
+    public void simple_expressionTest() {
+        Parser testParser = new Parser("foo * bar", false);
+        testParser.getSymbolTable().addVariable("foo", TokenType.INTEGER);
+        testParser.getSymbolTable().addVariable("bar", TokenType.INTEGER);
+        ExpressionNode testNode = testParser.simple_expression();
+        String expected = "Operation: MULTIPLY\n|-- Name: foo\n|-- Name: bar\n";
+        String actual = testNode.indentedToString(0);
+        Assertions.assertEquals(expected, actual);
+        System.out.println("Success.");
+    }
+
+    /**
+     * Tests the syntax tree generation for the statement() function.
+     *
+     * @result The test fails if the syntax tree is improperly constructed during a
+     * call to statement().
+     */
+    @Test
+    public void statementTest() {
+        // Simple variable assignment and expression
+        Parser testParser = new Parser("foo := foo - bar", false);
+        testParser.getSymbolTable().addVariable("foo", TokenType.INTEGER);
+        testParser.getSymbolTable().addVariable("bar", TokenType.INTEGER);
+        StatementNode testNode = testParser.statement();
+        String expected = "Assignment\n|-- Name: foo\n|-- Operation: MINUS\n|-- --- Name: foo\n|-- --- Name: bar\n";
+        String actual = testNode.indentedToString(0);
+        Assertions.assertEquals(expected, actual);
+        System.out.println("Success.");
+
+        // Testing a simple if statement
+        testParser = new Parser("if foo > bar then foo := foo - bar else foo := foo + bar", false);
+        testParser.getSymbolTable().addVariable("foo", TokenType.INTEGER);
+        testParser.getSymbolTable().addVariable("bar", TokenType.INTEGER);
+        testNode = testParser.statement();
+        expected = "If:\n|-- Name: foo\n|-- Assignment\n|-- --- Name: foo\n|-- --- Operation: MINUS\n|-- --- --- Name: foo\n|-- --- --- Name: bar\n|-- Assignment\n|-- --- Name: foo\n|-- --- Operation: PLUS\n|-- --- --- Name: foo\n|-- --- --- Name: bar\n";
+        actual = testNode.indentedToString(0);
+        Assertions.assertEquals(expected, actual);
+        System.out.println("Success.");
+
+        // Testing a simple while statement
+        testParser = new Parser("while foo > bar do foo := foo - 1", false);
+        testParser.getSymbolTable().addVariable("foo", TokenType.INTEGER);
+        testParser.getSymbolTable().addVariable("bar", TokenType.INTEGER);
+        testNode = testParser.statement();
+        expected = "While:\n|-- Name: foo\n|-- Assignment\n|-- --- Name: foo\n|-- --- Operation: MINUS\n|-- --- --- Name: foo\n|-- --- --- Value: 1\n";
         actual = testNode.indentedToString(0);
         Assertions.assertEquals(expected, actual);
         System.out.println("Success.");

@@ -6,6 +6,7 @@ import scanner.TokenType;
 import symboltable.*;
 import syntaxtree.*;
 
+import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -71,10 +72,7 @@ public class Parser {
      * program identifier to the symbol table and creates a ProgramNode within the syntax tree.
      *
      * Production Rules:
-     * RULE a.a:    program → program ID
-     * RULE a.b:    program → declarations
-     * RULE a.c:    program → subprogram_declarations
-     * RULE a.d:    program → compound_statement
+     * RULE a.a:    program → program ID ; declarations subprogram_declarations compound_statement .
      * @return The main, top-level ProgramNode containing all other nodes.
      */
     public ProgramNode program() {
@@ -420,12 +418,13 @@ public class Parser {
             match(TokenType.ELSE);
             ifStatementNode.setElseStatement(statement());
             return ifStatementNode;
-        // Needs while statement node.
         } else if (this.lookahead.getType() == TokenType.WHILE) {
+            WhileStatementNode whileStatementNode = new WhileStatementNode();
             match(TokenType.WHILE);
-            expression();
+            whileStatementNode.setTest(expression());
             match(TokenType.DO);
-            statement();
+            whileStatementNode.setDoStatement(statement());
+            return whileStatementNode;
         } else if (this.lookahead.getType() == TokenType.READ) {
             match(TokenType.READ);
             match(TokenType.LPAREN);
@@ -644,21 +643,28 @@ public class Parser {
      * RULE x.d:    factor → num
      * RULE x.e:    factor → ( expression )
      * RULE x.f:    factor → not factor
-     * @return An ExpressionNode.
+     * @return A Node whose type is dependent upon the production path of factor().
      */
     public ExpressionNode factor() {
         ExpressionNode expressionNode = null;
         if (this.lookahead.getType() == TokenType.ID) {
-            expressionNode = new VariableNode(this.lookahead.getLexeme());
+            String name = this.lookahead.getLexeme();
             match(TokenType.ID);
             if (this.lookahead.getType() == TokenType.LBRACE) {
                 match(TokenType.LBRACE);
+                // Needs array node or extension of variable node.
                 expression();
                 match(TokenType.RBRACE);
             } else if (this.lookahead.getType() == TokenType.LPAREN) {
+                FunctionNode functionNode = new FunctionNode(name);
                 match(TokenType.LPAREN);
-                expression_list();
+                ArrayList<ExpressionNode> arguments = expression_list();
+                functionNode.setArgs(arguments);
                 match(TokenType.RPAREN);
+                return functionNode;
+            } else {
+                VariableNode variableNode = new VariableNode(name);
+                return variableNode;
             }
         } else if (this.lookahead.getType() == TokenType.NUMBER) {
             expressionNode = new ValueNode(this.lookahead.getLexeme());
