@@ -29,8 +29,8 @@ public class LookupTable extends HashMap<String,TokenType> {
         this.put( "<=", TokenType.LTHANEQ);
         this.put( ">", TokenType.GTHAN);
         this.put( ">=", TokenType.GTHANEQ);
-        this.put( "*", TokenType.ASTERISK);
-        this.put( "/", TokenType.FSLASH);
+        this.put( "*", TokenType.MULTIPLY);
+        this.put( "/", TokenType.DIVIDE);
         this.put( ":=", TokenType.ASSIGN);
     } 
 }

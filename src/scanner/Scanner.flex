@@ -64,8 +64,8 @@ import java.util.HashMap;
     tokenTypes.put("<=", TokenType.LTHANEQ);
     tokenTypes.put(">", TokenType.GTHAN);
     tokenTypes.put(">=", TokenType.GTHANEQ);
-    tokenTypes.put("*", TokenType.ASTERISK);
-    tokenTypes.put("/", TokenType.FSLASH);
+    tokenTypes.put("*", TokenType.MULTIPLY);
+    tokenTypes.put("/", TokenType.DIVIDE);
     tokenTypes.put(":=", TokenType.ASSIGN);
 %init}
 

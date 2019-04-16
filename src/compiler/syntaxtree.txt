@@ -10,11 +10,11 @@ Program: sample
 |-- --- --- Value: 1000000
 |-- --- Assignment
 |-- --- --- Name: yen
-|-- --- --- Operation: ASTERISK
+|-- --- --- Operation: MULTIPLY
 |-- --- --- --- Name: dollars
 |-- --- --- --- Value: 110
 |-- --- Assignment
 |-- --- --- Name: bitcoins
-|-- --- --- Operation: FSLASH
+|-- --- --- Operation: DIVIDE
 |-- --- --- --- Name: dollars
 |-- --- --- --- Value: 3900

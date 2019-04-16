@@ -709,8 +709,8 @@ public class Parser {
      * @return True if token is a multiplication operator.
      */
     private static boolean isMulOp(TokenType tokenType) {
-        return (tokenType == TokenType.ASTERISK ||
-                tokenType == TokenType.FSLASH ||
+        return (tokenType == TokenType.MULTIPLY ||
+                tokenType == TokenType.DIVIDE ||
                 tokenType == TokenType.DIV ||
                 tokenType == TokenType.MOD ||
                 tokenType == TokenType.AND);

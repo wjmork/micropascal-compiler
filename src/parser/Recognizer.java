@@ -507,7 +507,7 @@ public class Recognizer {
      */
     private boolean isMulop(Token token) {
         boolean answer = false;
-        if (token.type == TokenType.ASTERISK || token.type == TokenType.FSLASH) {
+        if (token.type == TokenType.MULTIPLY || token.type == TokenType.DIVIDE) {
             answer = true;
         }
         return answer;
@@ -520,12 +520,12 @@ public class Recognizer {
      * Structure:   mulop → * | /
      */
     public void mulop() {
-        if (this.lookahead.type == TokenType.ASTERISK) {
-            match(TokenType.ASTERISK);
-        } else if (this.lookahead.type == TokenType.FSLASH) {
-            match(TokenType.FSLASH);
+        if (this.lookahead.type == TokenType.MULTIPLY) {
+            match(TokenType.MULTIPLY);
+        } else if (this.lookahead.type == TokenType.DIVIDE) {
+            match(TokenType.DIVIDE);
         } else {
-            error("MULOP: TokenType ASTERISK or FSLASH not matched.");
+            error("MULOP: TokenType MULTIPLY or DIVIDE not matched.");
         }
     }
 
