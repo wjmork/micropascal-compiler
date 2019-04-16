@@ -6,7 +6,6 @@ import scanner.TokenType;
 import symboltable.*;
 import syntaxtree.*;
 
-import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 

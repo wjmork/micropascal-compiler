@@ -14,9 +14,9 @@ public class FunctionNode extends VariableNode {
     private ArrayList<ExpressionNode> arguments;
 
     /**
-     * Creates a FunctionNode and the parent variableNode with the given name.
+     * Creates a FunctionNode as a child of a variable node.
      *
-     * @param name The attribute for this value node.
+     * @param name The name of this function node.
      */
     public FunctionNode(String name) {
         super(name);

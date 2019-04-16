@@ -9,18 +9,26 @@ import java.io.*;
  * Top-level class for the compiler; will be expanded as
  * modules are developed and new features are added.
  *
- * As of 3/15/2019, this class can create a parser instance
- * and populate the symbol table.
+ * As of 3/15/2019, this class can create a parser instance,
+ * populate the symbol table and generate a syntax tree.
  *
  * @author William Mork
+ * @version 0.4.1
  */
 public class CompilerMain {
 
     public static void main(String[] args) {
-
-        Parser parser = new Parser("src/pascal/money.pas", true);
-        exportSyntaxTree(parser);
-        exportSymbolTable(parser.getSymbolTable().toString());
+        Parser parser;
+        try {
+            parser = new Parser("src/pascal/" + args[0], true);
+            exportSyntaxTree(parser);
+            exportSymbolTable(parser.getSymbolTable().toString());
+        } catch(Exception e) {
+            System.out.println("Could not locate input file. Make sure your micro-pascal file is in the src/pascal/ directory and is spelled correctly as a parameter in the console.");
+        }
+        System.out.println("File successfully parsed.");
+        System.out.println("The syntax tree for " + args[0] + " can be found in the src/compiler/ directory.");
+        System.out.println("The symbol table for " + args[0] + " can be found in the src/compiler/ directory.");
     }
 
     /**
