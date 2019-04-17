@@ -78,6 +78,7 @@ public class Parser {
         match(TokenType.PROGRAM);
         String identifier = lookahead.getLexeme();
         ProgramNode program = new ProgramNode(identifier);
+        // Semantic Analysis flag
         if (symbolTable.isProgram(identifier)) {
             error("PROGRAM with lexeme " + identifier + " already exists in symbol table.");
         }
@@ -163,6 +164,7 @@ public class Parser {
             match(TokenType.OF);
             tokenType = standard_type();
             for (String identifier : identifierList) {
+                // Semantic Analysis flag
                 if (symbolTable.isArray(identifier)){
                     error("ARRAY with lexeme " + identifier + " already exists in symbol table.");
                 } else {
@@ -172,6 +174,7 @@ public class Parser {
         } else if (this.lookahead.getType() == TokenType.INTEGER || this.lookahead.getType() == TokenType.REAL) {
             tokenType = standard_type();
             for (String identifier : identifierList) {
+                // Semantic Analysis flag
                 if (symbolTable.isVariable(identifier)){
                     error("VARIABLE with lexeme " + identifier + " already exists in symbol table.");
                 } else {
@@ -395,12 +398,14 @@ public class Parser {
     public StatementNode statement() {
         StatementNode statementNode = null;
         if (this.lookahead.getType() == TokenType.ID) {
+            // Semantic Analysis flag
             if (symbolTable.isVariable(this.lookahead.getLexeme())) {
                 AssignmentStatementNode assignmentStatementNode = new AssignmentStatementNode();
                 assignmentStatementNode.setLvalue(variable());
                 match(TokenType.ASSIGN);
                 assignmentStatementNode.setExpression(expression());
                 return assignmentStatementNode;
+            // Semantic Analysis flag
             } else if (symbolTable.isProcedure(this.lookahead.getLexeme())) {
                 procedure_statement();
             } else {
@@ -454,9 +459,11 @@ public class Parser {
      */
     public VariableNode variable() {
         String variableName = this.lookahead.getLexeme();
+        // Semantic Analysis flag
         if (!symbolTable.isVariable(variableName)) {
             error("Variable with ID " + variableName + " was not properly declared.");
         }
+        // Semantic Analysis flag
         if (!symbolTable.isArray(variableName)) {
             VariableNode variableNode = new VariableNode(variableName);
             match(TokenType.ID);
