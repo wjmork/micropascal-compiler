@@ -44,7 +44,7 @@ public class ValueNode extends ExpressionNode {
     @Override
     public String indentedToString(int level) {
         String answer = this.indentation(level);
-        answer += "Value: " + this.attribute + "\n";
+        answer += "Value: " + this.attribute + ", Type: " + this.tokenType + "\n";
         return answer;
     }
 

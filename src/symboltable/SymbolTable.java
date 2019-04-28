@@ -98,6 +98,15 @@ public class SymbolTable {
     }
 
     /**
+     * Returns the token type of a symbol.
+     * @param name The lexeme of symbol.
+     * @return Token type of the symbol.
+     */
+    public TokenType getType(String name) {
+        return symbolTable.get(name).getType();
+    }
+
+    /**
      * Checks if a program symbol with a given lexeme already exists in the symbol table.
      * @param lexeme The lexeme of the program symbol.
      * @return True if a program symbol with the given lexeme already exists in the table.

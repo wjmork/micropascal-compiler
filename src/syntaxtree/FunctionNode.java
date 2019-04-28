@@ -40,9 +40,9 @@ public class FunctionNode extends VariableNode {
     @Override
     public String indentedToString(int level) {
         String answer = this.indentation(level);
-        answer += ("Name: ");
-        answer += (this.indentation(level));
-        answer += ("Arguments: \n");
+        answer += "Name: " + this.name + ", Type: " + this.tokenType + "\n";
+        answer += this.indentation(level);
+        answer += "Arguments: \n";
         for (ExpressionNode argument : arguments) {
             answer += (argument.indentedToString(level + 1));
         }

@@ -52,7 +52,7 @@ public class Parser {
             try {
                 inputStream = new FileInputStream(input);
             } catch (FileNotFoundException ex) {
-                error("ERROR: File " + input + " failed to import. Please confirm file name and directory.");
+                error("File " + input + " failed to import. Please confirm file name and directory.");
             }
             inputStreamReader = new InputStreamReader(inputStream);
             inputStreamScanner = new Scanner(inputStreamReader);
@@ -62,7 +62,7 @@ public class Parser {
         try {
             lookahead = inputStreamScanner.nextToken();
         } catch (IOException ex) {
-            error("ERROR: Start token not recognized in input stream.");
+            error("Start token not recognized in input stream.");
         }
     }
 
@@ -76,13 +76,13 @@ public class Parser {
      */
     public ProgramNode program() {
         match(TokenType.PROGRAM);
-        String identifier = lookahead.getLexeme();
-        ProgramNode program = new ProgramNode(identifier);
+        String lex = lookahead.getLexeme();
+        ProgramNode program = new ProgramNode(lex);
         // Semantic Analysis flag
-        if (symbolTable.isProgram(identifier)) {
-            error("PROGRAM with lexeme " + identifier + " already exists in symbol table.");
+        if (symbolTable.isProgram(lex)) {
+            error("PROGRAM with lexeme " + lex + " already exists in symbol table.");
         }
-        symbolTable.addProgram(identifier);
+        symbolTable.addProgram(lex);
         match(TokenType.ID);
         match(TokenType.SEMI);
         program.setVariables(declarations());
@@ -127,11 +127,11 @@ public class Parser {
         if (this.lookahead.getType() == TokenType.VAR) {
             match(TokenType.VAR);
             ArrayList<String> identifierList = identifier_list();
-            for (String identifier : identifierList) {
-                declarations.addVariable(new VariableNode(identifier));
-            }
             match(TokenType.COLON);
-            type(identifierList);
+            TokenType type = type(identifierList);
+            for (String identifier : identifierList) {
+                declarations.addVariable(new VariableNode(identifier, type));
+            }
             match(TokenType.SEMI);
             declarations.addDeclarations(declarations());
         }
@@ -150,7 +150,7 @@ public class Parser {
      * @return An instance of standard_type.
      */
     public TokenType type(ArrayList<String> identifierList) {
-        TokenType tokenType = null;
+        TokenType type = null;
         int startIndex, stopIndex;
         if (this.lookahead.getType() == TokenType.ARRAY) {
             match(TokenType.ARRAY);
@@ -162,29 +162,29 @@ public class Parser {
             match(TokenType.NUMBER);
             match(TokenType.RBRACE);
             match(TokenType.OF);
-            tokenType = standard_type();
+            type = standard_type();
             for (String identifier : identifierList) {
                 // Semantic Analysis flag
                 if (symbolTable.isArray(identifier)){
                     error("ARRAY with lexeme " + identifier + " already exists in symbol table.");
                 } else {
-                    symbolTable.addArray(identifier, tokenType, startIndex, stopIndex);
+                    symbolTable.addArray(identifier, type, startIndex, stopIndex);
                 }
             }
         } else if (this.lookahead.getType() == TokenType.INTEGER || this.lookahead.getType() == TokenType.REAL) {
-            tokenType = standard_type();
+            type = standard_type();
             for (String identifier : identifierList) {
                 // Semantic Analysis flag
                 if (symbolTable.isVariable(identifier)){
                     error("VARIABLE with lexeme " + identifier + " already exists in symbol table.");
                 } else {
-                    symbolTable.addVariable(identifier, tokenType);
+                    symbolTable.addVariable(identifier, type);
                 }
             }
         } else {
             error("TYPE: TokenType ARRAY not matched or STANDARD_TYPE not called.");
         }
-        return tokenType;
+        return type;
     }
 
     /**
@@ -203,7 +203,7 @@ public class Parser {
             match(TokenType.REAL);
             return TokenType.REAL;
         } else {
-            error("STANDARD_TYPE: TokenType INTEGER or REAL not matched.");
+            error("Unspecified data type.");
             return null;
         }
     }
@@ -265,8 +265,8 @@ public class Parser {
             match(TokenType.ID);
             arguments();
             match(TokenType.COLON);
-            TokenType tokenType = standard_type();
-            symbolTable.addFunction(functionIdentifier, tokenType);
+            TokenType type = standard_type();
+            symbolTable.addFunction(functionIdentifier, type);
             match(TokenType.SEMI);
         } else if (this.lookahead.getType() == TokenType.PROCEDURE) {
             match(TokenType.PROCEDURE);
@@ -314,9 +314,9 @@ public class Parser {
         ArrayList<VariableNode> args = new ArrayList<>();
         if (this.lookahead.getType() == TokenType.COLON) {
             match(TokenType.COLON);
-            TokenType tokenType = type(identifierList);
+            TokenType type = type(identifierList);
             for (String identifier : identifierList) {
-                args.add(new VariableNode(identifier, tokenType));
+                args.add(new VariableNode(identifier, type));
             }
             if (this.lookahead.getType() == TokenType.SEMI) {
                 match(TokenType.SEMI);
@@ -458,18 +458,13 @@ public class Parser {
      * @return A VariableNode.
      */
     public VariableNode variable() {
-        String variableName = this.lookahead.getLexeme();
-        // Semantic Analysis flag
-        if (!symbolTable.isVariable(variableName)) {
-            error("Variable with ID " + variableName + " was not properly declared.");
-        }
-        // Semantic Analysis flag
-        if (!symbolTable.isArray(variableName)) {
-            VariableNode variableNode = new VariableNode(variableName);
+        String lex = this.lookahead.getLexeme();
+        if (!symbolTable.isArray(lex)) {
+            VariableNode variableNode = new VariableNode(lex, symbolTable.getType(lex));
             match(TokenType.ID);
             return variableNode;
         } else {
-            VariableNode variableNode = new VariableNode(variableName);
+            VariableNode variableNode = new VariableNode(lex);
             if (this.lookahead.getType() == TokenType.LBRACE) {
                 match(TokenType.LBRACE);
                 expression();
@@ -527,11 +522,18 @@ public class Parser {
      */
     public ExpressionNode expression() {
         ExpressionNode leftExpressionNode = simple_expression();
+        TokenType type = leftExpressionNode.getType();
         if (isRelOp(this.lookahead.getType())) {
             OperationNode operationNode = new OperationNode(this.lookahead.getType());
+            if (type.equals(TokenType.REAL)) {
+                operationNode.setType(TokenType.REAL);
+            } else {
+                operationNode.setType(TokenType.INTEGER);
+            }
             operationNode.setLeft(leftExpressionNode);
             match(this.lookahead.getType());
             operationNode.setLeft(simple_expression());
+            return operationNode;
         }
         return leftExpressionNode;
     }
@@ -654,27 +656,38 @@ public class Parser {
     public ExpressionNode factor() {
         ExpressionNode expressionNode = null;
         if (this.lookahead.getType() == TokenType.ID) {
-            String name = this.lookahead.getLexeme();
+            String lex = this.lookahead.getLexeme();
             match(TokenType.ID);
+            TokenType type = symbolTable.getType(lex);
             if (this.lookahead.getType() == TokenType.LBRACE) {
                 match(TokenType.LBRACE);
                 // Needs array node or extension of variable node.
                 expression();
                 match(TokenType.RBRACE);
             } else if (this.lookahead.getType() == TokenType.LPAREN) {
-                FunctionNode functionNode = new FunctionNode(name);
+                FunctionNode functionNode = new FunctionNode(lex);
+                functionNode.setType(type);
                 match(TokenType.LPAREN);
                 ArrayList<ExpressionNode> arguments = expression_list();
                 functionNode.setArgs(arguments);
                 match(TokenType.RPAREN);
                 return functionNode;
             } else {
-                VariableNode variableNode = new VariableNode(name);
+                VariableNode variableNode = new VariableNode(lex, symbolTable.getType(lex));
                 return variableNode;
             }
         } else if (this.lookahead.getType() == TokenType.NUMBER) {
-            expressionNode = new ValueNode(this.lookahead.getLexeme());
+            TokenType type;
+            String number = this.lookahead.getLexeme();
+            ValueNode valueNode = new ValueNode(number);
+            if (number.contains(".")) {
+                type = TokenType.REAL;
+            } else {
+                type = TokenType.INTEGER;
+            }
+            valueNode.setType(type);
             match(TokenType.NUMBER);
+            return valueNode;
         } else if (this.lookahead.getType() == TokenType.LPAREN) {
             match(TokenType.LPAREN);
             expressionNode = expression();
@@ -717,40 +730,40 @@ public class Parser {
 
     /**
      * Checks if a given token is a multiplication operator as defined in the grammar.
-     * @param tokenType The type of the mulop token.
+     * @param type The type of the mulop token.
      * @return True if token is a multiplication operator.
      */
-    private static boolean isMulOp(TokenType tokenType) {
-        return (tokenType == TokenType.MULTIPLY ||
-                tokenType == TokenType.DIVIDE ||
-                tokenType == TokenType.DIV ||
-                tokenType == TokenType.MOD ||
-                tokenType == TokenType.AND);
+    private static boolean isMulOp(TokenType type) {
+        return (type == TokenType.MULTIPLY ||
+                type == TokenType.DIVIDE ||
+                type == TokenType.DIV ||
+                type == TokenType.MOD ||
+                type == TokenType.AND);
     }
 
     /**
      * Checks if a given token is an addition operator as defined in the grammar.
-     * @param tokenType The type of the addop token.
+     * @param type The type of the addop token.
      * @return True if token is a addition operator.
      */
-    private static boolean isAddOp(TokenType tokenType) {
-        return (tokenType == TokenType.PLUS ||
-                tokenType == TokenType.MINUS ||
-                tokenType == TokenType.OR);
+    private static boolean isAddOp(TokenType type) {
+        return (type == TokenType.PLUS ||
+                type == TokenType.MINUS ||
+                type == TokenType.OR);
     }
 
     /**
      * Checks if a given token is an relational operator as defined in the grammar.
-     * @param tokenType The type of the relop token.
+     * @param type The type of the relop token.
      * @return True if token is a relational operator.
      */
-    private static boolean isRelOp(TokenType tokenType) {
-        return (tokenType == TokenType.EQUAL ||
-                tokenType == TokenType.NOTEQ ||
-                tokenType == TokenType.LTHAN ||
-                tokenType == TokenType.LTHANEQ ||
-                tokenType == TokenType.GTHANEQ ||
-                tokenType == TokenType.GTHAN);
+    private static boolean isRelOp(TokenType type) {
+        return (type == TokenType.EQUAL ||
+                type == TokenType.NOTEQ ||
+                type == TokenType.LTHAN ||
+                type == TokenType.LTHANEQ ||
+                type == TokenType.GTHANEQ ||
+                type == TokenType.GTHAN);
     }
 
     /**

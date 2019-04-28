@@ -10,7 +10,7 @@ import scanner.TokenType;
 public abstract class ExpressionNode extends SyntaxTreeNode {
 
     // Data type of this expression node.
-    public TokenType tokenType;
+    protected TokenType tokenType;
 
     // Default constructor with null token type.
     public ExpressionNode() {
@@ -19,7 +19,7 @@ public abstract class ExpressionNode extends SyntaxTreeNode {
 
     // Constructor for a specified token type.
     public ExpressionNode(TokenType tokenType) {
-        tokenType = tokenType;
+        this.tokenType = tokenType;
     }
 
     /**

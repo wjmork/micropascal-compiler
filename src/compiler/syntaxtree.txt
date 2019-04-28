@@ -1,20 +1,20 @@
 Program: sample
 |-- Declarations
-|-- --- Name: dollars
-|-- --- Name: yen
-|-- --- Name: bitcoins
+|-- --- Name: dollars, Type: INTEGER
+|-- --- Name: yen, Type: INTEGER
+|-- --- Name: bitcoins, Type: INTEGER
 |-- SubProgramDeclarations
 |-- Compound Statement
 |-- --- Assignment
-|-- --- --- Name: dollars
-|-- --- --- Value: 1000000
+|-- --- --- Name: dollars, Type: INTEGER
+|-- --- --- Value: 1000000, Type: INTEGER
 |-- --- Assignment
-|-- --- --- Name: yen
+|-- --- --- Name: yen, Type: INTEGER
 |-- --- --- Operation: MULTIPLY
-|-- --- --- --- Name: dollars
-|-- --- --- --- Value: 110
+|-- --- --- --- Name: dollars, Type: INTEGER
+|-- --- --- --- Value: 110, Type: INTEGER
 |-- --- Assignment
-|-- --- --- Name: bitcoins
+|-- --- --- Name: bitcoins, Type: INTEGER
 |-- --- --- Operation: DIVIDE
-|-- --- --- --- Name: dollars
-|-- --- --- --- Value: 3900
+|-- --- --- --- Name: dollars, Type: INTEGER
+|-- --- --- --- Value: 3900, Type: INTEGER

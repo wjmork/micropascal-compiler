@@ -18,17 +18,16 @@ import java.io.*;
 public class CompilerMain {
 
     public static void main(String[] args) {
-        Parser parser;
         try {
-            parser = new Parser("src/pascal/" + args[0], true);
+            Parser parser = new Parser("src/pascal/money.pas", true);
             exportSyntaxTree(parser);
             exportSymbolTable(parser.getSymbolTable().toString());
         } catch(Exception e) {
             System.out.println("Could not locate input file. Make sure your micro-pascal file is in the src/pascal/ directory and is spelled correctly as a parameter in the console.");
         }
         System.out.println("File successfully parsed.");
-        System.out.println("The syntax tree for " + args[0] + " can be found in the src/compiler/ directory.");
-        System.out.println("The symbol table for " + args[0] + " can be found in the src/compiler/ directory.");
+        System.out.println("The syntax tree can be found in the src/compiler/ directory.");
+        System.out.println("The symbol table can be found in the src/compiler/ directory.");
     }
 
     /**
