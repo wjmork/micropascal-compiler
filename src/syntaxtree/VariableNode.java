@@ -11,7 +11,7 @@ import scanner.TokenType;
 public class VariableNode extends ExpressionNode {
     
     /** The name of the variable associated with this variable node. */
-    String name;
+    public String name;
     
     /**
      * Creates a value node with the given name.

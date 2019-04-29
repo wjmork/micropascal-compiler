@@ -1,5 +1,6 @@
 package compiler;
 
+import analysis.SemanticAnalyzer;
 import parser.Parser;
 import syntaxtree.ProgramNode;
 
@@ -18,16 +19,17 @@ import java.io.*;
 public class CompilerMain {
 
     public static void main(String[] args) {
-        try {
-            Parser parser = new Parser("src/pascal/money.pas", true);
-            exportSyntaxTree(parser);
-            exportSymbolTable(parser.getSymbolTable().toString());
-        } catch(Exception e) {
-            System.out.println("Could not locate input file. Make sure your micro-pascal file is in the src/pascal/ directory and is spelled correctly as a parameter in the console.");
-        }
+        Parser parser = new Parser("src/pascal/money.pas", true);
+        ProgramNode rootNode = parser.program();
+
+        exportSyntaxTree(rootNode);
+        exportSymbolTable(parser.getSymbolTable().toString());
+
         System.out.println("File successfully parsed.");
         System.out.println("The syntax tree can be found in the src/compiler/ directory.");
         System.out.println("The symbol table can be found in the src/compiler/ directory.");
+
+        SemanticAnalyzer analysis = new SemanticAnalyzer(rootNode, parser.getSymbolTable());
     }
 
     /**
@@ -45,9 +47,9 @@ public class CompilerMain {
      * Writes the indented syntax tree to a file.
      * @param parser the parser instance for which the syntax tree will be generated.
      */
-    public static void exportSyntaxTree(Parser parser) {
+    public static void exportSyntaxTree(ProgramNode root) {
         try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("src/compiler/syntaxtree.txt")))) {
-            writer.write(parser.program().indentedToString(0));
+            writer.write(root.indentedToString(0));
         }
         catch (Exception e) { }
     }

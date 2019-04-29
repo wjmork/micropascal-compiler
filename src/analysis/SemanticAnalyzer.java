@@ -2,44 +2,82 @@ package analysis;
 
 import scanner.TokenType;
 import syntaxtree.*;
+import symboltable.*;
+
+import java.util.ArrayList;
 
 public class SemanticAnalyzer {
 
     /** Root node of the tree to analyze. */
     private ProgramNode root;
+    public SymbolTable symbolTable;
+    boolean isValidType = true;
 
     /**
      * Creates a SemanticAnalyzer with the given expression.
-     * @param tree A program tree to analyze.
+     * @param rootNode Root program node
      */
-    public SemanticAnalyzer( ProgramNode tree) {
-        this.root = tree;
+    public SemanticAnalyzer(ProgramNode rootNode, SymbolTable symbolTable) {
+        root = rootNode;
+        symbolTable = symbolTable;
+
+        DeclarationsNode rootDeclarations = root.getDeclarations();
+
+        SubProgramDeclarationsNode rootSubprogramDeclarations = root.getSubProgramDeclarations();
+
+        testSemantics(root.getCompoundStatement());
     }
 
-    /**
-     * Folds code for the given node.
-     * We only fold if both children are value nodes, and the node itself
-     * is a PLUS node.
-     * @param node The node to check for possible efficiency improvements.
-     * @return The folded node or the original node if nothing
-     */
-    public ExpressionNode codeFolding( OperationNode node) {
-        if( node.getLeft() instanceof OperationNode) {
-            node.setLeft( codeFolding( (OperationNode)node.getLeft()));
+    public void testVariableDeclarations(DeclarationsNode rootDeclarations) {
+
+    }
+
+    public void testSemantics(CompoundStatementNode rootCompoundStatement)
+    {
+        boolean validAssignment = true;
+        boolean validDeclarations = true;
+        for (StatementNode statement : rootCompoundStatement.statements) {
+
+            if (statement instanceof AssignmentStatementNode)
+            {
+                TokenType leftVarType = null;
+                TokenType expressionType = null;
+
+                AssignmentStatementNode thisAssignmentStatement = ((AssignmentStatementNode) statement);
+                leftVarType = thisAssignmentStatement.getLvalue().getType();
+
+                ExpressionNode thisExpression = ((AssignmentStatementNode) statement).getExpression();
+                validAssignment = traverseOperation(thisExpression, leftVarType);
+                }
+            }
+
+        if (!validAssignment){
+            System.out.println("Compiler Error: Variable types not consistent across assignments");
         }
-        if( node.getRight() instanceof OperationNode) {
-            node.setRight( codeFolding( (OperationNode)node.getRight()));
+    }
+
+    public boolean traverseOperation(ExpressionNode expressionNode, TokenType expectedType) {
+        expectedType = expectedType;
+
+        if (expressionNode instanceof OperationNode) {
+            OperationNode thisOperation = ((OperationNode) expressionNode);
+            ExpressionNode leftExpression = thisOperation.getLeft();
+            traverseOperation(leftExpression, expectedType);
+            ExpressionNode rightExpression = thisOperation.getRight();
+            traverseOperation(rightExpression, expectedType);
+        } else if (expressionNode.getType() != expectedType) {
+
+            if (expressionNode instanceof VariableNode) {
+                VariableNode thisVariable = ((VariableNode) expressionNode);
+                if (symbolTable.contains(thisVariable.getName()))
+                {
+
+                }
+            }
+
+            isValidType = false;
         }
-        if( node.getLeft() instanceof ValueNode &&
-                node.getRight() instanceof ValueNode &&
-                node.getOperation() == ExpTokenType.PLUS) {
-            int leftValue = Integer.parseInt(((ValueNode)node.getLeft()).getAttribute());
-            int rightValue = Integer.parseInt(((ValueNode)node.getRight()).getAttribute());
-            ValueNode vn = new ValueNode( "" + (leftValue + rightValue));
-            return vn;
-        }
-        else {
-            return node;
-        }
+
+        return isValidType;
     }
 }

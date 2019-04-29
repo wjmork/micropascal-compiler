@@ -53,7 +53,7 @@ public class CodeGeneration {
     private String pushToStack() {
         StringBuilder pushString = new StringBuilder();
 
-        for () {
+        for (int i = 0; i > 0; i++) {
         }
 
         return pushString.toString();
@@ -62,7 +62,7 @@ public class CodeGeneration {
     private String popFromStack() {
         StringBuilder popString = new StringBuilder();
 
-        for () {
+        for (int i = 0; i > 0; i++) {
         }
 
         return popString.toString();

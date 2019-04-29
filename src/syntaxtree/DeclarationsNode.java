@@ -28,7 +28,11 @@ public class DeclarationsNode extends SyntaxTreeNode {
     public void addDeclarations(DeclarationsNode declarations) {
         variables.addAll(declarations.variables);
     }
-    
+
+    public ArrayList<VariableNode> getVariables() {
+        return variables;
+    }
+
     /**
      * Creates a String representation of this declarations node and its children.
      * @param level The level at which this node resides within the syntax tree.

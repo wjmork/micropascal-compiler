@@ -12,13 +12,13 @@ public class ProgramNode extends SyntaxTreeNode {
     private String nodeName;
 
     /** The child declarations node of this program node. */
-    private DeclarationsNode variables;
+    private DeclarationsNode declarations;
 
     /** The child subprogram declarations node of this program node. */
-    private SubProgramDeclarationsNode functions;
+    private SubProgramDeclarationsNode subProgramDeclarations;
 
     /** The child compound statement node of this program node. */
-    private CompoundStatementNode main;
+    private CompoundStatementNode compoundStatement;
 
     /**
      * Sets the name of this program node.
@@ -29,51 +29,51 @@ public class ProgramNode extends SyntaxTreeNode {
     }
 
     /**
-     * Returns the child declarations node which contains program variables.
+     * Returns the child declarations node which contains program declarations.
      * @return The child declarations node.
      */
-    public DeclarationsNode getVariables() {
-        return variables;
+    public DeclarationsNode getDeclarations() {
+        return declarations;
     }
 
     /**
-     * Sets the declarations node containing program variables.
+     * Sets the declarations node containing program declarations.
      * @param variables The declarations node to be set.
      */
-    public void setVariables(DeclarationsNode variables) {
-        this.variables = variables;
+    public void setDeclarations(DeclarationsNode declarations) {
+        this.declarations = declarations;
     }
 
     /**
-     * Returns the child subprogram declarations node which contains program functions.
+     * Returns the child subprogram declarations node which contains program subprogram declarations.
      * @return The child subprogram declarations node.
      */
-    public SubProgramDeclarationsNode getFunctions() {
-        return functions;
+    public SubProgramDeclarationsNode getSubProgramDeclarations() {
+        return subProgramDeclarations;
     }
 
     /**
-     * Sets the subprogram declarations node containing program functions.
+     * Sets the subprogram declarations node containing program subprogram declarations.
      * @param functions The subprogram declarations node to be set.
      */
-    public void setFunctions(SubProgramDeclarationsNode functions) {
-        this.functions = functions;
+    public void setSubprogramDeclarations(SubProgramDeclarationsNode subProgramDeclarations) {
+        this.subProgramDeclarations = subProgramDeclarations;
     }
 
     /**
-     * Returns the child compound statement node which contains the program main.
+     * Returns the child compound statement node which contains the program compound statement.
      * @return The child compound statement node.
      */
-    public CompoundStatementNode getMain() {
-        return main;
+    public CompoundStatementNode getCompoundStatement() {
+        return compoundStatement;
     }
 
     /**
-     * Sets the compound statement node containing the program main.
+     * Sets the compound statement node containing the program compound statement.
      * @param main The compound statement node to be set.
      */
-    public void setMain(CompoundStatementNode main) {
-        this.main = main;
+    public void setCompoundStatement(CompoundStatementNode compoundStatement) {
+        this.compoundStatement = compoundStatement;
     }
     
     /**
@@ -85,9 +85,9 @@ public class ProgramNode extends SyntaxTreeNode {
     public String indentedToString(int level) {
         String answer = this.indentation(level);
         answer += "Program: " + nodeName + "\n";
-        answer += variables.indentedToString(level + 1);
-        answer += functions.indentedToString(level + 1);
-        answer += main.indentedToString(level + 1);
+        answer += declarations.indentedToString(level + 1);
+        answer += subProgramDeclarations.indentedToString(level + 1);
+        answer += compoundStatement.indentedToString(level + 1);
         return answer;
     }
 }

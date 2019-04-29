@@ -85,9 +85,9 @@ public class Parser {
         symbolTable.addProgram(lex);
         match(TokenType.ID);
         match(TokenType.SEMI);
-        program.setVariables(declarations());
-        program.setFunctions(subprogram_declarations());
-        program.setMain(compound_statement());
+        program.setDeclarations(declarations());
+        program.setSubprogramDeclarations(subprogram_declarations());
+        program.setCompoundStatement(compound_statement());
         match(TokenType.PERIOD);
         return program;
     }

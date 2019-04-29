@@ -12,7 +12,15 @@ Program: sample
 |-- --- --- Name: yen, Type: INTEGER
 |-- --- --- Operation: MULTIPLY
 |-- --- --- --- Name: dollars, Type: INTEGER
-|-- --- --- --- Value: 110, Type: INTEGER
+|-- --- --- --- Operation: MULTIPLY
+|-- --- --- --- --- Value: 110, Type: INTEGER
+|-- --- --- --- --- Operation: MULTIPLY
+|-- --- --- --- --- --- Value: 2, Type: INTEGER
+|-- --- --- --- --- --- Operation: MULTIPLY
+|-- --- --- --- --- --- --- Value: 4, Type: INTEGER
+|-- --- --- --- --- --- --- Operation: MULTIPLY
+|-- --- --- --- --- --- --- --- Value: 2, Type: INTEGER
+|-- --- --- --- --- --- --- --- Value: 4, Type: INTEGER
 |-- --- Assignment
 |-- --- --- Name: bitcoins, Type: INTEGER
 |-- --- --- Operation: DIVIDE

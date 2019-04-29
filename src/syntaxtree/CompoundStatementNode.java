@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class CompoundStatementNode extends StatementNode {
 
     /** Array of child statement nodes. */
-    private ArrayList<StatementNode> statements = new ArrayList<>();
+    public ArrayList<StatementNode> statements = new ArrayList<>();
     
     /**
      * Adds a child statement node to the array of statement nodes.
