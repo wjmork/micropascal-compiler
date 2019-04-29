@@ -398,14 +398,12 @@ public class Parser {
     public StatementNode statement() {
         StatementNode statementNode = null;
         if (this.lookahead.getType() == TokenType.ID) {
-            // Semantic Analysis flag
             if (symbolTable.isVariable(this.lookahead.getLexeme())) {
                 AssignmentStatementNode assignmentStatementNode = new AssignmentStatementNode();
                 assignmentStatementNode.setLvalue(variable());
                 match(TokenType.ASSIGN);
                 assignmentStatementNode.setExpression(expression());
                 return assignmentStatementNode;
-            // Semantic Analysis flag
             } else if (symbolTable.isProcedure(this.lookahead.getLexeme())) {
                 procedure_statement();
             } else {
@@ -658,10 +656,14 @@ public class Parser {
         if (this.lookahead.getType() == TokenType.ID) {
             String lex = this.lookahead.getLexeme();
             match(TokenType.ID);
-            TokenType type = symbolTable.getType(lex);
+            TokenType type;
+            if (symbolTable.exists(lex)) {
+                type = symbolTable.getType(lex);
+            } else {
+                type = null;
+            }
             if (this.lookahead.getType() == TokenType.LBRACE) {
                 match(TokenType.LBRACE);
-                // Needs array node or extension of variable node.
                 expression();
                 match(TokenType.RBRACE);
             } else if (this.lookahead.getType() == TokenType.LPAREN) {
@@ -673,7 +675,13 @@ public class Parser {
                 match(TokenType.RPAREN);
                 return functionNode;
             } else {
-                VariableNode variableNode = new VariableNode(lex, symbolTable.getType(lex));
+                VariableNode variableNode;
+                if (symbolTable.isVariable(lex)) {
+                    variableNode = new VariableNode(lex, symbolTable.getType(lex));
+                } else {
+                    variableNode = new VariableNode(lex, null);
+                    return variableNode;
+                }
                 return variableNode;
             }
         } else if (this.lookahead.getType() == TokenType.NUMBER) {

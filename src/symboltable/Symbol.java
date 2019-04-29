@@ -82,9 +82,7 @@ public class Symbol {
      * Returns the Symbol's token type.
      * @return The type of the symbol.
      */
-    public TokenType getType() {
-        return tokenType;
-    }
+    public TokenType getType() { return tokenType; }
 
     /**
      * Returns the Symbol's kind

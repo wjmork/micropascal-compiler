@@ -12,7 +12,7 @@ import java.util.Map;
  * @author William Mork
  */
 public class SymbolTable {
-    protected HashMap<String, Symbol> symbolTable;
+    public HashMap<String, Symbol> symbolTable;
     public String fileName = null;
 
     /**
@@ -149,6 +149,14 @@ public class SymbolTable {
      */
     public boolean isProcedure(String lexeme){
         return symbolTable.containsKey(lexeme) && symbolTable.get(lexeme).getKind() == Kind.PROCEDURE;
+    }
+
+    public boolean exists(String lexeme) {
+        if (isVariable(lexeme) || isProcedure(lexeme) || isArray(lexeme) || isProgram(lexeme) || isFunction(lexeme)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
