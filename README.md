@@ -1,5 +1,5 @@
 ## Micro-Pascal Compiler
-Version 0.4.1
+Version 0.5
 
 This project, written in Java 8, is a compiler which parses Micro-Pascal code to generate MIPS assembly code.
 

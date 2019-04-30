@@ -19,10 +19,10 @@ public class SemanticAnalyzer {
     public SymbolTable symbolTable;
 
     // True if token types across assignments are valid.
-    private boolean validAssignments = true;
+    public boolean validAssignments = true;
 
     // True if variables are properly declared prior to their use cases.
-    private boolean validDeclarations = true;
+    public boolean validDeclarations = true;
 
     /**
      * Creates a SemanticAnalyzer and runs semantic analysis on a root program node.
@@ -78,7 +78,7 @@ public class SemanticAnalyzer {
             traverseOperation(leftExpression, expectedType);
             ExpressionNode rightExpression = thisOperation.getRight();
             traverseOperation(rightExpression, expectedType);
-        } else if (expressionNode.getType() != expectedType) {
+        } else if (expressionNode.getType() != null && expressionNode.getType() != expectedType) {
             validAssignments = false;
         }
 
