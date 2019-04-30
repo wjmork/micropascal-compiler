@@ -39,19 +39,28 @@ public class CodeGeneration {
     public String codeWriter(){
         StringBuilder codeString = new StringBuilder();
 
+        // .data section
         codeString.append(".data\n");
         for(VariableNode variable: programNode.getDeclarations().getVariables()){
             codeString.append(variable.getName()).append(":\t.word\t0\n");
             symbolTable.getSymbol(variable.getName()).setAddress(variable.getName());
         }
+
+        codeString.append("\n");
+
+        // .text section
         codeString.append(".text\n");
         codeString.append("main:\n");
+
+        // push to stack
         codeString.append(pushToStack());
 
+        // generate program compound statement
         for (StatementNode statement : programNode.getCompoundStatement().getStatements()) {
             codeString.append(statementWriter(statement, "$s" + currentReg));
         }
 
+        // pop from stack
         codeString.append(popFromStack());
 
         return codeString.toString();
@@ -74,17 +83,18 @@ public class CodeGeneration {
         String rightReg = "$t" + currentReg++;
         operationString.append(expressionWriter(rightExpression, rightReg));
         TokenType operationType = operationNode.getOperation();
+
         switch(operationType)
         {
             case PLUS:
-                operationString.append("add    " + resultReg + ",   " + leftReg + ",   " + rightReg + "\n");
+                operationString.append("add\t" + resultReg + ",\t" + leftReg + ",\t" + rightReg + "\n");
                 break;
             case MINUS:
-                operationString.append("sub    " + resultReg + ",   " + leftReg +",   " + rightReg + "\n");
+                operationString.append("sub\t" + resultReg + ",\t" + leftReg +",\t" + rightReg + "\n");
                 break;
             case MULTIPLY:
-                operationString.append("mult   " + leftReg + ",   " + rightReg + "\n");
-                operationString.append("mflo   " + resultReg + "\n");
+                operationString.append("mult\t" + leftReg + ",\t" + rightReg + "\n");
+                operationString.append("mflo\t" + resultReg + "\n");
                 break;
             case DIVIDE:
                 operationString.append("div\t").append(leftReg).append(",\t").append(rightReg).append("\n");
@@ -132,7 +142,7 @@ public class CodeGeneration {
         StringBuilder valueString = new StringBuilder();
 
         String value = valueNode.getAttribute();
-        valueString.append("addi   " + resultReg + ",   $zero, " + value + "\n");
+        valueString.append("addi\t" + resultReg + ",\t$zero,\t" + value + "\n");
         return valueString.toString();
     }
 
@@ -205,10 +215,12 @@ public class CodeGeneration {
 
         // Begin if statement.
         ifStatementString.append(operationWriter((OperationNode) ifStatementNode.getTest(), resultReg)).append("else").append(ifIndex).append("\n");
+
         // then.
         resultReg = "$s" + currentReg++;
         ifStatementString.append(statementWriter(ifStatementNode.getThenStatement(), resultReg));
         ifStatementString.append("j\tendIf").append(ifIndex).append("\n");
+
         // else.
         resultReg = "$s" + currentReg++;
         ifStatementString.append("else").append(ifIndex).append(":\n");
