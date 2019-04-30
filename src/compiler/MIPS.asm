@@ -1,7 +1,7 @@
 .data
-dollars	:.word	0
-yen	:.word	0
-bitcoins	:.word	0
+dollars:	.word	0
+yen:	.word	0
+bitcoins:	.word	0
 .text
 main:
 addi	$sp,	$sp,	-40
@@ -15,16 +15,19 @@ sw	$s1,	12($sp)
 sw	$s0,	8($sp)
 sw	$fp,	4($sp)
 sw	$ra,	0($sp)
-addi   $s0,   $zero, 1000000
-sw	$s0,	dollarslw	$t0,	dollars
+addi   $s0,   $zero, 10000
+sw	$s0,	dollars
+la	$t0,	dollars
 addi   $t1,   $zero, 110
 mult   $t0,   $t1
 mflo   $s0
-and	$s0,	$t0,	$t1
-or	$s0,	$t0,	$t1
-bge	$t0,	$t1,	ble	$t0,	$t1,	bgt	$t0,	$t1,	blt	$t0,	$t1,	bne	$t0,	$t1,	beq	$t0,	$t1,	sw	$s0,	yenlw	$t0,	dollars
+sw	$s0,	yen
+la	$t0,	dollars
 addi   $t1,   $zero, 3900
-sw	$s0,	bitcoinslw	$s7,	36($sp)
+div	$t0,	$t1
+mflo	$s0
+sw	$s0,	bitcoins
+lw	$s7,	36($sp)
 lw	$s6,	32($sp)
 lw	$s5,	28($sp)
 lw	$s4,	24($sp)

@@ -7,7 +7,7 @@ Program: sample
 |-- Compound Statement
 |-- --- Assignment
 |-- --- --- Name: dollars, Type: INTEGER
-|-- --- --- Value: 1000000, Type: INTEGER
+|-- --- --- Value: 10000, Type: INTEGER
 |-- --- Assignment
 |-- --- --- Name: yen, Type: INTEGER
 |-- --- --- Operation: MULTIPLY

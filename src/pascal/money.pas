@@ -6,7 +6,7 @@ program sample;
 var dollars, yen, bitcoins: integer;
 
 begin
-  dollars := 1000000;
+  dollars := 10000;
   yen := dollars * 110;
   bitcoins := dollars / 3900
 end
