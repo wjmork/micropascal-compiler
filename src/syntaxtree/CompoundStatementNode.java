@@ -29,6 +29,15 @@ public class CompoundStatementNode extends StatementNode {
     public void addStatement(ArrayList<StatementNode> statements) {
         this.statements.addAll(statements);
     }
+
+    /**
+     * Gets the ArrayList of child statement nodes
+     *
+     * @return The ArrayList of child statement nodes.
+     */
+    public ArrayList<StatementNode> getStatements() {
+        return statements;
+    }
     
     /**
      * Creates a String representation of this compound statement node

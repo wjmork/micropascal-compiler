@@ -4,6 +4,8 @@ import scanner.TokenType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
+import java.util.Stack;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -157,6 +159,13 @@ public class SymbolTable {
         } else {
             return false;
         }
+    }
+
+    public Symbol getSymbol(String lexeme) {
+        if (symbolTable.containsKey(lexeme)) {
+            return symbolTable.get(lexeme);
+        }
+        return null;
     }
 
     /**

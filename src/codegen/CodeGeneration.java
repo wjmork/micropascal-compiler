@@ -17,9 +17,9 @@ public class CodeGeneration {
     private int loopIndex;
     private int ifIndex;
 
-    public CodeGeneration(ProgramNode programNode, SymbolTable symbolTable){
-        programNode = programNode;
-        symbolTable = symbolTable;
+    public CodeGeneration(ProgramNode inputProgramNode, SymbolTable inputSymbolTable){
+        programNode = inputProgramNode;
+        symbolTable = inputSymbolTable;
         currentReg = 0;
         loopIndex = 0;
         ifIndex = 0;
@@ -27,13 +27,26 @@ public class CodeGeneration {
 
     public String codeWriter(){
         StringBuilder codeString = new StringBuilder();
+
         codeString.append(".data\n");
+        for(VariableNode variable: programNode.getDeclarations().getVariables()){
+            codeString.append(variable.getName()).append("\t:.word\t0\n");
+            symbolTable.getSymbol(variable.getName()).setAddress(variable.getName());
+        }
+        codeString.append(".text\n");
+        codeString.append("main:\n");
+        codeString.append(pushToStack());
+
+        for (StatementNode statement : programNode.getCompoundStatement().getStatements()) {
+            codeString.append(statementWriter(statement, "$s" + currentReg));
+        }
+
+        codeString.append(popFromStack());
 
         return codeString.toString();
     }
 
     public String operationWriter(OperationNode operationNode, String resultReg) {
-        StringBuilder operationString = new StringBuilder();
 
         return operationString.toString();
     }
@@ -42,19 +55,20 @@ public class CodeGeneration {
      * Generates assembly code for a value node.
      *
      * @param valueNode The value node
-     * @param resultRegister The MIPS register where the result is stored.
+     * @param resultReg The MIPS register where the result is stored.
      * @return MIPS assembly code for a value store.
      */
     public String valueWriter(ValueNode valueNode, String resultReg)
     {
         StringBuilder valueString = new StringBuilder();
+
         String value = valueNode.getAttribute();
         valueString.append("addi   " + resultReg + ",   $zero, " + value + "\n");
         return valueString.toString();
     }
 
+
     public String expressionWriter(ExpressionNode expressionNode, String resultReg) {
-        StringBuilder expressionString = new StringBuilder();
 
         return expressionString.toString();
     }
@@ -62,28 +76,73 @@ public class CodeGeneration {
     public String statementWriter(StatementNode statementNode, String resultReg) {
         StringBuilder statementString = new StringBuilder();
 
+        if (statementNode instanceof AssignmentStatementNode){
+            statementString.append(assignmentWriter((AssignmentStatementNode) statementNode, resultReg));
+        }
+        else if (statementNode instanceof IfStatementNode){
+            statementString.append(ifStatementWriter((IfStatementNode) statementNode, resultReg));
+        }
+        else if (statementNode instanceof WhileStatementNode){
+            statementString.append(whileStatementWriter((WhileStatementNode) statementNode, resultReg));
+        }
+        else if (statementNode instanceof CompoundStatementNode){
+            statementString.append(statementWriter((CompoundStatementNode) statementNode, resultReg));
+        }else{
+            statementString.append("[ERROR: Code for statement could not be generated.]");
+        }
+
         return statementString.toString();
     }
 
-    private String writeAssignment(AssignmentStatementNode assignmentStatementNode, String resultReg) {
+    private String ifStatementWriter(IfStatementNode ifStatementNode, String resultReg) {
+        StringBuilder ifStatementString = new StringBuilder();
+        
+        return ifStatementString.toString();
+    }
+
+    private String whileStatementWriter(WhileStatementNode whileStatementNode, String resultReg) {
+        StringBuilder whileStatementString = new StringBuilder();
+
+        return whileStatementString.toString();
+    }
+
+    private String assignmentWriter(AssignmentStatementNode assignmentStatementNode, String resultReg) {
         StringBuilder assignmentString = new StringBuilder();
+        // Begin Assignment.
+        assignmentString.append(expressionWriter(assignmentStatementNode.getExpression(), resultReg));
+        assignmentString.append("sw\t").append(resultReg).append(",\t").append(symbolTable.getSymbol(assignmentStatementNode.getLvalue().getName()).getAddress());
         return assignmentString.toString();
     }
 
     private String pushToStack() {
         StringBuilder pushString = new StringBuilder();
+        // Push to stack.
+        pushString.append("addi\t$sp,\t$sp,\t-");
+        pushString.append(8 * 4 + 8);
+        pushString.append('\n');
 
-        for (int i = 0; i > 0; i++) {
+        for (int i = 8 - 1; i >= 0; i--) {
+            pushString.append("sw\t").append("$s").append(i).append(",\t").append(4 * (i + 2)).append("($sp)\n");
         }
+
+        pushString.append("sw\t$fp,\t4($sp)\n");
+        pushString.append("sw\t$ra,\t0($sp)\n");
 
         return pushString.toString();
     }
 
     private String popFromStack() {
         StringBuilder popString = new StringBuilder();
+        // Pop from stack.
 
-        for (int i = 0; i > 0; i++) {
+        for (int i = 8 - 1; i >= 0; i--) {
+            popString.append("lw\t").append("$s").append(i).append(",\t").append(4 * (i + 2)).append("($sp)\n");
         }
+        popString.append("lw\t$fp,\t4($sp)\n");
+        popString.append("lw\t$ra,\t0($sp)\n");
+        popString.append("addi\t$sp,\t$sp,\t");
+        popString.append((8 * 4) + 8).append("\n");
+        popString.append("jr\t$ra\n");
 
         return popString.toString();
     }

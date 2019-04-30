@@ -17,6 +17,7 @@ public class Symbol {
     int startIndex;
     int stopIndex;
     ArrayList arguments;
+    private String address;
 
     /**
      * Constructs a program symbol.
@@ -114,6 +115,14 @@ public class Symbol {
      */
     public ArrayList getArgs() {
         return arguments;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String memoryAddress) {
+        address = memoryAddress;
     }
 
     /**
