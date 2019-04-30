@@ -47,7 +47,43 @@ public class CodeGeneration {
     }
 
     public String operationWriter(OperationNode operationNode, String resultReg) {
+        StringBuilder operationString = new StringBuilder();
 
+        ExpressionNode leftExpression = operationNode.getLeft();
+        String leftReg = "$t" + currentReg++;
+        operationString.append(expressionWriter(leftExpression, leftReg));
+        ExpressionNode rightExpression = operationNode.getRight();
+        String rightReg = "$t" + currentReg++;
+        operationString.append(expressionWriter(rightExpression, rightReg));
+        TokenType operationType = operationNode.getOperation();
+        switch(operationType)
+        {
+            case PLUS:
+                operationString.append("add    " + resultReg + ",   " + leftReg + ",   " + rightReg + "\n");
+            case MINUS:
+                operationString.append("sub    " + resultReg + ",   " + leftReg +",   " + rightReg + "\n");
+            case MULTIPLY:
+                operationString.append("mult   " + leftReg + ",   " + rightReg + "\n");
+                operationString.append("mflo   " + resultReg + "\n");
+            case AND:
+                operationString.append("and\t").append(resultReg).append(",\t").append(leftReg).append(",\t").append(rightReg).append("\n");
+            case OR:
+                operationString.append("or\t").append(resultReg).append(",\t").append(leftReg).append(",\t").append(rightReg).append("\n");
+            case LTHAN:
+                operationString.append("bge\t").append(leftReg).append(",\t").append(rightReg).append(",\t");
+            case GTHAN:
+                operationString.append("ble\t").append(leftReg).append(",\t").append(rightReg).append(",\t");
+            case LTHANEQ:
+                operationString.append("bgt\t").append(leftReg).append(",\t").append(rightReg).append(",\t");
+            case GTHANEQ:
+                operationString.append("blt\t").append(leftReg).append(",\t").append(rightReg).append(",\t");
+            case EQUAL:
+                operationString.append("bne\t").append(leftReg).append(",\t").append(rightReg).append(",\t");
+            case NOTEQ:
+                operationString.append("beq\t").append(leftReg).append(",\t").append(rightReg).append(",\t");
+        }
+
+        this.currentReg -= 2;
         return operationString.toString();
     }
 
@@ -69,7 +105,25 @@ public class CodeGeneration {
 
 
     public String expressionWriter(ExpressionNode expressionNode, String resultReg) {
+        StringBuilder expressionString = new StringBuilder();
 
+        if(expressionNode instanceof ValueNode){
+            expressionString.append(valueWriter((ValueNode) expressionNode, resultReg));
+        }
+        else if (expressionNode instanceof OperationNode){
+            expressionString.append(operationWriter((OperationNode) expressionNode, resultReg));
+        }
+        else if (expressionNode instanceof VariableNode){
+            if(symbolTable.getSymbol(((VariableNode) expressionNode).getName()) != null){
+                String variable = symbolTable.getSymbol(((VariableNode) expressionNode).getName()).getAddress();
+                expressionString.append("lw\t").append(resultReg).append(",\t").append(variable).append("\n");
+            }
+            else{
+                expressionString.append("addi   " + resultReg + ",   $zero, " + ((VariableNode) expressionNode).getName()+ "\n");
+            }
+        } else {
+            expressionString.append("[ERROR: Code for expression could not be generated.]");
+        }
         return expressionString.toString();
     }
 
@@ -96,12 +150,37 @@ public class CodeGeneration {
 
     private String ifStatementWriter(IfStatementNode ifStatementNode, String resultReg) {
         StringBuilder ifStatementString = new StringBuilder();
-        
+
+        // Begin if statement.
+        ifStatementString.append(operationWriter((OperationNode) ifStatementNode.getTest(), resultReg)).append("else").append(ifIndex).append("\n");
+        // then.
+        resultReg = "$s" + currentReg++;
+        ifStatementString.append(statementWriter(ifStatementNode.getThenStatement(), resultReg));
+        ifStatementString.append("\nj\tendIf").append(ifIndex).append("\n");
+        // else.
+        resultReg = "$s" + currentReg++;
+        ifStatementString.append("else").append(ifIndex).append(":\n");
+        ifStatementString.append(statementWriter(ifStatementNode.getElseStatement(), resultReg));
+        ifStatementString.append("\nendIf").append(ifIndex).append(":\n");
+
+        currentReg -= 2;
         return ifStatementString.toString();
     }
 
     private String whileStatementWriter(WhileStatementNode whileStatementNode, String resultReg) {
         StringBuilder whileStatementString = new StringBuilder();
+
+        // Begin while statement.
+        whileStatementString.append("while").append(loopIndex).append(":\n");
+        whileStatementString.append(expressionWriter(whileStatementNode.getTest(), resultReg));
+        whileStatementString.append("endWhile").append(loopIndex).append(":\n");
+        currentReg++;
+
+        resultReg = "$s" + currentReg;
+        whileStatementString.append(statementWriter(whileStatementNode.getDoStatement(), resultReg));
+        whileStatementString.append("\tj while").append(loopIndex).append(":\n");
+        whileStatementString.append("endWhile").append(loopIndex).append(":\n");
+        currentReg--;
 
         return whileStatementString.toString();
     }
