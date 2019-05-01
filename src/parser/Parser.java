@@ -36,34 +36,48 @@ public class Parser {
 
     /**
      * Creates a Parser.
-     * @param input The input stream (String or file path) to be parsed.
-     * @param importFile If true, input should be the path of a file. If false, a String should be provided.
+     * @param inputString
      */
-    public Parser(String input, boolean importFile) {
+    public Parser(String inputString) {
         // Create input stream reader in the case of a String
-        InputStreamReader inputStreamReader;
+        inputStreamScanner = new Scanner(new StringReader(inputString));
+
+        try {
+            lookahead = inputStreamScanner.nextToken();
+        } catch (IOException e) {
+            error("Start token not recognized in input stream.");
+        }
 
         // Create symbol table
         symbolTable = new SymbolTable();
+    }
 
-        if (importFile) {
-            FileInputStream inputStream = null;
-            symbolTable.fileName = input;
-            try {
-                inputStream = new FileInputStream(input);
-            } catch (FileNotFoundException ex) {
-                error("File " + input + " failed to import. Please confirm file name and directory.");
-            }
-            inputStreamReader = new InputStreamReader(inputStream);
-            inputStreamScanner = new Scanner(inputStreamReader);
-        } else {
-            inputStreamScanner = new Scanner(new StringReader(input));
+    /**
+     * Creates a Parser.
+     * @param inputFile
+     */
+    public Parser(File inputFile) {
+
+        InputStreamReader inputStreamReader;
+        FileInputStream fileInputStream = null;
+
+        try {
+            fileInputStream = new FileInputStream(inputFile);
+        } catch (FileNotFoundException e) {
+            error("Input file could not be located. Please confirm that the input file is a valid Micro-Pascal program or correct the file location.");
         }
+
+        inputStreamReader = new InputStreamReader(fileInputStream);
+        inputStreamScanner = new Scanner(inputStreamReader);
+
         try {
             lookahead = inputStreamScanner.nextToken();
-        } catch (IOException ex) {
+        } catch (IOException e) {
             error("Start token not recognized in input stream.");
         }
+
+        // Create symbol table
+        symbolTable = new SymbolTable();
     }
 
     /**
@@ -722,7 +736,7 @@ public class Parser {
      */
     private void match(TokenType expected) {
         if (this.lookahead.getType() == expected) {
-            System.out.println("expected: " + expected + ". look-ahead: " + this.lookahead.getType() + ".");
+            // Un-comment for troubleshooting \\ System.out.println("expected: " + expected + ". look-ahead: " + this.lookahead.getType() + ".");
             try {
                 this.lookahead = inputStreamScanner.nextToken();
                 if (this.lookahead == null) {
@@ -788,7 +802,7 @@ public class Parser {
      * @param message The error message to print.
      */
     private void error(String message) {
-        System.out.println("ERROR: " + message);
+        System.out.println("Parse error: " + message);
         System.exit(1);
     }
 }

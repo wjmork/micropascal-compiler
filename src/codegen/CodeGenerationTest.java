@@ -7,6 +7,8 @@ import parser.Parser;
 import symboltable.SymbolTable;
 import syntaxtree.ProgramNode;
 
+import java.io.File;
+
 /**
  * This class contains JUnit testing for the code generation module.
  *
@@ -22,7 +24,8 @@ public class CodeGenerationTest {
     @Test
     public void moneyCodeTest() {
         System.out.println("Code Generation: Testing code generation for money.pas");
-        Parser testParser = new Parser("src/pascal/money.pas", true);
+        File input = new File("src/pascal/money.pas");
+        Parser testParser = new Parser(input);
         ProgramNode testRoot = testParser.program();
         SymbolTable testSymbolTable = testParser.getSymbolTable();
 
@@ -44,7 +47,8 @@ public class CodeGenerationTest {
     @Test
     public void programCodeTest() {
         System.out.println("Code Generation: Testing code generation for a basic program.");
-        Parser testParser = new Parser("src/pascal/simplest.pas", true);
+        File input = new File("src/pascal/simplest.pas");
+        Parser testParser = new Parser(input);
         ProgramNode testRoot = testParser.program();
         SymbolTable testSymbolTable = testParser.getSymbolTable();
 
@@ -66,7 +70,7 @@ public class CodeGenerationTest {
     @Test
     public void expressionCodeTest() {
         System.out.println("Code Generation: Testing code generation for a series of basic expressions");
-        Parser testParser = new Parser("program foo;\nvar fee, fi, fo, fum: integer;\nbegin\nfee := 4;\nfi := 5 / fee;\nfo := 3 * fee + fi;\nfum := fee * fi / fo\nend\n.\n", false);
+        Parser testParser = new Parser("program foo;\nvar fee, fi, fo, fum: integer;\nbegin\nfee := 4;\nfi := 5 / fee;\nfo := 3 * fee + fi;\nfum := fee * fi / fo\nend\n.\n");
         ProgramNode testRoot = testParser.program();
         SymbolTable testSymbolTable = testParser.getSymbolTable();
 
@@ -88,7 +92,7 @@ public class CodeGenerationTest {
     @Test
     public void statementCodeTest() {
         System.out.println("Code Generation: Testing code generation for a series of basic statements");
-        Parser testParser = new Parser("program foo;\nvar fee, fi, fo, fum: integer;\nbegin\nfee := 4;\nfi := 5;\nfo := 3 * fee + fi;\nif fo < 13\nthen\nfo := 13\nelse\nfo := 26\nend\n.\n", false);
+        Parser testParser = new Parser("program foo;\nvar fee, fi, fo, fum: integer;\nbegin\nfee := 4;\nfi := 5;\nfo := 3 * fee + fi;\nif fo < 13\nthen\nfo := 13\nelse\nfo := 26\nend\n.\n");
         ProgramNode testRoot = testParser.program();
         SymbolTable testSymbolTable = testParser.getSymbolTable();
 
@@ -110,7 +114,7 @@ public class CodeGenerationTest {
     @Test
     public void declarationsCodeTest() {
         System.out.println("Code Generation: Testing code generation for a series of basic declarations");
-        Parser testParser = new Parser("program foo;\nvar fee, fi: integer;\nvar fo, fum: real;\nbegin\nend\n.\n", false);
+        Parser testParser = new Parser("program foo;\nvar fee, fi: integer;\nvar fo, fum: real;\nbegin\nend\n.\n");
         ProgramNode testRoot = testParser.program();
         SymbolTable testSymbolTable = testParser.getSymbolTable();
 

@@ -35,6 +35,7 @@ public class SemanticAnalyzer {
         symbolTable = finalSymbolTable;
         DeclarationsNode rootDeclarations = root.getDeclarations();
         SubProgramDeclarationsNode rootSubprogramDeclarations = root.getSubProgramDeclarations();
+
         testSemantics(root.getCompoundStatement());
 
         if (!validAssignments) {
@@ -49,7 +50,6 @@ public class SemanticAnalyzer {
     /**
      * Tests that variables are declared before their use case and checks for proper token types across assignments and operations.
      * @param rootCompoundStatement Child compound statement node of the root program node.
-     * @return True if the symbol was added to the table.
      */
     public void testSemantics(CompoundStatementNode rootCompoundStatement) {
         for (StatementNode statement : rootCompoundStatement.statements) {

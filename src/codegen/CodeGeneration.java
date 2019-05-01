@@ -265,7 +265,8 @@ public class CodeGeneration {
      */
     private String assignmentWriter(AssignmentStatementNode assignmentStatementNode, String resultReg) {
         StringBuilder assignmentString = new StringBuilder();
-        // Begin Assignment.
+
+        // Begin assignment.
         assignmentString.append(expressionWriter(assignmentStatementNode.getExpression(), resultReg));
         assignmentString.append("sw\t").append(resultReg).append(",\t").append(symbolTable.getSymbol(assignmentStatementNode.getLvalue().getName()).getAddress());
         assignmentString.append("\n");
@@ -279,6 +280,7 @@ public class CodeGeneration {
      */
     private String pushToStack() {
         StringBuilder pushString = new StringBuilder();
+
         // Push to stack.
         pushString.append("addi\t$sp,\t$sp,\t-");
         pushString.append(8 * 4 + 8);
@@ -301,8 +303,8 @@ public class CodeGeneration {
      */
     private String popFromStack() {
         StringBuilder popString = new StringBuilder();
-        // Pop from stack.
 
+        // Pop from stack.
         for (int i = 8 - 1; i >= 0; i--) {
             popString.append("lw\t").append("$s").append(i).append(",\t").append(4 * (i + 2)).append("($sp)\n");
         }

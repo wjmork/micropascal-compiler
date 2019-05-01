@@ -24,7 +24,7 @@ public class ParserTest {
     public void symbolTableInstanceTest() {
         System.out.println("Testing instantiation of symbol table...");
         boolean result = true;
-        Parser testParser = new Parser("", false);
+        Parser testParser = new Parser("");
         try {
             SymbolTable testSymbolTable = testParser.getSymbolTable();
         } catch (Exception e){
@@ -45,7 +45,7 @@ public class ParserTest {
         System.out.println("Testing declarations...");
         boolean result = true;
         String input = "var foo: integer;";
-        Parser testParser = new Parser(input, false);
+        Parser testParser = new Parser(input);
         try {
             testParser.declarations();
         } catch (Exception e){
@@ -66,7 +66,7 @@ public class ParserTest {
         System.out.println("Testing subprogram_declaration...");
         boolean result = true;
         String input = "function func(foo: integer): integer; begin end.";
-        Parser testParser = new Parser(input, false);
+        Parser testParser = new Parser(input);
         try {
             testParser.subprogram_declaration();
         } catch (Exception e){
@@ -91,14 +91,14 @@ public class ParserTest {
         String input2 = "testProcedure(a, b, c);";
 
         // tests for an assignment call from statement()
-        Parser testParser = new Parser(input, false);
+        Parser testParser = new Parser(input);
         testParser.getSymbolTable().addVariable("foo", TokenType.ID);
         testParser.statement();
         Assertions.assertTrue(testParser.getSymbolTable().isVariable("foo"));
         Assertions.assertFalse(testParser.getSymbolTable().isProcedure("foo"));
 
         // tests for a procedure call from statement()
-        testParser = new Parser(input2, false);
+        testParser = new Parser(input2);
         testParser.getSymbolTable().addProcedure("testProcedure");
         testParser.statement();
         Assertions.assertFalse(testParser.getSymbolTable().isVariable("testProcedure"));
@@ -116,7 +116,7 @@ public class ParserTest {
         System.out.println("Testing expression...");
         boolean result = true;
         String input = "foo - fee";
-        Parser testParser = new Parser(input, false);
+        Parser testParser = new Parser(input);
         try {
             testParser.simple_expression();
         } catch (Exception e){
@@ -137,7 +137,7 @@ public class ParserTest {
         System.out.println("Testing factor...");
         boolean result = true;
         String input = "foo [2 - 2]";
-        Parser testParser = new Parser(input, false);
+        Parser testParser = new Parser(input);
         try {
             testParser.factor();
         } catch (Exception e){

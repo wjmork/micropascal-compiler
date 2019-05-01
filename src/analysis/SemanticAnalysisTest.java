@@ -6,6 +6,8 @@ import parser.Parser;
 import symboltable.SymbolTable;
 import syntaxtree.*;
 
+import java.io.File;
+
 /**
  * This class contains JUnit testing for the semantic analysis module.
  *
@@ -14,7 +16,7 @@ import syntaxtree.*;
 public class SemanticAnalysisTest {
 
     /**
-     * Tests that money.pas passes semantic analysis
+     * Tests that money.pas passes semantic analysis.
      *
      * @result The test passes if the money.pas file is confirmed to pass semantic analysis.
      */
@@ -22,7 +24,8 @@ public class SemanticAnalysisTest {
     public void moneyTest() {
         System.out.println("Semantic Analysis: Testing analysis for money.pas...");
         boolean result = false;
-        Parser testParser = new Parser("src/pascal/money.pas", true);
+        File input = new File("src/pascal/money.pas");
+        Parser testParser = new Parser(input);
         ProgramNode testRoot = testParser.program();
         SymbolTable testSymbolTable = testParser.getSymbolTable();
 
@@ -44,7 +47,7 @@ public class SemanticAnalysisTest {
     public void declarationsTest() {
         System.out.println("Semantic Analysis: Testing variable declarations check...");
         boolean result = false;
-        Parser testParser = new Parser("program test; \nvar declared: integer; \nbegin\ndeclared := declared * undeclared \nend\n.", false);
+        Parser testParser = new Parser("program test; \nvar declared: integer; \nbegin\ndeclared := declared * undeclared \nend\n.");
         ProgramNode testRoot = testParser.program();
         SymbolTable testSymbolTable = testParser.getSymbolTable();
 
@@ -66,7 +69,7 @@ public class SemanticAnalysisTest {
     public void assignmentTest() {
         System.out.println("Semantic Analysis: Testing token type check...");
         boolean result = false;
-        Parser testParser = new Parser("program test;\nvar var1: integer;\nvar var2: real;\nbegin\nvar1 := var1 * var2\nend\n.", false);
+        Parser testParser = new Parser("program test;\nvar var1: integer;\nvar var2: real;\nbegin\nvar1 := var1 * var2\nend\n.");
         ProgramNode testRoot = testParser.program();
         SymbolTable testSymbolTable = testParser.getSymbolTable();
 
@@ -88,7 +91,7 @@ public class SemanticAnalysisTest {
     public void bothChecksTest() {
         System.out.println("Semantic Analysis: Testing token type check...");
         boolean result = false;
-        Parser testParser = new Parser("program test;\nvar var1: integer;\nvar var2: real;\nbegin\nvar1 := var1 * var2 * var3\nend\n.\n", false);
+        Parser testParser = new Parser("program test;\nvar var1: integer;\nvar var2: real;\nbegin\nvar1 := var1 * var2 * var3\nend\n.\n");
         ProgramNode testRoot = testParser.program();
         SymbolTable testSymbolTable = testParser.getSymbolTable();
 
