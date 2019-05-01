@@ -35,8 +35,8 @@ public class Parser {
     private SymbolTable symbolTable;
 
     /**
-     * Creates a Parser.
-     * @param inputString
+     * Creates a Parser using an input String as a parameter.
+     * @param inputString Input String to be parsed.
      */
     public Parser(String inputString) {
         // Create input stream reader in the case of a String
@@ -53,8 +53,8 @@ public class Parser {
     }
 
     /**
-     * Creates a Parser.
-     * @param inputFile
+     * Creates a Parser using an input file as a parameter.
+     * @param inputFile Input file to be parsed.
      */
     public Parser(File inputFile) {
 
@@ -63,7 +63,7 @@ public class Parser {
 
         try {
             fileInputStream = new FileInputStream(inputFile);
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException ex) {
             error("Input file could not be located. Please confirm that the input file is a valid Micro-Pascal program or correct the file location.");
         }
 
