@@ -23,7 +23,7 @@ public class CompilerMain {
         // Load sample program if no arguments are passed.
         if (args.length == 0) {
             System.out.println("Error: No input parameter. Compiling sample file...");
-            inputFile = new File("example.pas");
+            inputFile = new File("sample.pas");
         } else if (args.length == 1) {
             System.out.println("File found. Compiling...");
             inputFile = new File(args[0]);

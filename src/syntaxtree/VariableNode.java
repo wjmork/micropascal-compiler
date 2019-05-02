@@ -15,7 +15,7 @@ public class VariableNode extends ExpressionNode {
     
     /**
      * Creates a value node with the given name.
-     * @param name The name of this value node.
+     * @param name The name of this variable node.
      */
     public VariableNode(String name) {
         this.name = name;
@@ -23,8 +23,8 @@ public class VariableNode extends ExpressionNode {
 
     /**
      * Creates a value node with the given name and token type.
-     * @param name The name for this value node.
-     * @param tokenType The name for this value node.
+     * @param name The name of this variable node.
+     * @param tokenType The token type of this variable node.
      */
     public VariableNode(String name, TokenType tokenType) {
         super(tokenType);
@@ -32,8 +32,8 @@ public class VariableNode extends ExpressionNode {
     }
 
     /**
-     * Returns the name of the variable of this node.
-     * @return The name of this VariableNode.
+     * Returns the name of this variable node.
+     * @return The name of this variable node.
      */
     public String getName() {
         return(this.name);

@@ -136,7 +136,7 @@ public class Symbol {
         } else if (this.kind == Kind.VARIABLE) {
             return "SYMBOL [LEXEME: " + lexeme + "\t | KIND: " + kind + "\t | TYPE: " + tokenType + "]";
         } else if (this.kind == Kind.ARRAY) {
-            return "SYMBOL [LEXEME: " + lexeme + "\t | KIND: " + kind + "\t | TYPE: " + tokenType + "\t | INDICES: " + startIndex + "→" + stopIndex + "]";
+            return "SYMBOL [LEXEME: " + lexeme + "\t | KIND: " + kind + "\t | TYPE: " + tokenType + "\t | INDICES: " + startIndex + "-" + stopIndex + "]";
         } else if (this.kind == Kind.FUNCTION) {
             return "SYMBOL [LEXEME: " + lexeme + "\t | KIND: " + kind + "\t | TYPE: " + tokenType + "\t | ARGS: " + arguments + "]";
         } else {

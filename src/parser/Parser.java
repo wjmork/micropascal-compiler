@@ -6,6 +6,7 @@ import scanner.TokenType;
 import symboltable.*;
 import syntaxtree.*;
 
+import java.beans.Expression;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -412,7 +413,7 @@ public class Parser {
     public StatementNode statement() {
         StatementNode statementNode = null;
         if (this.lookahead.getType() == TokenType.ID) {
-            if (symbolTable.isVariable(this.lookahead.getLexeme())) {
+            if (symbolTable.isVariable(this.lookahead.getLexeme()) || symbolTable.isArray(this.lookahead.getLexeme())) {
                 AssignmentStatementNode assignmentStatementNode = new AssignmentStatementNode();
                 assignmentStatementNode.setLvalue(variable());
                 match(TokenType.ASSIGN);
@@ -476,10 +477,13 @@ public class Parser {
             match(TokenType.ID);
             return variableNode;
         } else {
+            ArrayNode arrayNode = new ArrayNode(lex);
+            arrayNode.setType(symbolTable.getType(lex));
+            match(TokenType.ID);
             VariableNode variableNode = new VariableNode(lex);
             if (this.lookahead.getType() == TokenType.LBRACE) {
                 match(TokenType.LBRACE);
-                expression();
+                arrayNode.setExpressionNode(expression());
                 match(TokenType.RBRACE);
             }
             return variableNode;
@@ -677,9 +681,13 @@ public class Parser {
                 type = null;
             }
             if (this.lookahead.getType() == TokenType.LBRACE) {
+                ArrayNode arrayNode = new ArrayNode(lex);
+                arrayNode.setType(type);
                 match(TokenType.LBRACE);
-                expression();
+                expressionNode = expression();
+                arrayNode.setExpressionNode(expressionNode);
                 match(TokenType.RBRACE);
+                return arrayNode;
             } else if (this.lookahead.getType() == TokenType.LPAREN) {
                 FunctionNode functionNode = new FunctionNode(lex);
                 functionNode.setType(type);
@@ -736,7 +744,8 @@ public class Parser {
      */
     private void match(TokenType expected) {
         if (this.lookahead.getType() == expected) {
-            // Un-comment for troubleshooting \\ System.out.println("expected: " + expected + ". look-ahead: " + this.lookahead.getType() + ".");
+            // comment for troubleshooting \\
+            System.out.println("expected: " + expected + ". look-ahead: " + this.lookahead.getType() + ".");
             try {
                 this.lookahead = inputStreamScanner.nextToken();
                 if (this.lookahead == null) {
