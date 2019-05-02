@@ -99,16 +99,4 @@ public class OperationNode extends ExpressionNode {
         answer += right.indentedToString(level + 1);
         return(answer);
     }
-
-    @Override
-    public boolean equals(Object o) {
-        boolean answer = false;
-        if(o instanceof OperationNode) {
-            OperationNode other = (OperationNode)o;
-            if((this.operation == other.operation) &&
-                    this.left.equals(other.left) &&
-                    this.right.equals(other.right)) answer = true;
-        }
-        return answer;
-    }
 }

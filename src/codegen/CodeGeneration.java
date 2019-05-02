@@ -147,6 +147,34 @@ public class CodeGeneration {
     }
 
     /**
+     * Code generation method for an array node.
+     *
+     * @param arrayNode An array node.
+     * @param resultReg The MIPS register to store a result.
+     * @return MIPS assembly for an array node.
+     */
+    public String arrayWriter(ArrayNode arrayNode, String resultReg) {
+        StringBuilder arrayString = new StringBuilder();
+
+        String indexReg = "$s" + ++currentReg;
+        arrayString.append(expressionWriter(arrayNode.getExpressionNode(), indexReg));
+        arrayString.append("li\t$t0,\t4\n");
+        arrayString.append("mult\t$t0,\t" + indexReg + "\n");
+        arrayString.append("mflo\t" + indexReg + "\n");
+
+        String arrayReg = "$s" + ++currentReg;
+        if (symbolTable.getSymbol(arrayNode.getName()).getAddress().equals(arrayNode.getName()))
+            arrayString.append("la\t" + arrayReg + ",\t" + symbolTable.getSymbol(arrayNode.getName()).getAddress() + "\n");
+        else
+            arrayString.append("lw\t" + arrayReg + ",\t" + symbolTable.getSymbol(arrayNode.getName()).getAddress() + "\n");
+        arrayString.append("add\t" + arrayReg + ",\t" + indexReg + ",\t" + arrayReg + "\n");
+        arrayString.append("lw\t" + resultReg + ",\t0(" + arrayReg + ")\n");
+
+        currentReg -= 2;
+        return arrayString.toString();
+    }
+
+    /**
      * Code generation method for an expression node.
      *
      * @param expressionNode An expression node.
@@ -161,6 +189,9 @@ public class CodeGeneration {
         }
         else if (expressionNode instanceof OperationNode){
             expressionString.append(operationWriter((OperationNode) expressionNode, resultReg));
+        }
+        else if (expressionNode instanceof ArrayNode) {
+            expressionString.append(arrayWriter((ArrayNode) expressionNode, resultReg));
         }
         else if (expressionNode instanceof VariableNode) {
             if(symbolTable.getSymbol(((VariableNode) expressionNode).getName()) != null) {
@@ -251,8 +282,8 @@ public class CodeGeneration {
         whileStatementString.append(statementWriter(whileStatementNode.getDoStatement(), resultReg));
         whileStatementString.append("j\t while").append(loopIndex).append("\n");
         whileStatementString.append("endWhile").append(loopIndex).append(":\n");
-        currentReg--;
 
+        currentReg--;
         return whileStatementString.toString();
     }
 

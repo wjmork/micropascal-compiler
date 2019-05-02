@@ -2,7 +2,6 @@ package syntaxtree;
 
 /**
  * Syntax tree node which represents a while statement.
- * A while statement includes a boolean expression and a body of instructions.
  *
  * @author William Mork
  */

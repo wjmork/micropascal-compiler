@@ -10,12 +10,11 @@ import java.util.ArrayList;
  */
 public class FunctionNode extends VariableNode {
 
-    // Function arguments
+    /** Arraylist of Expression nodes which act as function arguments */
     private ArrayList<ExpressionNode> arguments;
 
     /**
      * Creates a FunctionNode as a child of a variable node.
-     *
      * @param name The name of this function node.
      */
     public FunctionNode(String name) {
@@ -25,8 +24,7 @@ public class FunctionNode extends VariableNode {
 
     /**
      * Sets the ArrayList of function arguments.
-     *
-     * @param arguments an ArrayList of arguments in the form of ExpressionNodes.
+     * @param arguments An ArrayList of arguments in the form of ExpressionNodes.
      */
     public void setArgs(ArrayList<ExpressionNode> arguments) {
         this.arguments = arguments;

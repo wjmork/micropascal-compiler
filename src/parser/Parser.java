@@ -477,14 +477,17 @@ public class Parser {
             match(TokenType.ID);
             return variableNode;
         } else {
-            ArrayNode arrayNode = new ArrayNode(lex);
-            arrayNode.setType(symbolTable.getType(lex));
-            match(TokenType.ID);
             VariableNode variableNode = new VariableNode(lex);
+            variableNode.setType(symbolTable.getType(lex));
+            match(TokenType.ID);
             if (this.lookahead.getType() == TokenType.LBRACE) {
+                ArrayNode arrayNode = new ArrayNode(lex);
+                arrayNode.setType(symbolTable.getType(lex));
+
                 match(TokenType.LBRACE);
                 arrayNode.setExpressionNode(expression());
                 match(TokenType.RBRACE);
+                return arrayNode;
             }
             return variableNode;
         }
@@ -682,7 +685,7 @@ public class Parser {
             }
             if (this.lookahead.getType() == TokenType.LBRACE) {
                 ArrayNode arrayNode = new ArrayNode(lex);
-                arrayNode.setType(type);
+                arrayNode.setType(symbolTable.getType(lex));
                 match(TokenType.LBRACE);
                 expressionNode = expression();
                 arrayNode.setExpressionNode(expressionNode);

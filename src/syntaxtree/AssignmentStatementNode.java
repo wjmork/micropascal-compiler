@@ -16,7 +16,7 @@ public class AssignmentStatementNode extends StatementNode {
 
     /**
      * Returns the child variable node.
-     * @return child variable node.
+     * @return The child variable node.
      */
     public VariableNode getLvalue() {
         return lvalue;
@@ -32,7 +32,7 @@ public class AssignmentStatementNode extends StatementNode {
 
     /**
      * Returns the child expression node.
-     * @return child expression node.
+     * @return The child expression node.
      */
     public ExpressionNode getExpression() {
         return expression;
@@ -40,7 +40,7 @@ public class AssignmentStatementNode extends StatementNode {
 
     /**
      * Sets the child expression node.
-     * @param expression expression to be set.
+     * @param expression The expression node to be set.
      */
     public void setExpression(ExpressionNode expression) {
         this.expression = expression;

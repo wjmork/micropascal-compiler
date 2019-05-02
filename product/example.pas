@@ -1,4 +1,4 @@
-program arraytest;
+program example;
 var
     foo : array[0:2] of integer;
 var

@@ -47,14 +47,4 @@ public class ValueNode extends ExpressionNode {
         answer += "Value: " + this.attribute + ", Type: " + this.tokenType + "\n";
         return answer;
     }
-
-    @Override
-    public boolean equals(Object value) {
-        boolean answer = false;
-        if(value instanceof ValueNode) {
-            ValueNode other = (ValueNode)value;
-            if(this.attribute.equals(other.attribute)) answer = true;
-        }
-        return answer;
-    }    
 }

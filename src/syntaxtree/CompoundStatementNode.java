@@ -16,7 +16,7 @@ public class CompoundStatementNode extends StatementNode {
     
     /**
      * Adds a child statement node to the array of statement nodes.
-     * @param statement The statement to add.
+     * @param statement The statement node to add.
      */
     public void addStatement(StatementNode statement) {
         this.statements.add(statement);
@@ -24,15 +24,14 @@ public class CompoundStatementNode extends StatementNode {
 
     /**
      * Adds an ArrayList of child statement nodes to the array of statement nodes.
-     * @param statements The statements to add.
+     * @param statements The statement nodes to add.
      */
     public void addStatement(ArrayList<StatementNode> statements) {
         this.statements.addAll(statements);
     }
 
     /**
-     * Gets the ArrayList of child statement nodes
-     *
+     * Returns the ArrayList of child statement nodes.
      * @return The ArrayList of child statement nodes.
      */
     public ArrayList<StatementNode> getStatements() {
@@ -40,8 +39,7 @@ public class CompoundStatementNode extends StatementNode {
     }
     
     /**
-     * Creates a String representation of this compound statement node
-     * and its children.
+     * Creates a String representation of this compound statement node and its children.
      * @param level The tree level at which this node resides.
      * @return A String representing this node.
      */

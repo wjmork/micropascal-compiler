@@ -45,6 +45,12 @@ public class SemanticAnalyzer {
         if (!validDeclarations) {
             System.out.println("Compiler Error: One or more variables has not been declared before its use case.");
         }
+
+        if (validAssignments && validDeclarations) {
+            System.out.println("Program passed semantic analysis");
+        } else {
+            System.out.println("Program failed semantic analysis");
+        }
     }
 
     /**
@@ -82,7 +88,13 @@ public class SemanticAnalyzer {
             validAssignments = false;
         }
 
-        if (expressionNode instanceof VariableNode) {
+        if (expressionNode instanceof ArrayNode) {
+            ArrayNode thisArray = ((ArrayNode) expressionNode);
+            String arrayName = thisArray.getName();
+            if (!symbolTable.isArray(arrayName)) {
+                validDeclarations = false;
+            }
+        } else if (expressionNode instanceof VariableNode) {
             VariableNode thisVariable = ((VariableNode) expressionNode);
             String variableName = thisVariable.getName();
             if (!symbolTable.isVariable(variableName)) {

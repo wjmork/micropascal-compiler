@@ -13,7 +13,7 @@ import java.io.*;
  * command line with the location of a micro-pascal program file as a parameter.
  *
  * @author William Mork
- * @version 1.0
+ * @version 1.1
  */
 public class CompilerMain {
 
@@ -22,8 +22,8 @@ public class CompilerMain {
 
         // Load sample program if no arguments are passed.
         if (args.length == 0) {
-            System.out.println("Error: No input parameter. Compiling sample file...");
-            inputFile = new File("sample.pas");
+            System.out.println("Error: No input parameter. Compiling example file...");
+            inputFile = new File("example.pas");
         } else if (args.length == 1) {
             System.out.println("File found. Compiling...");
             inputFile = new File(args[0]);
@@ -44,7 +44,6 @@ public class CompilerMain {
 
         System.out.println("Running Semantic Analysis...");
         SemanticAnalyzer analysis = new SemanticAnalyzer(rootNode, symbolTable);
-        System.out.println("File passed Semantic Analysis.");
 
         System.out.println("Running Code Generation...");
         CodeGeneration codeGenerator = new CodeGeneration(rootNode, symbolTable);

@@ -9,6 +9,7 @@ import scanner.TokenType;
  */
 public class ArrayNode extends VariableNode {
 
+    /** Expression node containing array information. */
     public ExpressionNode expressionNode;
 
     /**
@@ -22,19 +23,17 @@ public class ArrayNode extends VariableNode {
 
     /**
      * Creates an arrayNode with a given name and token type.
-     *
-     * @param name The name of this array node
-     * @param tokenType The token type of this array node
+     * @param name The name of this array node.
+     * @param type The token type of this array node.
      */
-    public ArrayNode(String name, TokenType tokenType) {
+    public ArrayNode(String name, TokenType type) {
         super(name);
+        tokenType = type;
         expressionNode = null;
-        this.tokenType = tokenType;
     }
 
     /**
      * Returns the expression node containing array parameters.
-     *
      * @return This expression node containing array parameters.
      */
     public ExpressionNode getExpressionNode() {
@@ -42,12 +41,25 @@ public class ArrayNode extends VariableNode {
     }
 
     /**
-     * Sets the expression node containing with the array parameters.
-     *
+     * Sets the expression node containing array parameters.
      * @param expressionNode The expression node containing array parameters.
      */
     public void setExpressionNode(ExpressionNode expressionNode) {
         this.expressionNode = expressionNode;
     }
 
+    /**
+     * Creates a string representation of this array node.
+     * @param level The tree level at which this node resides.
+     * @return A String representing this node.
+     */
+    @Override
+    public String indentedToString(int level) {
+        String answer = this.indentation(level);
+        answer += "Array: " + super.getName() + ", Type: " + tokenType + "\n";
+        if (expressionNode != null) {
+            answer += this.expressionNode.indentedToString(level + 1);
+        }
+        return answer;
+    }
 }

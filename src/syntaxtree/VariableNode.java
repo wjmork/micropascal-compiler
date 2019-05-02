@@ -60,14 +60,4 @@ public class VariableNode extends ExpressionNode {
         answer += "Name: " + this.name + ", Type: " + this.tokenType + "\n";
         return answer;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        boolean answer = false;
-        if(o instanceof VariableNode) {
-            VariableNode other = (VariableNode)o;
-            if(this.name.equals(other.name)) answer = true;
-        }
-        return answer;
-    }
 }

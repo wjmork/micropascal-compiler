@@ -38,7 +38,7 @@ public class ProgramNode extends SyntaxTreeNode {
 
     /**
      * Sets the declarations node containing program declarations.
-     * @param variables The declarations node to be set.
+     * @param declarations The declarations node to be set.
      */
     public void setDeclarations(DeclarationsNode declarations) {
         this.declarations = declarations;
@@ -54,7 +54,7 @@ public class ProgramNode extends SyntaxTreeNode {
 
     /**
      * Sets the subprogram declarations node containing program subprogram declarations.
-     * @param functions The subprogram declarations node to be set.
+     * @param subProgramDeclarations The subprogram declarations node to be set.
      */
     public void setSubprogramDeclarations(SubProgramDeclarationsNode subProgramDeclarations) {
         this.subProgramDeclarations = subProgramDeclarations;
@@ -70,7 +70,7 @@ public class ProgramNode extends SyntaxTreeNode {
 
     /**
      * Sets the compound statement node containing the program compound statement.
-     * @param main The compound statement node to be set.
+     * @param compoundStatement The compound statement node to be set.
      */
     public void setCompoundStatement(CompoundStatementNode compoundStatement) {
         this.compoundStatement = compoundStatement;

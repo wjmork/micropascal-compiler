@@ -9,23 +9,27 @@ import scanner.TokenType;
  */
 public abstract class ExpressionNode extends SyntaxTreeNode {
 
-    // Data type of this expression node.
+    /** The data type of this expression node. */
     protected TokenType tokenType;
 
-    // Default constructor with null token type.
+    /**
+     * Default constructor for an expression node.
+     */
     public ExpressionNode() {
         tokenType = null;
     }
 
-    // Constructor for a specified token type.
+    /**
+     * Contstructor for an expression node with a provided data type.
+     * @param tokenType the token type of the expression node.
+     */
     public ExpressionNode(TokenType tokenType) {
         this.tokenType = tokenType;
     }
 
     /**
      * Returns the token type of this node.
-     *
-     * @return Token type of this node. (INTEGER or REAL)
+     * @return The token type of this node. (INTEGER or REAL)
      */
     public TokenType getType() {
         return tokenType;
@@ -33,8 +37,7 @@ public abstract class ExpressionNode extends SyntaxTreeNode {
 
     /**
      * Sets the token type of this node.
-     *
-     * @param tokenType Token type of this node. (INTEGER or REAL)
+     * @param tokenType The token type of this node. (INTEGER or REAL)
      */
     public void setType(TokenType tokenType) {
         this.tokenType = tokenType;

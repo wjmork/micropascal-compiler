@@ -2,7 +2,6 @@ package syntaxtree;
 
 /**
  * Syntax tree node which represents an if statement.
- * An if statement includes a boolean expression, and two statements.
  *
  * @author Erik Steinmetz
  * @author William Mork
@@ -28,6 +27,7 @@ public class IfStatementNode extends StatementNode {
 
     /**
      * Sets the child expression node for the if statement test.
+     * @param test The child expression node containing the if statement test.
      */
     public void setTest(ExpressionNode test) {
         this.test = test;

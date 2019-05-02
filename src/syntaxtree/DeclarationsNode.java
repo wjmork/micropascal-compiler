@@ -29,6 +29,10 @@ public class DeclarationsNode extends SyntaxTreeNode {
         variables.addAll(declarations.variables);
     }
 
+    /**
+     * Returns
+     * @return
+     */
     public ArrayList<VariableNode> getVariables() {
         return variables;
     }
