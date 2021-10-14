@@ -14,14 +14,35 @@ import java.util.Map;
  * @author William Mork
  */
 public class SymbolTable {
-    public HashMap<String, Symbol> symbolTable;
+
+    private Stack<HashMap<String, Symbol>> symbolTable;
     public String fileName = null;
 
     /**
      * Constructs a symbol table.
      */
     public SymbolTable() {
-        symbolTable = new HashMap<>();
+        symbolTable = new Stack<>();
+        symbolTable.push(new HashMap<>());
+    }
+
+    /**
+     * Adds a new HashMap to the stack to allow for function and procedure calls.
+     */
+    public void addNewScope() {
+        symbolTable.push(new HashMap<>());
+    }
+
+    /**
+     * Removes a HashMap from the stack.
+     *
+     * @return Returns a reference to the removed HashMap.
+     */
+    public HashMap<String, Symbol> removeScope() {
+        if (symbolTable.size() > 1) {
+            return symbolTable.pop();
+        }
+        return null;
     }
 
     /**
@@ -30,10 +51,13 @@ public class SymbolTable {
      * @return True if the symbol was added to the table.
      */
     public boolean addProgram(String lexeme) {
-        if (symbolTable.containsKey(lexeme)) {
+        HashMap<String, Symbol> subTable = symbolTable.pop();
+        if (subTable.containsKey(lexeme)) {
+            symbolTable.push(subTable);
             return false;
         } else {
-            symbolTable.put(lexeme, new Symbol(lexeme, Kind.PROGRAM));
+            subTable.put(lexeme, new Symbol(lexeme, Kind.PROGRAM));
+            symbolTable.push(subTable);
             return true;
         }
     }
@@ -45,10 +69,13 @@ public class SymbolTable {
      * @return True if the symbol was added to the table.
      */
     public boolean addVariable(String lexeme, TokenType tokenType) {
-        if (symbolTable.containsKey(lexeme)) {
+        HashMap<String, Symbol> subTable = symbolTable.pop();
+        if (subTable.containsKey(lexeme)) {
+            symbolTable.push(subTable);
             return false;
         } else {
-            symbolTable.put(lexeme, new Symbol(lexeme, Kind.VARIABLE, tokenType));
+            subTable.put(lexeme, new Symbol(lexeme, Kind.VARIABLE, tokenType));
+            symbolTable.push(subTable);
             return true;
         }
     }
@@ -62,10 +89,13 @@ public class SymbolTable {
      * @return True if the symbol was added to the table.
      */
     public boolean addArray(String lexeme, TokenType tokenType, int start, int stop){
-        if (symbolTable.containsKey(lexeme)) {
+        HashMap<String, Symbol> subTable = symbolTable.pop();
+        if (subTable.containsKey(lexeme)) {
+            symbolTable.push(subTable);
             return false;
         } else {
-            symbolTable.put(lexeme, new Symbol(lexeme, Kind.ARRAY, tokenType, start, stop));
+            subTable.put(lexeme, new Symbol(lexeme, Kind.ARRAY, tokenType, start, stop));
+            symbolTable.push(subTable);
             return true;
         }
     }
@@ -77,10 +107,13 @@ public class SymbolTable {
      * @return True if the symbol was added to the table.
      */
     public boolean addFunction(String lexeme, TokenType tokenType){
-        if (symbolTable.containsKey(lexeme)) {
+        HashMap<String, Symbol> subTable = symbolTable.pop();
+        if (subTable.containsKey(lexeme)) {
+            symbolTable.push(subTable);
             return false;
         } else {
-            symbolTable.put(lexeme, new Symbol(lexeme, Kind.FUNCTION, tokenType));
+            subTable.put(lexeme, new Symbol(lexeme, Kind.FUNCTION, tokenType));
+            symbolTable.push(subTable);
             return true;
         }
     }
@@ -91,10 +124,13 @@ public class SymbolTable {
      * @return True if the symbol was added to the table.
      */
     public boolean addProcedure(String lexeme){
-        if (symbolTable.containsKey(lexeme)) {
+        HashMap<String, Symbol> subTable = symbolTable.pop();
+        if (subTable.containsKey(lexeme)) {
+            symbolTable.push(subTable);
             return false;
         } else {
-            symbolTable.put(lexeme, new Symbol(lexeme, Kind.PROCEDURE));
+            subTable.put(lexeme, new Symbol(lexeme, Kind.PROCEDURE));
+            symbolTable.push(subTable);
             return true;
         }
     }
