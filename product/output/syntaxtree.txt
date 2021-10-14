@@ -1,0 +1,28 @@
+Program: example
+|-- Declarations
+|-- --- Name: foo, Type: INTEGER
+|-- --- Name: bar, Type: INTEGER
+|-- SubProgramDeclarations
+|-- Compound Statement
+|-- --- Assignment
+|-- --- --- Array: foo, Type: INTEGER
+|-- --- --- --- Value: 0, Type: INTEGER
+|-- --- --- Value: 1, Type: INTEGER
+|-- --- Assignment
+|-- --- --- Array: foo, Type: INTEGER
+|-- --- --- --- Value: 1, Type: INTEGER
+|-- --- --- Value: 2, Type: INTEGER
+|-- --- Assignment
+|-- --- --- Array: foo, Type: INTEGER
+|-- --- --- --- Value: 2, Type: INTEGER
+|-- --- --- Value: 3, Type: INTEGER
+|-- --- Assignment
+|-- --- --- Name: bar, Type: INTEGER
+|-- --- --- Operation: PLUS
+|-- --- --- --- Operation: PLUS
+|-- --- --- --- --- Array: foo, Type: INTEGER
+|-- --- --- --- --- --- Value: 0, Type: INTEGER
+|-- --- --- --- --- Array: foo, Type: INTEGER
+|-- --- --- --- --- --- Value: 1, Type: INTEGER
+|-- --- --- --- Array: foo, Type: INTEGER
+|-- --- --- --- --- Value: 2, Type: INTEGER
